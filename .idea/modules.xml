@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/.idea/Health-Reporter-Android.iml" filepath="$PROJECT_DIR$/.idea/Health-Reporter-Android.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/Health-Reporter-Android.iml" filepath="$PROJECT_DIR$/Health-Reporter-Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+>>>>>>> 9f95f73386aba894316a46b57bb5f3564a48048b
     </modules>
   </component>
 </project>
