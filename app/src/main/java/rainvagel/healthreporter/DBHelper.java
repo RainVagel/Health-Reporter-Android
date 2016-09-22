@@ -89,11 +89,32 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+//        Appraisers table
+        db.execSQL("CREATE TABLE " + appraisersTable + "(" + colId + " BLOB PRIMARY KEY NOT NULL, " +
+        colName + " TEXT, " + colUpdated + " DATETIME NOT NULL, " + colUploaded + " DATETIME NOT NULL" + ")");
 
+//        Groups table
+        db.execSQL("CREATE TABLE " + groupsTable + "(" + colId + " BLOB PRIMARY KEY NOT NULL, " +
+        colName + " TEXT, " + colUpdated + " DATETIME NOT NULL, " + colUploaded + " DATETIME NOT NULL" + ")");
+
+//        Rating_labels table
+        db.execSQL("CREATE TABLE " + ratingLabelsTable + "(" + colId + " BLOB PRIMARY KEY NOT NULL, " +
+        colName + " TEXT, " + colInterpretation + " TEXT, " + colUpdated + " DATETIME NOT NULL, " + colUploaded +
+        " DATETIME NOT NULL" + ")");
+
+//        Presets table
+        db.execSQL("CREATE TABLE " + presetsTable + "(" + colId + " BLOCK PRIMARY KEY NOT NULL, " +
+        colName + " TEXT, " + colUpdated + " DATETIME NOT NULL, " + colUploaded + " DATETIME NOT NULL" + ")");
+
+//        Clients table
+        db.execSQL("CREATE TABLE " + clientsTable + "(" + colId + " BLOC PRIMARY KEY NOT NULL, " +
+        colFirstName + " TEXT, " + colLastName + " TEXT, " + colGroupId + " BLOB NOT NULL, FOREIGN KEY (" + colGroupId + ") " +
+                "REFERENCES " + groupsTable + " (" + colId +"), " + colEmail + " TEXT, " + colGender + " TINYINT, " + colBirthDate +
+        " DATE, " + colUpdated + " DATETIME NOT NULL, " + colUploaded + " DATETIME NOT NULL" + ")");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        //TODO
     }
 }
