@@ -65,13 +65,14 @@ public final class DBContract {
                 + KEY_ID + " BLOB PRIMARY KEY,"
                 + KEY_FIRSTNAME + " TEXT,"
                 + KEY_LASTNAME + " TEXT,"
-                + KEY_GROUP_ID + " BLOB NOT NULL, FOREIGN KEY (" + KEY_GROUP_ID
-                + ") REFERENCES " + Groups.TABLE_NAME + " (" + Groups.KEY_ID + "),"
+                + KEY_GROUP_ID + " BLOB NOT NULL,"
                 + KEY_EMAIL + " TEXT,"
                 + KEY_GENDER + " TINYINT NOT NULL,"
                 + KEY_BIRTHDATE + " DATE NOT NULL,"
                 + KEY_UPDATED + " DATETIME NOT NULL,"
-                + KEY_UPLOADED + " DATETIME NOT NULL"
+                + KEY_UPLOADED + " DATETIME NOT NULL," +
+                "FOREIGN KEY (" + KEY_GROUP_ID + ") REFERENCES " + Groups.TABLE_NAME + " ("
+                + Groups.KEY_ID + ")"
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -89,13 +90,15 @@ public final class DBContract {
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
                 + KEY_ID + " BLOB PRIMARY KEY,"
-                + KEY_APPRAISER_ID + " BLOB NOT NULL, FOREIGN KEY (" + KEY_APPRAISER_ID
-                + ") REFERENCES " + Appraisers.TABLE_NAME + " (" + Appraisers.KEY_ID + "),"
-                + KEY_CLIENT_ID + " BLOB NOT NULL, FOREIGN KEY (" + KEY_CLIENT_ID
-                + ") REFERENCES " + Clients.TABLE_NAME + " (" + Clients.KEY_ID + "),"
+                + KEY_APPRAISER_ID + " BLOB NOT NULL,"
+                + KEY_CLIENT_ID + " BLOB NOT NULL,"
                 + KEY_DATE + " DATE NOT NULL,"
                 + KEY_UPDATED + " DATETIME NOT NULL,"
-                + KEY_UPLOADED + " DATETIME NOT NULL"
+                + KEY_UPLOADED + " DATETIME NOT NULL,"
+                + "FOREIGN KEY (" + KEY_APPRAISER_ID + ") REFERENCES " + Appraisers.TABLE_NAME
+                + " (" + Appraisers.KEY_ID + "),"
+                + "FOREIGN KEY (" + KEY_CLIENT_ID + ") REFERENCES " + Clients.TABLE_NAME
+                + " (" + Clients.KEY_ID + ")"
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -151,12 +154,13 @@ public final class DBContract {
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
                 + KEY_ID + " BLOB PRIMARY KEY,"
-                + KEY_PARENT_ID + " BLOB NOT NULL, FOREIGN KEY (" + KEY_PARENT_ID
-                + ") REFERENCES " + TestCategories.TABLE_NAME + "(" + TestCategories.KEY_ID + "),"
+                + KEY_PARENT_ID + " BLOB NOT NULL,"
                 + KEY_NAME + " TEXT,"
                 + KEY_POSITION + " INTEGER,"
                 + KEY_UPDATED + " DATETIME NOT NULL,"
-                + KEY_UPLOADED + " DATETIME NOT NULL"
+                + KEY_UPLOADED + " DATETIME NOT NULL,"
+                + "FOREIGN KEY (" + KEY_PARENT_ID + ") REFERENCES " + TestCategories.TABLE_NAME
+                + "(" + TestCategories.KEY_ID + ")"
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -180,8 +184,7 @@ public final class DBContract {
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
                 + KEY_ID + " BLOB PRIMARY KEY,"
-                + KEY_CATEGORY_ID + " BLOB NOT NULL, FOREIGN KEY (" + KEY_CATEGORY_ID
-                + ") REFERENCES " + TestCategories.TABLE_NAME + "( " + TestCategories.KEY_ID + "),"
+                + KEY_CATEGORY_ID + " BLOB NOT NULL,"
                 + KEY_NAME + " TEXT,"
                 + KEY_DESCRIPTION + " TEXT,"
                 + KEY_UNITS + " TEXT,"
@@ -192,6 +195,8 @@ public final class DBContract {
                 + KEY_POSITION + " INTEGER,"
                 + KEY_UPDATED + " DATETIME NOT NULL,"
                 + KEY_UPLOADED + " DATETIME NOT NULL"
+                + "FOREIGN KEY (" + KEY_CATEGORY_ID + ") REFERENCES " + TestCategories.TABLE_NAME
+                + "( " + TestCategories.KEY_ID + ")"
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -206,12 +211,14 @@ public final class DBContract {
         public static final String KEY_UPLOADED = "uploaded";
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
-                + KEY_TEST_ID + " BLOB NOT NULL, FOREIGN KEY (" + KEY_TEST_ID
-                + ") REFERENCES " + Tests.TABLE_NAME + " (" + Tests.KEY_ID + "),"
-                + KEY_PRESET_ID + " BLOB NOT NULL, FOREIGN KEY (" + KEY_PRESET_ID
-                + ") REFERENCES " + Presets.TABLE_NAME + " (" + Presets.KEY_ID + "),"
+                + KEY_TEST_ID + " BLOB NOT NULL,"
+                + KEY_PRESET_ID + " BLOB NOT NULL,"
                 + KEY_UPDATED + " DATETIME NOT NULL,"
                 + KEY_UPLOADED + " DATETIME NOT NULL"
+                +  "FOREIGN KEY (" + KEY_TEST_ID + ") REFERENCES " + Tests.TABLE_NAME
+                + " (" + Tests.KEY_ID + "),"
+                + "FOREIGN KEY (" + KEY_PRESET_ID + ") REFERENCES " + Presets.TABLE_NAME
+                + " (" + Presets.KEY_ID + ")"
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -229,15 +236,17 @@ public final class DBContract {
         public static final String KEY_UPLOADED = "uploaded";
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABEL_NAME + " ("
-                + KEY_TEST_ID + " BLOB NOT NULL, FOREIGN KEY " + KEY_TEST_ID
-                + ") REFERENCES " + Tests.TABLE_NAME + " (" + Tests.KEY_ID + "),"
-                + KEY_LABEL_ID + " BLOB NOT NULL, FOREIGN KEY " + KEY_LABEL_ID
-                + ") REFERENCES " + RatingLabels.TABLE_NAME + " (" + RatingLabels.KEY_ID + "),"
+                + KEY_TEST_ID + " BLOB NOT NULL,"
+                + KEY_LABEL_ID + " BLOB NOT NULL,"
                 + KEY_AGE + " INTEGER NOT NULL,"
                 + KEY_NORM_F + " REAL,"
                 + KEY_NORM_M + " REAL,"
                 + KEY_UPDATED + " DATETIME NOT NULL,"
-                + KEY_UPLOADED + " DATETIME NOT NULL"
+                + KEY_UPLOADED + " DATETIME NOT NULL,"
+                + "FOREIGN KEY " + KEY_TEST_ID + ") REFERENCES " + Tests.TABLE_NAME
+                + " (" + Tests.KEY_ID + "),"
+                +  "FOREIGN KEY " + KEY_LABEL_ID + ") REFERENCES " + RatingLabels.TABLE_NAME
+                + " (" + RatingLabels.KEY_ID + ")"
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABEL_NAME;
@@ -257,8 +266,7 @@ public final class DBContract {
         public static final String KEY_UPLOADED = "uploaded";
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
-                + KEY_APPRAISAL_ID + " BLOB NOT NULL, FOREIGN KEY " + KEY_APPRAISAL_ID
-                + ") REFERENCES " + Appraisals.TABLE_NAME + " (" + Appraisals.KEY_ID + "),"
+                + KEY_APPRAISAL_ID + " BLOB NOT NULL,"
                 + KEY_TEST_ID + " BLOB NOT NULL, FOREIGN KEY " + KEY_TEST_ID
                 + ") REFERENCES " + Tests.TABLE_NAME + " (" + Tests.KEY_ID + "),"
                 + KEY_SCORE + " REAL,"
@@ -267,7 +275,11 @@ public final class DBContract {
                 + KEY_TRIAL_2 + " REAL,"
                 + KEY_TRIAL_3 + " REAL,"
                 + KEY_UPDATED + " DATETIME NOT NULL,"
-                + KEY_UPLOADED + " DATETIME NOT NULL"
+                + KEY_UPLOADED + " DATETIME NOT NULL,"
+                + "FOREIGN KEY " + KEY_APPRAISAL_ID + ") REFERENCES " + Appraisals.TABLE_NAME
+                + " (" + Appraisals.KEY_ID + "),"
+                + "FOREIGN KEY " + KEY_TEST_ID + ") REFERENCES " + Tests.TABLE_NAME
+                + " (" + Tests.KEY_ID + ")"
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
