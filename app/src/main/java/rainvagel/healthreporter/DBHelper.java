@@ -16,11 +16,11 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DBContract.Groups.CREATE_TABLE);
-        db.execSQL(DBContract.Clients.CREATE_TABEL);
+        db.execSQL(DBContract.Clients.CREATE_TABLE);
         db.execSQL(DBContract.Appraisers.CREATE_TABLE);
         db.execSQL(DBContract.Appraisals.CREATE_TABLE);
         db.execSQL(DBContract.TestCategories.CREATE_TABLE);
-        db.execSQL(DBContract.Tests.CREATE_TABEL);
+        db.execSQL(DBContract.Tests.CREATE_TABLE);
         db.execSQL(DBContract.RatingLabels.CREATE_TABLE);
         db.execSQL(DBContract.Ratings.CREATE_TABLE);
         db.execSQL(DBContract.Presets.CREATE_TABLE);

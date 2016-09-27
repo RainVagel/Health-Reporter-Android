@@ -61,7 +61,7 @@ public final class DBContract {
         public static final String KEY_UPDATED = "updated";
         public static final String KEY_UPLOADED = "uploaded";
 
-        public static final String CREATE_TABEL = "CREATE TABLE " + TABLE_NAME + " ("
+        public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
                 + KEY_ID + " BLOB PRIMARY KEY,"
                 + KEY_FIRSTNAME + " TEXT,"
                 + KEY_LASTNAME + " TEXT,"
@@ -178,7 +178,7 @@ public final class DBContract {
         public static final String KEY_UPDATED = "updated";
         public static final String KEY_UPLOADED = "uploaded";
 
-        public static final String CREATE_TABEL = "CREATE TABLE " + TABLE_NAME + " ("
+        public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
                 + KEY_ID + " BLOB PRIMARY KEY,"
                 + KEY_CATEGORY_ID + " BLOB NOT NULL, FOREIGN KEY (" + KEY_CATEGORY_ID
                 + ") REFERENCES " + TestCategories.TABLE_NAME + "( " + TestCategories.KEY_ID + "),"
