@@ -194,7 +194,7 @@ public final class DBContract {
                 + KEY_FORMULA_M + " TEXT,"
                 + KEY_POSITION + " INTEGER,"
                 + KEY_UPDATED + " DATETIME NOT NULL,"
-                + KEY_UPLOADED + " DATETIME NOT NULL"
+                + KEY_UPLOADED + " DATETIME NOT NULL,"
                 + "FOREIGN KEY (" + KEY_CATEGORY_ID + ") REFERENCES " + TestCategories.TABLE_NAME
                 + "( " + TestCategories.KEY_ID + ")"
                 + ");";
@@ -214,7 +214,7 @@ public final class DBContract {
                 + KEY_TEST_ID + " BLOB NOT NULL,"
                 + KEY_PRESET_ID + " BLOB NOT NULL,"
                 + KEY_UPDATED + " DATETIME NOT NULL,"
-                + KEY_UPLOADED + " DATETIME NOT NULL"
+                + KEY_UPLOADED + " DATETIME NOT NULL,"
                 +  "FOREIGN KEY (" + KEY_TEST_ID + ") REFERENCES " + Tests.TABLE_NAME
                 + " (" + Tests.KEY_ID + "),"
                 + "FOREIGN KEY (" + KEY_PRESET_ID + ") REFERENCES " + Presets.TABLE_NAME
@@ -243,9 +243,9 @@ public final class DBContract {
                 + KEY_NORM_M + " REAL,"
                 + KEY_UPDATED + " DATETIME NOT NULL,"
                 + KEY_UPLOADED + " DATETIME NOT NULL,"
-                + "FOREIGN KEY " + KEY_TEST_ID + ") REFERENCES " + Tests.TABLE_NAME
+                + "FOREIGN KEY (" + KEY_TEST_ID + ") REFERENCES " + Tests.TABLE_NAME
                 + " (" + Tests.KEY_ID + "),"
-                +  "FOREIGN KEY " + KEY_LABEL_ID + ") REFERENCES " + RatingLabels.TABLE_NAME
+                +  "FOREIGN KEY (" + KEY_LABEL_ID + ") REFERENCES " + RatingLabels.TABLE_NAME
                 + " (" + RatingLabels.KEY_ID + ")"
                 + ");";
 
@@ -267,8 +267,7 @@ public final class DBContract {
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
                 + KEY_APPRAISAL_ID + " BLOB NOT NULL,"
-                + KEY_TEST_ID + " BLOB NOT NULL, FOREIGN KEY " + KEY_TEST_ID
-                + ") REFERENCES " + Tests.TABLE_NAME + " (" + Tests.KEY_ID + "),"
+                + KEY_TEST_ID + " BLOB NOT NULL,"
                 + KEY_SCORE + " REAL,"
                 + KEY_NOTE + " TEXT,"
                 + KEY_TRIAL_1 + " REAL,"
@@ -276,9 +275,9 @@ public final class DBContract {
                 + KEY_TRIAL_3 + " REAL,"
                 + KEY_UPDATED + " DATETIME NOT NULL,"
                 + KEY_UPLOADED + " DATETIME NOT NULL,"
-                + "FOREIGN KEY " + KEY_APPRAISAL_ID + ") REFERENCES " + Appraisals.TABLE_NAME
+                + "FOREIGN KEY (" + KEY_APPRAISAL_ID + ") REFERENCES " + Appraisals.TABLE_NAME
                 + " (" + Appraisals.KEY_ID + "),"
-                + "FOREIGN KEY " + KEY_TEST_ID + ") REFERENCES " + Tests.TABLE_NAME
+                + "FOREIGN KEY (" + KEY_TEST_ID + ") REFERENCES " + Tests.TABLE_NAME
                 + " (" + Tests.KEY_ID + ")"
                 + ");";
 
