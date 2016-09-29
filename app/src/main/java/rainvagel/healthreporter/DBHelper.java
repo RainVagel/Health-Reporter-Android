@@ -33,17 +33,17 @@ public class DBHelper extends SQLiteOpenHelper {
     private void insertMockData(SQLiteDatabase db) {
 //        Groups
         ContentValues groupsValues = new ContentValues();
-        groupsValues.put(DBContract.Groups.KEY_ID, 001);
+        groupsValues.put(DBContract.Groups.KEY_ID, 1);
         groupsValues.put(DBContract.Groups.KEY_NAME, "University of Tartu");
         groupsValues.put(DBContract.Groups.KEY_UPDATED, "2014-05-10");
         groupsValues.put(DBContract.Groups.KEY_UPLOADED, "2014-05-11");
 
 //        Clients
         ContentValues clientsValues = new ContentValues();
-        clientsValues.put(DBContract.Clients.KEY_ID, 002);
+        clientsValues.put(DBContract.Clients.KEY_ID, 2);
         clientsValues.put(DBContract.Clients.KEY_FIRSTNAME, "Kaarel");
         clientsValues.put(DBContract.Clients.KEY_LASTNAME, "Sõrmus");
-        clientsValues.put(DBContract.Clients.KEY_GROUP_ID, 001);
+        clientsValues.put(DBContract.Clients.KEY_GROUP_ID, 1);
         clientsValues.put(DBContract.Clients.KEY_EMAIL, "kaarel.sõrmus@gmail.com");
         clientsValues.put(DBContract.Clients.KEY_GENDER, 1);
         clientsValues.put(DBContract.Clients.KEY_BIRTHDATE, "1995-05-10");
@@ -52,23 +52,23 @@ public class DBHelper extends SQLiteOpenHelper {
 
 //        Appraisers
         ContentValues appraisersValues = new ContentValues();
-        appraisersValues.put(DBContract.Appraisers.KEY_ID, 003);
+        appraisersValues.put(DBContract.Appraisers.KEY_ID, 3);
         appraisersValues.put(DBContract.Appraisers.KEY_NAME,"Karl Lubja");
         appraisersValues.put(DBContract.Appraisers.KEY_UPDATED, "2014-05-10");
         appraisersValues.put(DBContract.Appraisers.KEY_UPLOADED, "2014-05-09");
 
 //        Appraisals
         ContentValues appraisalsValues = new ContentValues();
-        appraisalsValues.put(DBContract.Appraisals.KEY_ID, 004);
-        appraisalsValues.put(DBContract.Appraisals.KEY_APPRAISER_ID, 003);
-        appraisalsValues.put(DBContract.Appraisals.KEY_CLIENT_ID, 002);
+        appraisalsValues.put(DBContract.Appraisals.KEY_ID, 4);
+        appraisalsValues.put(DBContract.Appraisals.KEY_APPRAISER_ID, 3);
+        appraisalsValues.put(DBContract.Appraisals.KEY_CLIENT_ID, 2);
         appraisalsValues.put(DBContract.Appraisals.KEY_DATE, "2014-05-13");
         appraisalsValues.put(DBContract.Appraisals.KEY_UPDATED, "2014-05-13");
         appraisalsValues.put(DBContract.Appraisals.KEY_UPLOADED, "2014-05-14");
 
 //        RatingLabels
         ContentValues ratingLabelsValues = new ContentValues();
-        ratingLabelsValues.put(DBContract.RatingLabels.KEY_ID, 005);
+        ratingLabelsValues.put(DBContract.RatingLabels.KEY_ID, 5);
         ratingLabelsValues.put(DBContract.RatingLabels.KEY_NAME, "Maximillian");
         ratingLabelsValues.put(DBContract.RatingLabels.KEY_INTERPRETATION, "Sick");
         ratingLabelsValues.put(DBContract.RatingLabels.KEY_UPDATED, "2014-05-09");
@@ -76,7 +76,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 //        TestCategories
         ContentValues testCategoriesValues = new ContentValues();
-        testCategoriesValues.put(DBContract.TestCategories.KEY_ID, 006);
+        testCategoriesValues.put(DBContract.TestCategories.KEY_ID, 6);
         testCategoriesValues.put(DBContract.TestCategories.KEY_PARENT_ID, "null");
         testCategoriesValues.put(DBContract.TestCategories.KEY_NAME, "Test");
         testCategoriesValues.put(DBContract.TestCategories.KEY_POSITION, 1);
@@ -85,8 +85,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
 //        Tests
         ContentValues testValues = new ContentValues();
-        testValues.put(DBContract.Tests.KEY_ID, 007);
-        testValues.put(DBContract.Tests.KEY_CATEGORY_ID, 006);
+        testValues.put(DBContract.Tests.KEY_ID, 7);
+        testValues.put(DBContract.Tests.KEY_CATEGORY_ID, 6);
         testValues.put(DBContract.Tests.KEY_NAME, "Skin");
         testValues.put(DBContract.Tests.KEY_DESCRIPTION, "For some stuff");
         testValues.put(DBContract.Tests.KEY_UNITS, "meters");
@@ -99,7 +99,53 @@ public class DBHelper extends SQLiteOpenHelper {
         testValues.put(DBContract.Tests.KEY_UPLOADED, "2014-05-01");
 
 //        Ratings
+        ContentValues ratingValues = new ContentValues();
+        ratingValues.put(DBContract.Ratings.KEY_TEST_ID, 7);
+        ratingValues.put(DBContract.Ratings.KEY_LABEL_ID, 5);
+        ratingValues.put(DBContract.Ratings.KEY_AGE, 25);
+        ratingValues.put(DBContract.Ratings.KEY_NORM_F, 10);
+        ratingValues.put(DBContract.Ratings.KEY_NORM_M, 20);
+        ratingValues.put(DBContract.Ratings.KEY_UPDATED, "2014-05-10");
+        ratingValues.put(DBContract.Ratings.KEY_UPLOADED, "2014-05-11");
 
+//        Presets
+        ContentValues presetValues = new ContentValues();
+        presetValues.put(DBContract.Presets.KEY_ID, 8);
+        presetValues.put(DBContract.Presets.KEY_NAME, "PresetProovimiseks");
+        presetValues.put(DBContract.Presets.KEY_UPDATED, "2014-05-12");
+        presetValues.put(DBContract.Presets.KEY_UPLOADED, "2014-05-13");
+
+//        PresetTests
+        ContentValues presetTestsValues = new ContentValues();
+        presetTestsValues.put(DBContract.PresetTests.KEY_TEST_ID, 7);
+        presetTestsValues.put(DBContract.PresetTests.KEY_PRESET_ID, 8);
+        presetTestsValues.put(DBContract.PresetTests.KEY_UPDATED, "2014-05-05");
+        presetTestsValues.put(DBContract.PresetTests.KEY_UPLOADED, "2014-05-05");
+
+//        AppraisalTests
+        ContentValues appraisalTestsValues = new ContentValues();
+        appraisalTestsValues.put(DBContract.AppraisalTests.KEY_APPRAISAL_ID, 4);
+        appraisalTestsValues.put(DBContract.AppraisalTests.KEY_TEST_ID, 7);
+        appraisalTestsValues.put(DBContract.AppraisalTests.KEY_SCORE, 20);
+        appraisalTestsValues.put(DBContract.AppraisalTests.KEY_NOTE, "Hello");
+        appraisalTestsValues.put(DBContract.AppraisalTests.KEY_TRIAL_1, 2);
+        appraisalTestsValues.put(DBContract.AppraisalTests.KEY_TRIAL_2, 3);
+        appraisalTestsValues.put(DBContract.AppraisalTests.KEY_TRIAL_3, 20);
+        appraisalTestsValues.put(DBContract.AppraisalTests.KEY_UPDATED, "2014-05-15");
+        appraisalTestsValues.put(DBContract.AppraisalTests.KEY_UPLOADED, "2014-05-16");
+
+//        Adding to the database
+        db.insert(DBContract.Groups.TABLE_NAME, null, groupsValues);
+        db.insert(DBContract.Clients.TABLE_NAME, null, clientsValues);
+        db.insert(DBContract.Appraisers.TABLE_NAME, null, appraisersValues);
+        db.insert(DBContract.Appraisals.TABLE_NAME, null, appraisalsValues);
+        db.insert(DBContract.RatingLabels.TABLE_NAME, null, ratingLabelsValues);
+        db.insert(DBContract.TestCategories.TABLE_NAME, null, testCategoriesValues);
+        db.insert(DBContract.Tests.TABLE_NAME, null, testValues);
+        db.insert(DBContract.Ratings.TABEL_NAME, null, ratingValues);
+        db.insert(DBContract.Presets.TABLE_NAME, null, presetValues);
+        db.insert(DBContract.PresetTests.TABLE_NAME, null, presetTestsValues);
+        db.insert(DBContract.AppraisalTests.TABLE_NAME, null, appraisalTestsValues);
     }
 
     @Override
