@@ -68,6 +68,38 @@ public class DBHelper extends SQLiteOpenHelper {
 
 //        RatingLabels
         ContentValues ratingLabelsValues = new ContentValues();
+        ratingLabelsValues.put(DBContract.RatingLabels.KEY_ID, 005);
+        ratingLabelsValues.put(DBContract.RatingLabels.KEY_NAME, "Maximillian");
+        ratingLabelsValues.put(DBContract.RatingLabels.KEY_INTERPRETATION, "Sick");
+        ratingLabelsValues.put(DBContract.RatingLabels.KEY_UPDATED, "2014-05-09");
+        ratingLabelsValues.put(DBContract.RatingLabels.KEY_UPLOADED, "2014-05-10");
+
+//        TestCategories
+        ContentValues testCategoriesValues = new ContentValues();
+        testCategoriesValues.put(DBContract.TestCategories.KEY_ID, 006);
+        testCategoriesValues.put(DBContract.TestCategories.KEY_PARENT_ID, "null");
+        testCategoriesValues.put(DBContract.TestCategories.KEY_NAME, "Test");
+        testCategoriesValues.put(DBContract.TestCategories.KEY_POSITION, 1);
+        testCategoriesValues.put(DBContract.TestCategories.KEY_UPDATED, "2014-05-15");
+        testCategoriesValues.put(DBContract.TestCategories.KEY_UPLOADED, "2014-05-15");
+
+//        Tests
+        ContentValues testValues = new ContentValues();
+        testValues.put(DBContract.Tests.KEY_ID, 007);
+        testValues.put(DBContract.Tests.KEY_CATEGORY_ID, 006);
+        testValues.put(DBContract.Tests.KEY_NAME, "Skin");
+        testValues.put(DBContract.Tests.KEY_DESCRIPTION, "For some stuff");
+        testValues.put(DBContract.Tests.KEY_UNITS, "meters");
+        testValues.put(DBContract.Tests.KEY_DECIMALS, 2);
+        testValues.put(DBContract.Tests.KEY_WEIGHT, 3);
+        testValues.put(DBContract.Tests.KEY_FORMULA_F, "2");
+        testValues.put(DBContract.Tests.KEY_FORMULA_M, "3");
+        testValues.put(DBContract.Tests.KEY_POSITION, 0);
+        testValues.put(DBContract.Tests.KEY_UPDATED, "2014-05-01");
+        testValues.put(DBContract.Tests.KEY_UPLOADED, "2014-05-01");
+
+//        Ratings
+
     }
 
     @Override
