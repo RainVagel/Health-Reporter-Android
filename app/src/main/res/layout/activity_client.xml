@@ -75,12 +75,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
-            app:fabSize="normal"
             app:srcCompat="@android:drawable/ic_input_add"
             android:id="@+id/floatingActionButton3"
             app:elevation="5dp"
             android:layout_margin="16dp"
-            app:layout_anchorGravity="bottom|right|end"
             android:layout_gravity="bottom|end"/>
 
 
