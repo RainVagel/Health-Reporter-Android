@@ -1,12 +1,21 @@
 package rainvagel.healthreporter;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 
 import java.util.ArrayList;
+
+
 
 public class ClientActivity extends AppCompatActivity {
 
@@ -29,23 +38,48 @@ public class ClientActivity extends AppCompatActivity {
         spec.setIndicator("Groups");
         host.addTab(spec);
 
-        //DUMMYLIST
-        ArrayList<String> asi = new ArrayList<>();
-        asi.add("Karl");
-        asi.add("Kaarel");
-        asi.add("Cornelia");
-        asi.add("Rain");
+        DBHelper mydb = new DBHelper(this);
+
+        String[] columns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME};
+        Cursor cursor = mydb.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, columns, null,null,null,null,null);
+
+        int rowIndex = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
+        int firstNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
+        int lastNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
+
+        ArrayList<Integer> clientIDs = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<>();
+       // Log.v("ClientActivity", String.valueOf(cursor.getCount()));
+
+
+        for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
+            Log.v("ClientActivity", "Made it here");
+            clientIDs.add(Integer.valueOf(cursor.getString(rowIndex)));
+            names.add(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex));
+
+        }
+
 
         ListView lv = (ListView) findViewById(R.id.listViewClients);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                asi);
+                names);
+
         lv.setAdapter(arrayAdapter);
 
         ListView elv = (ListView) findViewById(R.id.listViewGroups);
         elv.setAdapter(arrayAdapter);
 
 
+    }
+
+
+
+
+
+    public void newClient(View v){
+        Intent intent = new Intent(this, NewClientActivity.class);
+        startActivity(intent);
     }
 }
