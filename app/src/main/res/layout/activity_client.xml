@@ -9,6 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="rainvagel.healthreporter.ClientActivity">
+
     <TabHost
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,7 +19,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="386dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
 
@@ -28,61 +29,57 @@
                 android:layout_width="match_parent"
                 android:backgroundTint="#000000"
                 android:layout_height="wrap_content"></TabWidget>
-
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="334dp">
-
+                android:layout_height="match_parent">
                 <LinearLayout
                     android:id="@+id/Clients"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-
                     android:orientation="vertical">
-
                     <ListView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:id="@+id/listViewClients" />
-
-
                 </LinearLayout>
-
                 <LinearLayout
                     android:id="@+id/Groups"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-
                     <ListView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:id="@+id/listViewGroups" />
-
-
                 </LinearLayout>
-
-
             </FrameLayout>
-
-
         </LinearLayout>
-
-
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            app:srcCompat="@android:drawable/ic_input_add"
-            android:id="@+id/floatingActionButton3"
-            app:elevation="5dp"
-            android:layout_margin="16dp"
-            android:layout_gravity="bottom|end"/>
-
-
-
-
     </TabHost>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:id="@+id/fab1"
+        android:onClick="newClient"
+        app:elevation="5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:visibility="gone"
+        android:id="@+id/fab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:fabSize="mini"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        />
+
+
+
 </RelativeLayout>
