@@ -62,7 +62,7 @@
         android:clickable="true"
         app:srcCompat="@android:drawable/ic_input_add"
         android:id="@+id/fab1"
-        android:onClick="newClient"
+        android:onClick="addNewClient"
         app:elevation="5dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
