@@ -59,7 +59,7 @@ public class ClientActivity extends AppCompatActivity {
 
         }
 
-
+        mydb.close();
         ListView lv = (ListView) findViewById(R.id.listViewClients);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this,
@@ -78,7 +78,7 @@ public class ClientActivity extends AppCompatActivity {
 
 
 
-    public void newClient(View v){
+    public void addNewClient(View v){
         Intent intent = new Intent(this, NewClientActivity.class);
         startActivity(intent);
     }
