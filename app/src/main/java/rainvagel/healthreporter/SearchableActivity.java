@@ -2,20 +2,18 @@ package rainvagel.healthreporter;
 
 import android.app.ListActivity;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.ListView;
 
 public class SearchableActivity extends ListActivity {
 
     // https://developer.android.com/guide/topics/search/search-dialog.html
-
-    /**
-     * If your data is stored in a SQLite database on the device,
-     * performing a full-text search (using FTS3, rather than a LIKE query)
-     * can provide a more robust search across text data and can produce results significantly faster.
-     */
 
     ListView listView;
 
@@ -37,5 +35,20 @@ public class SearchableActivity extends ListActivity {
         /*
         getListAdapter() - Get the ListAdapter associated with this activity's ListView.
          */
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the options menu from XML
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        return true;
     }
 }
