@@ -23,22 +23,9 @@ public class TestActivity extends AppCompatActivity {
         //DBHelper dbHelper = new DBHelper(this);
     }
 
-    public void createTest() {
-
-        createButton = (Button) findViewById(R.id.createButton);
-        createButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                intent = new Intent(this, NewTestActivity.class);
-                //EditText editText = (EditText) findViewById(R.id.edit_message);
-                //String message = editText.getText().toString();
-                //intent.putExtra(EXTRA_MESSAGE, message);
-                startActivity(intent);
-            }
-        });
-
+    public void createTest(View v){
+        Intent intent = new Intent(this, NewTestActivity.class);
+        startActivity(intent);
     }
 
     protected void searchTests() {
