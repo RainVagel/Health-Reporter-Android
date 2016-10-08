@@ -19,6 +19,7 @@ public class CategoriesActivity extends AppCompatActivity {
     final ArrayList<Category> categories = new ArrayList<>();
     final ArrayList<String> categorynames = new ArrayList<>();
     static String intentData;//this will contain the nr of Rows and last ID
+    Intent fromClients;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -30,8 +31,13 @@ public class CategoriesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
+        fromClients = getIntent();
+        Log.v(TAG, String.valueOf(fromClients.getStringExtra("ClientId")));
+        new Thread(new Runnable() {
+            public void run(){
 
-        DBHelper mydb = new DBHelper(this);
+
+        DBHelper mydb = new DBHelper(CategoriesActivity.this);
 
         //Defines the columns that will be returned from the database query
         String[] columns = {DBContract.TestCategories.KEY_ID, DBContract.TestCategories.KEY_PARENT_ID, DBContract.TestCategories.KEY_NAME, DBContract.TestCategories.KEY_POSITION, DBContract.TestCategories.KEY_UPDATED, DBContract.TestCategories.KEY_UPLOADED};
@@ -66,7 +72,8 @@ public class CategoriesActivity extends AppCompatActivity {
         Log.v(TAG, intentData);
         mydb.close();//close the db connection
 
-
+            }
+        }).start();
         ListView lv = (ListView) findViewById(R.id.listView);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this,
