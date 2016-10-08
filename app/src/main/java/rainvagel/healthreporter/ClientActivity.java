@@ -2,6 +2,7 @@ package rainvagel.healthreporter;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.view.View;
 
 import android.view.ViewGroup;
 
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
@@ -26,13 +29,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ClientActivity extends AppCompatActivity {
+public class ClientActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private Boolean isFabOpen = false;
+    private FloatingActionButton fab1, fab2, fab3;
+    private Animation openfab, closefab, initialrotate,finalrotate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
 
+        RelativeLayout dimbackground = (RelativeLayout) findViewById(R.id.activity_test);
+
+        fab1 = (FloatingActionButton) findViewById(R.id.fab1);
+        fab2 = (FloatingActionButton) findViewById(R.id.fab2);
+        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
+        openfab = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.openfab);
+        closefab = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.closefab);
+        initialrotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.initialrotate);
+        finalrotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.finalrotate);
+        fab1.setOnClickListener(this);
+        fab2.setOnClickListener(this);
+        fab3.setOnClickListener(this);
 
         TabHost host = (TabHost)findViewById(R.id.tabHost);
         host.setup();
@@ -50,13 +69,7 @@ public class ClientActivity extends AppCompatActivity {
         DBHelper mydb = new DBHelper(this);
 
         String[] columns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME, DBContract.Clients.KEY_GROUP_ID};
-
-
-
-
         Cursor cursor = mydb.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, columns, null,null,null,null,null);
-
-
 
         int rowIndex = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
         int firstNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
@@ -87,7 +100,6 @@ public class ClientActivity extends AppCompatActivity {
 
         String[] columns1 = {DBContract.Groups.KEY_ID,DBContract.Groups.KEY_NAME};
 
-
         cursor = mydb.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, columns1,null,null,null,null,null );
         int idIndex = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
         int nameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
@@ -117,39 +129,87 @@ public class ClientActivity extends AppCompatActivity {
                 text2.setTextSize(text1.getTextSize()/4);
             return view;
             }
-
         };
-
-
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
                 groupNames);
-
         lv.setAdapter(adapter);
-
         ListView elv = (ListView) findViewById(R.id.listViewGroups);
         elv.setAdapter(arrayAdapter);
-
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(ClientActivity.this, CategoriesActivity.class);
                 toCategories.putExtra("ClientId", String.valueOf(clientId));// pass on the id of the client
-
                 startActivity(toCategories);
-
             }
         });
+}
 
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id){
+            case R.id.fab1:
+                animateFAB();
+                dimback();
+                break;
+            case R.id.fab2:
+                break;
+            case R.id.fab3:
+                break;
+            case R.id.main:
+                fab1.startAnimation(finalrotate);
+                fab2.startAnimation(closefab);
+                fab3.startAnimation(closefab);
+                fab2.setClickable(false);
+                fab3.setClickable(false);
+                isFabOpen = false;
 
+        }
     }
+    public void dimback(){
+        if(isFabOpen){
+            View  main = findViewById(R.id.main);
+            main.setAlpha(0.2f);
+            setClickable(main, false);
+        }
+        else {
+            View  main = findViewById(R.id.main);
+            main.setAlpha(1);
+            setClickable(main, true);
+        }
+    }
+    public void setClickable(View view, boolean bol) {
+        if (view != null) {
+            view.setClickable(bol);
+            if (view instanceof ViewGroup) {
+                ViewGroup vg = ((ViewGroup) view);
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    setClickable(vg.getChildAt(i),bol);
+                }
+            }
+        }
+    }
+    public void animateFAB(){
+        if(isFabOpen){
 
-
-
-
-
+            fab1.startAnimation(finalrotate);
+            fab2.startAnimation(closefab);
+            fab3.startAnimation(closefab);
+            fab2.setClickable(false);
+            fab3.setClickable(false);
+            isFabOpen = false;
+        } else {
+            fab1.startAnimation(initialrotate);
+            fab2.startAnimation(openfab);
+            fab3.startAnimation(openfab);
+            fab2.setClickable(true);
+            fab3.setClickable(true);
+            isFabOpen = true;
+        }
+    }
     public void addNewClient(View v){
         Intent intent = new Intent(this, NewClientActivity.class);
         startActivity(intent);
