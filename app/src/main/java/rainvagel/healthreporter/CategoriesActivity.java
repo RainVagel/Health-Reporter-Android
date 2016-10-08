@@ -20,8 +20,8 @@ public class CategoriesActivity extends AppCompatActivity {
     static final String TAG = "CATEGORIES ACTIVITY";
     final ArrayList<Category> categories = new ArrayList<>();
     final ArrayList<String> categorynames = new ArrayList<>();
-    static String intentData;//this will contain the nr of Rows and last ID
     Intent fromClients;
+    static String[] intentData;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -34,6 +34,15 @@ public class CategoriesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
         Log.v(TAG, "In categories");
+        //first element is clientID, second is client's name and third is the group name
+        intentData = getIntent().getStringExtra("ClientId").split(",");
+
+        Toolbar tb = (Toolbar) findViewById(R.id.my_toolbar);
+        CharSequence title =  intentData[1];
+        CharSequence subtitle = intentData[2];
+        tb.setTitle(title);
+        tb.setSubtitle(subtitle);
+
 
 
         new Thread(new Runnable() {
@@ -77,7 +86,6 @@ public class CategoriesActivity extends AppCompatActivity {
 
     public void getCategories(){
 
-        Toolbar tb = (Toolbar) findViewById(R.id.my_toolbar);
 
         DBHelper  mydb = new DBHelper(CategoriesActivity.this);
         //retrieve the KEY_IDS OF APPRAISALS WHICH WE WILL USE TO GO TO THE APPRAISAL_TESTS TABLE
@@ -92,7 +100,7 @@ public class CategoriesActivity extends AppCompatActivity {
 
 
         for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
-            if(res.getString(client_Id).equals(getIntent().getStringExtra("ClientId"))){
+            if(res.getString(client_Id).equals(intentData[0])){
                 correspondingIDs.add(res.getString(idIndex));
                 Log.v(TAG, "Appraisal table");
             }
@@ -150,14 +158,10 @@ public class CategoriesActivity extends AppCompatActivity {
                     categorynames.add(name);
                 }
             }
-            if(res.isLast()){
-                intentData = res.getString(idRow) + ","+ res.getString(posRow);
-
-                Log.v(TAG, intentData);
-                mydb.close();
-            }
 
         }
+        res.close();
+        mydb.close();
     }
 
     public void createCategory(View v){

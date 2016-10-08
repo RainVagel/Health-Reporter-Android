@@ -142,8 +142,13 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(ClientActivity.this, CategoriesActivity.class);
-                toCategories.putExtra("ClientId", String.valueOf(clientId));// pass on the id of the client
+                // we will pass on client's name,group and id in a string, all separated with a comma.
+                String passedData =(String.valueOf(clientId)+","+names.get(position)+","+ groupNames.get(position));
+                Log.v("client intet", passedData);
+                toCategories.putExtra("ClientId", passedData);// pass on the data
+
                 startActivity(toCategories);
+
             }
         });
 }
@@ -159,13 +164,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.fab3:
                 break;
-            case R.id.main:
-                fab1.startAnimation(finalrotate);
-                fab2.startAnimation(closefab);
-                fab3.startAnimation(closefab);
-                fab2.setClickable(false);
-                fab3.setClickable(false);
-                isFabOpen = false;
+
 
         }
     }
@@ -173,12 +172,13 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         if(isFabOpen){
             View  main = findViewById(R.id.main);
             main.setAlpha(0.2f);
-            setClickable(main, false);
+           // setClickable(main, false);
         }
         else {
             View  main = findViewById(R.id.main);
             main.setAlpha(1);
-            setClickable(main, true);
+            //setClickable(main, true);
+
         }
     }
     public void setClickable(View view, boolean bol) {
