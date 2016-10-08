@@ -7,7 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
 import android.view.ViewGroup;
+
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
@@ -60,10 +63,15 @@ public class ClientActivity extends AppCompatActivity {
         int lastNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
         int groupIndex  = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
 
-        ArrayList<Integer> clientIDs = new ArrayList<>();
+
+        final ArrayList<Integer> clientIDs = new ArrayList<>();
         final ArrayList<String> names = new ArrayList<>();
         ArrayList<Integer> groupIDs = new ArrayList<>();
         final ArrayList<String> groupNames = new ArrayList<>();
+
+
+
+
        // Log.v("ClientActivity", String.valueOf(cursor.getCount()));
 
 
@@ -122,6 +130,18 @@ public class ClientActivity extends AppCompatActivity {
 
         ListView elv = (ListView) findViewById(R.id.listViewGroups);
         elv.setAdapter(arrayAdapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int clientId= clientIDs.get(position);
+                Intent toCategories = new Intent(ClientActivity.this, CategoriesActivity.class);
+                toCategories.putExtra("ClientId", String.valueOf(clientId));// pass on the id of the client
+
+                startActivity(toCategories);
+
+            }
+        });
 
 
     }
