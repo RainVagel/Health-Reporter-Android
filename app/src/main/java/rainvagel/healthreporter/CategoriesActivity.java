@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -31,49 +32,17 @@ public class CategoriesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
-        fromClients = getIntent();
-        Log.v(TAG, String.valueOf(fromClients.getStringExtra("ClientId")));
+        Log.v(TAG, "In categories");
+
+
         new Thread(new Runnable() {
             public void run(){
 
-
-        DBHelper mydb = new DBHelper(CategoriesActivity.this);
-
-        //Defines the columns that will be returned from the database query
-        String[] columns = {DBContract.TestCategories.KEY_ID, DBContract.TestCategories.KEY_PARENT_ID, DBContract.TestCategories.KEY_NAME, DBContract.TestCategories.KEY_POSITION, DBContract.TestCategories.KEY_UPDATED, DBContract.TestCategories.KEY_UPLOADED};
-        Cursor res = mydb.getReadableDatabase().query(DBContract.TestCategories.TABLE_NAME, columns, null,null,null,null,null);
-
-        int idRow = res.getColumnIndex(DBContract.TestCategories.KEY_ID);
-        int parentidRow = res.getColumnIndex(DBContract.TestCategories.KEY_PARENT_ID);
-        int nameRow = res.getColumnIndex(DBContract.TestCategories.KEY_NAME);
-        int posRow = res.getColumnIndex(DBContract.TestCategories.KEY_POSITION);
-        int updatedRow = res.getColumnIndex(DBContract.TestCategories.KEY_UPDATED);
-        int uploadedRow = res.getColumnIndex(DBContract.TestCategories.KEY_UPLOADED);
-
-        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
-            // If parentid == null then real category
-            // if parentid != null then a divider
-            if(res.getString(parentidRow).equals("null")) {
-                String name = res.getString(nameRow);
-                Category cat = new Category(res.getString(idRow), res.getString(parentidRow), name
-                        , res.getString(posRow), res.getString(updatedRow), res.getString(uploadedRow));
-                categories.add(cat);
-                categorynames.add(name);
-            }
-            if(res.isLast()){
-                intentData = res.getString(idRow) + ","+ res.getString(posRow);
-
-                Log.v(TAG, intentData);
-            }
-
-        }
+                getCategories();
+            }}).start();
 
 
-        Log.v(TAG, intentData);
-        mydb.close();//close the db connection
 
-            }
-        }).start();
         ListView lv = (ListView) findViewById(R.id.listView);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this,
@@ -104,6 +73,89 @@ public class CategoriesActivity extends AppCompatActivity {
 
 
     }
+
+    public void getCategories(){
+        DBHelper  mydb = new DBHelper(CategoriesActivity.this);
+        //retrieve the KEY_IDS OF APPRAISALS WHICH WE WILL USE TO GO TO THE APPRAISAL_TESTS TABLE
+        String[] appraisalColumns = {DBContract.Appraisals.KEY_ID,DBContract.Appraisals.KEY_CLIENT_ID};
+        //QUERY FILTERS
+
+        Cursor res = mydb.getReadableDatabase().query(DBContract.Appraisals.TABLE_NAME, appraisalColumns,null,null, null, null, null);
+
+        int idIndex = res.getColumnIndex(DBContract.Appraisals.KEY_ID);
+        int client_Id = res.getColumnIndex(DBContract.Appraisals.KEY_CLIENT_ID);
+        ArrayList<String> correspondingIDs = new ArrayList<String>();
+
+
+        for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
+            if(res.getString(client_Id).equals(getIntent().getStringExtra("ClientId"))){
+                correspondingIDs.add(res.getString(idIndex));
+                Log.v(TAG, "Appraisal table");
+            }
+        }
+        String[] columns = {DBContract.AppraisalTests.KEY_APPRAISAL_ID,DBContract.AppraisalTests.KEY_TEST_ID};
+        res = mydb.getReadableDatabase().query(DBContract.AppraisalTests.TABLE_NAME,columns, null,null,null,null,null);
+
+        int appraisalIndex = res.getColumnIndex(DBContract.AppraisalTests.KEY_APPRAISAL_ID);
+        int testID = res.getColumnIndex(DBContract.AppraisalTests.KEY_TEST_ID);
+
+        ArrayList<String> testIDs = new ArrayList<>();
+
+        for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
+            if(correspondingIDs.contains(res.getString(appraisalIndex))){
+                testIDs.add(res.getString(testID));
+                Log.v(TAG, "appraisalTests");
+            }
+        }
+        columns = new String[] {DBContract.Tests.KEY_ID, DBContract.Tests.KEY_CATEGORY_ID};
+
+
+        res = mydb.getReadableDatabase().query(DBContract.Tests.TABLE_NAME,columns,null,null,null,null,null );
+
+        int testidIndex = res.getColumnIndex(DBContract.Tests.KEY_ID);
+        int categoryIndex = res.getColumnIndex(DBContract.Tests.KEY_CATEGORY_ID);
+
+        ArrayList<String> categoriesID = new ArrayList<>();
+        for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
+            if(testIDs.contains(res.getString(testidIndex))){
+                Log.v(TAG,"Tests table");
+                categoriesID.add(res.getString(categoryIndex));
+            }
+        }
+
+        columns =new String[] {DBContract.TestCategories.KEY_ID, DBContract.TestCategories.KEY_PARENT_ID, DBContract.TestCategories.KEY_NAME, DBContract.TestCategories.KEY_POSITION, DBContract.TestCategories.KEY_UPDATED, DBContract.TestCategories.KEY_UPLOADED};
+        res = mydb.getReadableDatabase().query(DBContract.TestCategories.TABLE_NAME, columns, null,null,null,null,null);
+
+        int idRow = res.getColumnIndex(DBContract.TestCategories.KEY_ID);
+        int parentidRow = res.getColumnIndex(DBContract.TestCategories.KEY_PARENT_ID);
+        int nameRow = res.getColumnIndex(DBContract.TestCategories.KEY_NAME);
+        int posRow = res.getColumnIndex(DBContract.TestCategories.KEY_POSITION);
+        int updatedRow = res.getColumnIndex(DBContract.TestCategories.KEY_UPDATED);
+        int uploadedRow = res.getColumnIndex(DBContract.TestCategories.KEY_UPLOADED);
+
+        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
+            // If parentid == null then real category
+            // if parentid != null then a divider
+            if(res.getString(parentidRow).equals("null")) {
+                if(categoriesID.contains(res.getString(idRow))) {
+                    Log.v(TAG,"categories table");
+                    String name = res.getString(nameRow);
+                    Category cat = new Category(res.getString(idRow), res.getString(parentidRow), name
+                            , res.getString(posRow), res.getString(updatedRow), res.getString(uploadedRow));
+                    categories.add(cat);
+                    categorynames.add(name);
+                }
+            }
+            if(res.isLast()){
+                intentData = res.getString(idRow) + ","+ res.getString(posRow);
+
+                Log.v(TAG, intentData);
+                mydb.close();
+            }
+
+        }
+    }
+
     public void createCategory(View v){
         Intent intent = new Intent(this, NewCategoryActivity.class);
         intent.putExtra("Data", intentData);
