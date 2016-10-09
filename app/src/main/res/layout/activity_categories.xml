@@ -46,5 +46,6 @@
         android:layout_margin="16dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:onClick="addTestToClient"
         />
 </RelativeLayout>
