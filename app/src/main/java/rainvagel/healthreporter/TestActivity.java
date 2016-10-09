@@ -28,6 +28,7 @@ public class TestActivity extends AppCompatActivity {
     String[] fromCategoriesData;
     ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
     ArrayList<Test> testArray = new ArrayList<>();
+    ArrayList<String> correctTests= new ArrayList<>();
     Map<Integer, Test> appraisalToTest = new HashMap<>();
 
     @Override
@@ -42,19 +43,24 @@ public class TestActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(fromCategoriesData[2] + ", " + fromCategoriesData[3]);
         getSupportActionBar().setSubtitle(fromCategoriesData[4]);
 
+
         new Thread(new Runnable() {
             public void run(){
 
                 getTests();
             }}).start();
+
+        Log.v(TAG, String.valueOf(appraisalTests.size()));
+        Log.v(TAG, String.valueOf(appraisalToTest.keySet().size()));
         ListView listView = (ListView) findViewById(R.id.listViewTests);
 
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,
-                android.R.id.text1, appraisalTests) {
+                android.R.id.text1, correctTests) {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-                text1.setText(appraisalToTest.get(appraisalTests.get(position).getTestid()).getName());
+
+                text1.setText(appraisalToTest.get(Integer.parseInt(correctTests.get(position))).getName());
                 return view;
             }
         };
@@ -95,10 +101,10 @@ public class TestActivity extends AppCompatActivity {
 
 
         String[] columns = {DBContract.AppraisalTests.KEY_APPRAISAL_ID,DBContract.AppraisalTests.KEY_TEST_ID,
-         DBContract.AppraisalTests.KEY_SCORE, DBContract.AppraisalTests.KEY_NOTE,  DBContract.AppraisalTests.KEY_TRIAL_1,
+                DBContract.AppraisalTests.KEY_SCORE, DBContract.AppraisalTests.KEY_NOTE,  DBContract.AppraisalTests.KEY_TRIAL_1,
                 DBContract.AppraisalTests.KEY_TRIAL_2,  DBContract.AppraisalTests.KEY_TRIAL_3, DBContract.AppraisalTests.KEY_UPDATED,
                 DBContract.AppraisalTests.KEY_UPLOADED};
-         res = mydb.getReadableDatabase().query(DBContract.AppraisalTests.TABLE_NAME,columns, null,null,null,null,null);
+        res = mydb.getReadableDatabase().query(DBContract.AppraisalTests.TABLE_NAME,columns, null,null,null,null,null);
 
         int appraisalIndex = res.getColumnIndex(DBContract.AppraisalTests.KEY_APPRAISAL_ID);
         int testID = res.getColumnIndex(DBContract.AppraisalTests.KEY_TEST_ID);
@@ -122,9 +128,9 @@ public class TestActivity extends AppCompatActivity {
             }
         }
         columns = new String[] {DBContract.Tests.KEY_ID, DBContract.Tests.KEY_CATEGORY_ID,DBContract.Tests.KEY_NAME,DBContract.Tests.KEY_DESCRIPTION,
-        DBContract.Tests.KEY_UNITS, DBContract.Tests.KEY_DECIMALS,DBContract.Tests.KEY_WEIGHT,
-        DBContract.Tests.KEY_FORMULA_F,DBContract.Tests.KEY_FORMULA_M,DBContract.Tests.KEY_POSITION,
-        DBContract.Tests.KEY_UPDATED,DBContract.Tests.KEY_UPLOADED};
+                DBContract.Tests.KEY_UNITS, DBContract.Tests.KEY_DECIMALS,DBContract.Tests.KEY_WEIGHT,
+                DBContract.Tests.KEY_FORMULA_F,DBContract.Tests.KEY_FORMULA_M,DBContract.Tests.KEY_POSITION,
+                DBContract.Tests.KEY_UPDATED,DBContract.Tests.KEY_UPLOADED};
 
 
         res = mydb.getReadableDatabase().query(DBContract.Tests.TABLE_NAME,columns,null,null,null,null,null );
@@ -139,10 +145,10 @@ public class TestActivity extends AppCompatActivity {
         int formulaFIndex = res.getColumnIndex(DBContract.Tests.KEY_FORMULA_F);
         int formulaMIndex = res.getColumnIndex(DBContract.Tests.KEY_FORMULA_M);
         int positionIndex = res.getColumnIndex(DBContract.Tests.KEY_POSITION);
-         updatedIndex = res.getColumnIndex(DBContract.Tests.KEY_UPDATED);
-         uploadedIndex = res.getColumnIndex(DBContract.Tests.KEY_UPLOADED);
+        updatedIndex = res.getColumnIndex(DBContract.Tests.KEY_UPDATED);
+        uploadedIndex = res.getColumnIndex(DBContract.Tests.KEY_UPLOADED);
 
-        ArrayList<String> correctTests = new ArrayList<>();
+
         for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
             if(res.getString(categoryIndex).equals(fromCategoriesData[0])){
                 Log.v(TAG,"Tests table");
@@ -163,7 +169,7 @@ public class TestActivity extends AppCompatActivity {
         res.close();
         mydb.close();
 
-        Log.v(TAG, correctTests.toString());
+
 
 
     }

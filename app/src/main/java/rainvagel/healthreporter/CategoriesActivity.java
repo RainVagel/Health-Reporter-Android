@@ -13,8 +13,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class CategoriesActivity extends AppCompatActivity {
     static final String TAG = "CATEGORIES ACTIVITY";
@@ -22,6 +25,8 @@ public class CategoriesActivity extends AppCompatActivity {
     final ArrayList<String> categorynames = new ArrayList<>();
     Intent fromClients;
     static String[] intentData;
+    Toolbar tb;
+    int age;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -37,9 +42,9 @@ public class CategoriesActivity extends AppCompatActivity {
         //first element is clientID, second is client's name and third is the group name
         intentData = getIntent().getStringExtra("ClientId").split(",");
 
-        Toolbar tb = (Toolbar) findViewById(R.id.my_toolbar);
-        CharSequence title =  intentData[1];
-        CharSequence subtitle = intentData[2];
+        tb = (Toolbar) findViewById(R.id.my_toolbar);
+        CharSequence title =  intentData[1];//first name
+        CharSequence subtitle = intentData[2];//group
         tb.setTitle(title);
         tb.setSubtitle(subtitle);
 
@@ -74,7 +79,8 @@ public class CategoriesActivity extends AppCompatActivity {
                 Log.v(TAG, category.getName());
                 //After retrieving the category object we send an intent to TestActivity which contains said category id and clientid
                 Intent intent = new Intent(CategoriesActivity.this, TestActivity.class);// class does not exist
-                intent.putExtra("IntentData", category.getId()+","+intentData[0]);
+                intent.putExtra("IntentData", category.getId()+","+intentData[0]+","+intentData[1]+","+String.valueOf(age)+"," +intentData[2]);
+                Log.v(TAG, category.getId()+","+intentData[0]+","+intentData[1]+","+String.valueOf(age)+"," +intentData[2]);
                 startActivity(intent);
 
 
@@ -85,16 +91,52 @@ public class CategoriesActivity extends AppCompatActivity {
 
 
     }
+    public void addTestToClient(View v) {
+        Intent intent = new Intent(this, AddTestActivity.class);
+        startActivity(intent);
+    }
 
     public void getCategories(){
 
 
         DBHelper  mydb = new DBHelper(CategoriesActivity.this);
         //retrieve the KEY_IDS OF APPRAISALS WHICH WE WILL USE TO GO TO THE APPRAISAL_TESTS TABLE
-        String[] appraisalColumns = {DBContract.Appraisals.KEY_ID,DBContract.Appraisals.KEY_CLIENT_ID};
+
         //QUERY FILTERS
 
-        Cursor res = mydb.getReadableDatabase().query(DBContract.Appraisals.TABLE_NAME, appraisalColumns,null,null, null, null, null);
+
+        String[] clientColumns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_BIRTHDATE};
+        Cursor res = mydb.getReadableDatabase().query(DBContract.Clients.TABLE_NAME,clientColumns,null,null,null,null,null);
+        int clientidIndex = res.getColumnIndex(DBContract.Clients.KEY_ID);
+        int birthdateIndex = res.getColumnIndex(DBContract.Clients.KEY_BIRTHDATE);
+
+        String birthdate = "";
+        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
+            if(res.getString(clientidIndex).equals(intentData[0])){
+                birthdate = res.getString(birthdateIndex);
+            }
+        }
+
+        String[] dates = birthdate.split("-");
+        Log.v(TAG,dates[0]);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String[] current = df.format(date).split("-");
+        age = Integer.parseInt(current[0])-Integer.parseInt(dates[0]);
+        if(Integer.parseInt(dates[1])== Integer.parseInt(current[1])){
+            if(Integer.parseInt(dates[2])<Integer.parseInt(current[2]))
+                age -=1;
+
+        }
+        else if(Integer.parseInt(dates[1])<Integer.parseInt(dates[1]))
+            age -=1 ;
+
+        CharSequence titleage = intentData[1] + ", " +String.valueOf(age);//correct toolbar title with age
+        tb.setTitle(titleage);
+
+
+        String[] appraisalColumns = {DBContract.Appraisals.KEY_ID,DBContract.Appraisals.KEY_CLIENT_ID};
+        res = mydb.getReadableDatabase().query(DBContract.Appraisals.TABLE_NAME, appraisalColumns,null,null, null, null, null);
 
         int idIndex = res.getColumnIndex(DBContract.Appraisals.KEY_ID);
         int client_Id = res.getColumnIndex(DBContract.Appraisals.KEY_CLIENT_ID);
