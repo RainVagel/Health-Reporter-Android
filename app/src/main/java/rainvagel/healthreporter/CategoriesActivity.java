@@ -91,6 +91,10 @@ public class CategoriesActivity extends AppCompatActivity {
 
 
     }
+    public void addTestToClient(View v) {
+        Intent intent = new Intent(this, AddTestActivity.class);
+        startActivity(intent);
+    }
 
     public void getCategories(){
 
