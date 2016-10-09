@@ -72,10 +72,12 @@ public class CategoriesActivity extends AppCompatActivity {
                 //which displays said category data
                 Category category = categories.get(categorynames.indexOf(entry));
                 Log.v(TAG, category.getName());
-                //After retrieving the category object we send an intent to TestActivity which contains said category id
-                //Intent intent = new Intent(this, TestActivity.class);// class does not exist
-                String categoryId = "2"; //dummyId, if backend has been developed then   //category.getId();
-                //intent.putExtra("categoryId", categoryId);
+                //After retrieving the category object we send an intent to TestActivity which contains said category id and clientid
+                Intent intent = new Intent(CategoriesActivity.this, TestActivity.class);// class does not exist
+                intent.putExtra("IntentData", category.getId()+","+intentData[0]);
+                startActivity(intent);
+
+
 
 
             }
@@ -164,9 +166,5 @@ public class CategoriesActivity extends AppCompatActivity {
         mydb.close();
     }
 
-    public void createCategory(View v){
-        Intent intent = new Intent(this, NewCategoryActivity.class);
-        intent.putExtra("Data", intentData);
-        startActivity(intent);
-    }
+
 }
