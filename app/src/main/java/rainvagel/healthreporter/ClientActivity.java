@@ -27,9 +27,6 @@ import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.vision.Frame;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,19 +35,19 @@ import java.util.Map;
 
 public class ClientActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "ClientActivity";
-
     private Boolean isFabOpen = false;
     private FloatingActionButton fab1, fab2, fab3;
     private Animation openfab, closefab, initialrotate,finalrotate;
-    final static ArrayList<String> names = new ArrayList<>();
-    final static ArrayList<Integer> clientIDs = new ArrayList<>();
-
-    final static ArrayList<Integer> groupIDs = new ArrayList<>();
-    final static ArrayList<String> groupNames = new ArrayList<>();
 
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        return super.onCreateOptionsMenu(menu);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +57,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         setSupportActionBar(my_toolbar);
         getSupportActionBar().setTitle(R.string.my_tb_title);
 
-        String query = new String();
 
         FrameLayout dimbackground = (FrameLayout) findViewById(R.id.main);
 
@@ -99,7 +95,10 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         int groupIndex  = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
 
 
-
+        final ArrayList<Integer> clientIDs = new ArrayList<>();
+        final ArrayList<String> names = new ArrayList<>();
+        ArrayList<Integer> groupIDs = new ArrayList<>();
+        final ArrayList<String> groupNames = new ArrayList<>();
 
 
 
@@ -112,15 +111,8 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
             clientIDs.add(Integer.valueOf(cursor.getString(rowIndex)));
             groupIDs.add(Integer.valueOf(cursor.getString(groupIndex)));
             names.add(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex));
+
         }
-
-        Intent topass = new Intent(this, SearchResultsActivity.class);
-        Bundle passtoSearchResults = new Bundle();
-        passtoSearchResults.putSerializable("callit",names);
-        topass.putExtras(passtoSearchResults);
-
-
-
 
         cursor.close();
 
@@ -140,19 +132,19 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         mydb.close();
+        Log.v("ats", groupNames.toString());
+
 
         ListView lv = (ListView) findViewById(R.id.listViewClients);
 
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,android.R.id.text1,names){
             public View getView(int position, View convertView,ViewGroup parent){
-
                 View view = super.getView(position,convertView,parent);
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                 TextView text2 = (TextView) view.findViewById(android.R.id.text2);
                 text1.setText(names.get(position));
                 text2.setText(groupNames.get(position));
                 text2.setTextSize(text1.getTextSize()/4);
-
             return view;
             }
         };
@@ -164,7 +156,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         ListView elv = (ListView) findViewById(R.id.listViewGroups);
         elv.setAdapter(arrayAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int clientId= clientIDs.get(position);
@@ -175,18 +166,10 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 toCategories.putExtra("ClientId", passedData);// pass on the data
 
                 startActivity(toCategories);
+
             }
         });
 }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        return super.onCreateOptionsMenu(menu);
-    }
 
     public void onClick(View v) {
         int id = v.getId();
@@ -245,9 +228,16 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
             isFabOpen = true;
         }
     }
+
+
     public void addNewClient(View v){
         Intent intent = new Intent(this, NewClientActivity.class);
         startActivity(intent);
     }
+
+
+
+
+
 
 }

@@ -4,13 +4,20 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
@@ -18,23 +25,45 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 public class TestActivity extends AppCompatActivity {
     private static final String TAG = "TestActivity";
     Button createButton;
-    Intent intent;
-    Intent fromCategories;
     String[] fromCategoriesData;
-    ArrayList<AppraisalTests> appraisalTests;
-    ArrayList<Test> testArray;
+    ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
+    ArrayList<Test> testArray = new ArrayList<>();
+    Map<Integer, Test> appraisalToTest = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+        String[] fromCategoriesData = getIntent().getStringExtra("IntentData").split(",");
         //Intent from categories contains client id(index 0) and category id in sa string which has been split by ","
-        getTests();
+        Toolbar my_toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(my_toolbar);
+//        intentis ID 2 = nimi; 3 = vanus ; 4 = grupp
+        getSupportActionBar().setTitle(fromCategoriesData[2] + ", " + fromCategoriesData[3]);
+        getSupportActionBar().setSubtitle(fromCategoriesData[4]);
+
+        new Thread(new Runnable() {
+            public void run(){
+
+                getTests();
+            }}).start();
+        ListView listView = (ListView) findViewById(R.id.listViewTests);
+
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,
+                android.R.id.text1, appraisalTests) {
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+                text1.setText(appraisalToTest.get(appraisalTests.get(position).getTestid()).getName());
+                return view;
+            }
+        };
+        listView.setAdapter(adapter);
 
 
     }
 
-    public void createTest(View v){
+    public void createTestResult(View v){
         Intent intent = new Intent(this, NewTestActivity.class);
         startActivity(intent);
     }
@@ -87,7 +116,8 @@ public class TestActivity extends AppCompatActivity {
         for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
             if(appraisalIDs.contains(res.getString(appraisalIndex))) {
                 testIDs.add(res.getString(testID));
-                appraisalTests.add(new AppraisalTests(Integer.parseInt(res.getString(appraisalIndex)), Integer.parseInt(res.getString(testID)), res.getString(scoreID), res.getString(noteID), res.getString(trial1ID),
+                appraisalTests.add(new AppraisalTests(Integer.parseInt(res.getString(appraisalIndex)),
+                        Integer.parseInt(res.getString(testID)), res.getString(scoreID), res.getString(noteID), res.getString(trial1ID),
                         res.getString(trial2ID), res.getString(trial3ID), res.getString(updatedIndex), res.getString(uploadedIndex)));
             }
         }
@@ -117,10 +147,14 @@ public class TestActivity extends AppCompatActivity {
             if(res.getString(categoryIndex).equals(fromCategoriesData[0])){
                 Log.v(TAG,"Tests table");
                 if(testIDs.contains(res.getString(testidIndex))){
+                    Test test = new Test(Integer.parseInt(res.getString(testidIndex)),
+                            Integer.parseInt(res.getString(categoryIndex)),res.getString(nameIndex),res.getString(descriptionIndex),
+                            res.getString(unitsIndex),res.getString(decimalsIndex),
+                            res.getString(weightIndex),res.getString(formulaFIndex),res.getString(formulaMIndex),
+                            Integer.parseInt(res.getString(positionIndex)),res.getString(updatedIndex),res.getString(uploadedIndex));
+                    appraisalToTest.put(test.getId(), test);
                     correctTests.add(testIDs.get(testIDs.indexOf(res.getString(testidIndex))));
-                    testArray.add(new Test(Integer.parseInt(res.getString(testidIndex)),Integer.parseInt(res.getString(categoryIndex)),res.getString(nameIndex),res.getString(descriptionIndex),
-                            res.getString(unitsIndex),res.getString(decimalsIndex),res.getString(weightIndex),res.getString(formulaFIndex),res.getString(formulaMIndex),
-                            Integer.parseInt(res.getString(positionIndex)),res.getString(updatedIndex),res.getString(uploadedIndex)));
+                    testArray.add(test);
                 }
             }
         }
