@@ -21,15 +21,21 @@ public class TestActivity extends AppCompatActivity {
     Intent intent;
     Intent fromCategories;
     String[] fromCategoriesData;
-    ArrayList<AppraisalTests> appraisalTests;
-    ArrayList<Test> testArray;
+    ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
+    ArrayList<Test> testArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         //Intent from categories contains client id(index 0) and category id in sa string which has been split by ","
-        getTests();
+
+        new Thread(new Runnable() {
+            public void run(){
+
+                getTests();
+            }}).start();
+
 
 
     }
