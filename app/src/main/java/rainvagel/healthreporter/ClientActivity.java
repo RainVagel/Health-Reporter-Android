@@ -39,6 +39,11 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     private FloatingActionButton fab1, fab2, fab3;
     private Animation openfab, closefab, initialrotate,finalrotate;
 
+    final static ArrayList<Integer> clientIDs = new ArrayList<>();
+    final static ArrayList<String> names = new ArrayList<>();
+    final static ArrayList<Integer> groupIDs = new ArrayList<>();
+    final static ArrayList<String> groupNames = new ArrayList<>();
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -56,7 +61,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         Toolbar my_toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(my_toolbar);
         getSupportActionBar().setTitle(R.string.my_tb_title);
-
 
 
         FrameLayout dimbackground = (FrameLayout) findViewById(R.id.main);
@@ -96,10 +100,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         int groupIndex  = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
 
 
-        final ArrayList<Integer> clientIDs = new ArrayList<>();
-        final ArrayList<String> names = new ArrayList<>();
-        ArrayList<Integer> groupIDs = new ArrayList<>();
-        final ArrayList<String> groupNames = new ArrayList<>();
+
 
 
 
