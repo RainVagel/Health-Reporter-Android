@@ -39,10 +39,10 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     private FloatingActionButton fab1, fab2, fab3;
     private Animation openfab, closefab, initialrotate,finalrotate;
 
-    final static ArrayList<Integer> clientIDs = new ArrayList<>();
-    final static ArrayList<String> names = new ArrayList<>();
-    final static ArrayList<Integer> groupIDs = new ArrayList<>();
-    final static ArrayList<String> groupNames = new ArrayList<>();
+    final  ArrayList<Integer> clientIDs = new ArrayList<>();
+    final  ArrayList<String> names = new ArrayList<>();
+    final  ArrayList<Integer> groupIDs = new ArrayList<>();
+    final  ArrayList<String> groupNames = new ArrayList<>();
 
 
     @Override

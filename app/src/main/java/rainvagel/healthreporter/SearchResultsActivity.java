@@ -21,8 +21,13 @@ import java.util.ArrayList;
 import static android.R.attr.packageNames;
 import static android.R.attr.tag;
 
-public class SearchResultsActivity extends AppCompatActivity implements Serializable {
+public class SearchResultsActivity extends AppCompatActivity {
     private static final String TAG = "SearchResultsActivity";
+
+    final  ArrayList<Integer> clientIDs = new ArrayList<>();
+    final  ArrayList<String> names = new ArrayList<>();
+    final  ArrayList<Integer> groupIDs = new ArrayList<>();
+    final  ArrayList<String> groupNames = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +47,61 @@ public class SearchResultsActivity extends AppCompatActivity implements Serializ
 
         ListView lv = (ListView) findViewById(R.id.main);
 
+        DBHelper mydb = new DBHelper(this);
+
+        String[] columns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME, DBContract.Clients.KEY_GROUP_ID};
+        Cursor cursor = mydb.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, columns, null,null,null,null,null);
+
+        int rowIndex = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
+        int firstNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
+        int lastNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
+        int groupIndex  = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
+
+
+
+
+
+
+
+        // Log.v("ClientActivity", String.valueOf(cursor.getCount()));
+
+
+        for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
+            //Log.v("ClientActivity", "Made it here");
+            clientIDs.add(Integer.valueOf(cursor.getString(rowIndex)));
+            groupIDs.add(Integer.valueOf(cursor.getString(groupIndex)));
+            names.add(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex));
+
+        }
+
+        cursor.close();
+
+        String[] columns1 = {DBContract.Groups.KEY_ID,DBContract.Groups.KEY_NAME};
+
+        cursor = mydb.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, columns1,null,null,null,null,null );
+        int idIndex = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
+        int nameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
+
+
+        for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
+            //Log.v("ClientActivity", "Made it here");
+            int groupId = Integer.parseInt(cursor.getString(idIndex));
+            if(groupIDs.contains(groupId))
+                groupNames.add(cursor.getString(nameIndex));
+
+        }
+
+        mydb.close();
+
 
 
         final ArrayList<String> SearchResults = new ArrayList<>();
         final ArrayList<String> SearchResultsGroups = new ArrayList<>();
 
-        for(int i =0; i<ClientActivity.names.size();i++){
-            if(ClientActivity.names.get(i).toLowerCase().contains(query.toLowerCase())){
-                SearchResults.add(ClientActivity.names.get(i));
-                SearchResultsGroups.add(ClientActivity.groupNames.get(i));
+        for(int i =0; i<names.size();i++){
+            if(names.get(i).toLowerCase().contains(query.toLowerCase())){
+                SearchResults.add(names.get(i));
+                SearchResultsGroups.add(groupNames.get(i));
             }
         }
 
@@ -73,10 +124,10 @@ public class SearchResultsActivity extends AppCompatActivity implements Serializ
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int clientId= ClientActivity.clientIDs.get(position);
+                int clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(SearchResultsActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
-                String passedData =(String.valueOf(clientId)+","+ClientActivity.names.get(position)+","+ ClientActivity.groupNames.get(position));
+                String passedData =(String.valueOf(clientId)+","+names.get(position)+","+ groupNames.get(position));
                 Log.v("client intet", passedData);
                 toCategories.putExtra("ClientId", passedData);// pass on the data
 
