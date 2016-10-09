@@ -19,7 +19,7 @@ public class SearchableActivity extends ListActivity {
 
     ListView listView;
 
-    @Override
+ /*   @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searchable);
@@ -36,6 +36,7 @@ public class SearchableActivity extends ListActivity {
         //TODO
         /*
         getListAdapter() - Get the ListAdapter associated with this activity's ListView.
-         */
+
     }
+*/
 }
