@@ -38,6 +38,12 @@ public class DBHelper extends SQLiteOpenHelper {
         groupsValues.put(DBContract.Groups.KEY_UPDATED, "2014-05-10");
         groupsValues.put(DBContract.Groups.KEY_UPLOADED, "2014-05-11");
 
+        ContentValues groupsValues1 = new ContentValues();
+        groupsValues1.put(DBContract.Groups.KEY_ID, 2);
+        groupsValues1.put(DBContract.Groups.KEY_NAME, "Tartu musklid");
+        groupsValues1.put(DBContract.Groups.KEY_UPDATED, "2014-05-10");
+        groupsValues1.put(DBContract.Groups.KEY_UPLOADED, "2014-05-11");
+
 //        Clients
         ContentValues clientsValues = new ContentValues();
         clientsValues.put(DBContract.Clients.KEY_ID, 2);
@@ -49,6 +55,17 @@ public class DBHelper extends SQLiteOpenHelper {
         clientsValues.put(DBContract.Clients.KEY_BIRTHDATE, "1995-05-10");
         clientsValues.put(DBContract.Clients.KEY_UPDATED, "2014-05-12");
         clientsValues.put(DBContract.Clients.KEY_UPLOADED, "2014-05-13");
+
+        ContentValues clientsValues1 = new ContentValues();
+        clientsValues1.put(DBContract.Clients.KEY_ID, 4);
+        clientsValues1.put(DBContract.Clients.KEY_FIRSTNAME, "Karl");
+        clientsValues1.put(DBContract.Clients.KEY_LASTNAME, "Lubja");
+        clientsValues1.put(DBContract.Clients.KEY_GROUP_ID, 2);
+        clientsValues1.put(DBContract.Clients.KEY_EMAIL, "klubja.@gmail.com");
+        clientsValues1.put(DBContract.Clients.KEY_GENDER, 1);
+        clientsValues1.put(DBContract.Clients.KEY_BIRTHDATE, "1995-05-10");
+        clientsValues1.put(DBContract.Clients.KEY_UPDATED, "2014-05-12");
+        clientsValues1.put(DBContract.Clients.KEY_UPLOADED, "2014-05-13");
 
 //        Appraisers
         ContentValues appraisersValues = new ContentValues();
@@ -178,7 +195,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
 //        Adding to the database
         db.insert(DBContract.Groups.TABLE_NAME, null, groupsValues);
+        db.insert(DBContract.Groups.TABLE_NAME, null, groupsValues1);
         db.insert(DBContract.Clients.TABLE_NAME, null, clientsValues);
+        db.insert(DBContract.Clients.TABLE_NAME, null, clientsValues1);
         db.insert(DBContract.Appraisers.TABLE_NAME, null, appraisersValues);
         db.insert(DBContract.RatingLabels.TABLE_NAME, null, ratingLabelsValues);
         db.insert(DBContract.TestCategories.TABLE_NAME, null, testCategoriesValues);

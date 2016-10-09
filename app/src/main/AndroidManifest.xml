@@ -30,11 +30,28 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+           
         </activity>
+
         <activity android:name=".TestActivity" />
-        <activity android:name=".NewTestActivity" />
-        <activity android:name=".ClientActivity" />
-        <activity android:name=".NewClientActivity"/>
+
+
+        <activity android:name=".ClientActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan">
+
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"
+                />
+
+        </activity>
+
+
+
+        <activity android:name=".NewClientActivity">
+
+        </activity>
+
         <activity android:name=".NewCategoryActivity"/>
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
