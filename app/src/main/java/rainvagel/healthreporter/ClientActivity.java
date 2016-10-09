@@ -59,7 +59,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
 
 
 
-        RelativeLayout dimbackground = (RelativeLayout) findViewById(R.id.activity_test);
+        FrameLayout dimbackground = (FrameLayout) findViewById(R.id.main);
 
         fab1 = (FloatingActionButton) findViewById(R.id.fab1);
         fab2 = (FloatingActionButton) findViewById(R.id.fab2);

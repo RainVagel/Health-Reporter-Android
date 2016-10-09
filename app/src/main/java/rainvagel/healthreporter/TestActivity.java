@@ -6,8 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -18,8 +22,6 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 public class TestActivity extends AppCompatActivity {
     private static final String TAG = "TestActivity";
     Button createButton;
-    Intent intent;
-    Intent fromCategories;
     String[] fromCategoriesData;
     ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
     ArrayList<Test> testArray = new ArrayList<>();
@@ -35,12 +37,23 @@ public class TestActivity extends AppCompatActivity {
 
                 getTests();
             }}).start();
+        ListView listView = (ListView) findViewById(R.id.listViewTests);
 
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,
+                android.R.id.text1, appraisalTests) {
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+                text1.setText(testArray.get(position).getName());
+                return view;
+            }
+        };
+        listView.setAdapter(adapter);
 
 
     }
 
-    public void createTest(View v){
+    public void createTestResult(View v){
         Intent intent = new Intent(this, NewTestActivity.class);
         startActivity(intent);
     }
