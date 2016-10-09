@@ -17,4 +17,5 @@ public class RainTestMain extends AppCompatActivity{
         Cursor res = helper.getReadableDatabase().rawQuery("select * from tests", null);
         Log.v("DBTest", res.toString());
     }
+//    Greenhouse testimiseks
 }
