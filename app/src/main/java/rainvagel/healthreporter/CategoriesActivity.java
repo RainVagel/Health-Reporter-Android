@@ -2,6 +2,7 @@ package rainvagel.healthreporter;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -40,13 +41,21 @@ public class CategoriesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_categories);
         Log.v(TAG, "In categories");
         //first element is clientID, second is client's name and third is the group name
-        intentData = getIntent().getStringExtra("ClientId").split(",");
+
+            intentData = getIntent().getStringExtra("ClientId").split(",");
 
         tb = (Toolbar) findViewById(R.id.my_toolbar);
         CharSequence title =  intentData[1];//first name
         CharSequence subtitle = intentData[2];//group
         tb.setTitle(title);
         tb.setSubtitle(subtitle);
+
+        FloatingActionButton myFab = (FloatingActionButton)findViewById(R.id.floatingActionButton5);
+        myFab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addTestToClient(v);
+            }
+        });
 
 
 
@@ -91,8 +100,10 @@ public class CategoriesActivity extends AppCompatActivity {
 
 
     }
+
     public void addTestToClient(View v) {
         Intent intent = new Intent(this, AddTestActivity.class);
+        intent.putExtra("ClientData",intentData[0]);
         startActivity(intent);
     }
 
