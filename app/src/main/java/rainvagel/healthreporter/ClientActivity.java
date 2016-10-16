@@ -192,7 +192,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         if(isFabOpen){
             View  main = findViewById(R.id.main);
             main.setAlpha(0.2f);
-           // setClickable(main, false);
+            //setClickable(main, false);
         }
         else {
             View  main = findViewById(R.id.main);
