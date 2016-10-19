@@ -13,21 +13,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-
-import static android.R.attr.packageNames;
-import static android.R.attr.tag;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SearchResultsActivity extends AppCompatActivity {
     private static final String TAG = "SearchResultsActivity";
 
-    final  ArrayList<Integer> clientIDs = new ArrayList<>();
-    final  ArrayList<String> names = new ArrayList<>();
-    final  ArrayList<Integer> groupIDs = new ArrayList<>();
-    final  ArrayList<String> groupNames = new ArrayList<>();
+    final  ArrayList<Integer> searchClientIDs = new ArrayList<>();
+    final  ArrayList<String> asd = new ArrayList<>();
+    final  ArrayList<Integer> searchGroupIDs = new ArrayList<>();
+    final Map<Integer, String> searchGroupNames = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +65,9 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
             //Log.v("ClientActivity", "Made it here");
-            clientIDs.add(Integer.valueOf(cursor.getString(rowIndex)));
-            groupIDs.add(Integer.valueOf(cursor.getString(groupIndex)));
-            names.add(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex));
+            searchClientIDs.add(Integer.valueOf(cursor.getString(rowIndex)));
+            searchGroupIDs.add(Integer.valueOf(cursor.getString(groupIndex)));
+            asd.add(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex));
 
         }
 
@@ -86,10 +83,11 @@ public class SearchResultsActivity extends AppCompatActivity {
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
             //Log.v("ClientActivity", "Made it here");
             int groupId = Integer.parseInt(cursor.getString(idIndex));
-            if(groupIDs.contains(groupId))
-                groupNames.add(cursor.getString(nameIndex));
+            if(searchGroupIDs.contains(groupId))
+                searchGroupNames.put(groupId,cursor.getString(nameIndex));
 
         }
+        Log.v("groupids size", String.valueOf(searchGroupIDs.size()));
 
         mydb.close();
 
@@ -98,10 +96,13 @@ public class SearchResultsActivity extends AppCompatActivity {
         final ArrayList<String> SearchResults = new ArrayList<>();
         final ArrayList<String> SearchResultsGroups = new ArrayList<>();
 
-        for(int i =0; i<names.size();i++){
-            if(names.get(i).toLowerCase().contains(query.toLowerCase())){
-                SearchResults.add(names.get(i));
-                SearchResultsGroups.add(groupNames.get(i));
+        for(int i = 0; i< asd.size(); i++){
+            if(asd.get(i).toLowerCase().contains(query.toLowerCase())){
+                SearchResults.add(asd.get(i));
+                Log.v("searchgroupsname", String.valueOf(searchGroupNames.size()));
+
+                //GROUP NAMES DONT HAVE AS MANY ENTRIES AS ASD
+                SearchResultsGroups.add(searchGroupNames.get(searchGroupIDs.get(i)));
             }
         }
 
@@ -124,10 +125,10 @@ public class SearchResultsActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int clientId= clientIDs.get(position);
+                int clientId= searchClientIDs.get(position);
                 Intent toCategories = new Intent(SearchResultsActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
-                String passedData =(String.valueOf(clientId)+","+names.get(position)+","+ groupNames.get(position));
+                String passedData =(String.valueOf(clientId)+","+ asd.get(position)+","+ searchGroupNames.get(position));
                 Log.v("client intet", passedData);
                 toCategories.putExtra("ClientId", passedData);// pass on the data
 
