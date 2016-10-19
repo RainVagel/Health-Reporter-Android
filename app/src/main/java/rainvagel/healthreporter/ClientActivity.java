@@ -42,7 +42,8 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     final  ArrayList<Integer> clientIDs = new ArrayList<>();
     final  ArrayList<String> names = new ArrayList<>();
     final  ArrayList<Integer> groupIDs = new ArrayList<>();
-    final  ArrayList<String> groupNames = new ArrayList<>();
+    final  Map<Integer, String> groups = new HashMap<>();
+    final ArrayList<String> groupNames = new ArrayList<>();
 
 
     @Override
@@ -112,7 +113,11 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
             //Log.v("ClientActivity", "Made it here");
             clientIDs.add(Integer.valueOf(cursor.getString(rowIndex)));
             groupIDs.add(Integer.valueOf(cursor.getString(groupIndex)));
+            //groupids contains exact amount of groupids as clientids
             names.add(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex));
+            Log.v("cursor for", String.valueOf(clientIDs.size()));
+            Log.v("cursor for", String.valueOf(names.size()));
+
 
         }
 
@@ -128,13 +133,14 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
             //Log.v("ClientActivity", "Made it here");
             int groupId = Integer.parseInt(cursor.getString(idIndex));
-            if(groupIDs.contains(groupId))
+            if(groupIDs.contains(groupId)) {
+                groups.put(groupId, cursor.getString(nameIndex));
                 groupNames.add(cursor.getString(nameIndex));
-
+            }
         }
 
         mydb.close();
-        Log.v("ats", groupNames.toString());
+        Log.v("ats", groups.toString());
 
 
         ListView lv = (ListView) findViewById(R.id.listViewClients);
@@ -144,8 +150,11 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 View view = super.getView(position,convertView,parent);
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                 TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+                Log.v("arrayadapter", String.valueOf(position));
+                Log.v("asd size", String.valueOf(names.size()));
+                Log.v("searchGroupNames size", String.valueOf(groups.size()));
                 text1.setText(names.get(position));
-                text2.setText(groupNames.get(position));
+                text2.setText(groups.get(groupIDs.get(position)));
                 text2.setTextSize(text1.getTextSize()/4);
             return view;
             }
@@ -163,7 +172,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 int clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(ClientActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
-                String passedData =(String.valueOf(clientId)+","+names.get(position)+","+ groupNames.get(position));
+                String passedData =(String.valueOf(clientId)+","+names.get(position)+","+ groups.get(groupIDs.get(position)));
                 Log.v("client intet", passedData);
                 toCategories.putExtra("ClientId", passedData);// pass on the data
 
