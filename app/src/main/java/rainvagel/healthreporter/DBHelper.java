@@ -302,6 +302,28 @@ public class DBHelper extends SQLiteOpenHelper {
 //        db.insert(DBContract.Appraisals.TABLE_NAME,null,appraisalsValues);
     }
 
+    public void dropTables(SQLiteDatabase db) {
+        db.execSQL(DBContract.Appraisals.DELETE_TABLE);
+        db.execSQL(DBContract.AppraisalTests.DELETE_TABLE);
+        db.execSQL(DBContract.Appraisers.DELETE_TABLE);
+        db.execSQL(DBContract.Clients.DELETE_TABLE);
+        db.execSQL(DBContract.Groups.DELETE_TABLE);
+        db.execSQL(DBContract.Presets.DELETE_TABLE);
+        db.execSQL(DBContract.PresetTests.DELETE_TABLE);
+        db.execSQL(DBContract.RatingLabels.DELETE_TABLE);
+        db.execSQL(DBContract.Ratings.DELETE_TABLE);
+        db.execSQL(DBContract.TestCategories.DELETE_TABLE);
+        db.execSQL(DBContract.Tests.DELETE_TABLE);
+    }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion > 1) {
+            dropTables(db);
+            onCreate(db);
+        }
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 //        switch(oldVersion) {
