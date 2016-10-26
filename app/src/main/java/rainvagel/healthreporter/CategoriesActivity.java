@@ -92,9 +92,6 @@ public class CategoriesActivity extends AppCompatActivity {
                 Log.v(TAG, category.getId()+","+intentData[0]+","+intentData[1]+","+String.valueOf(age)+"," +intentData[2]);
                 startActivity(intent);
 
-
-
-
             }
         });
 

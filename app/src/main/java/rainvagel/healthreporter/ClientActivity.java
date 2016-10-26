@@ -54,6 +54,9 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         return super.onCreateOptionsMenu(menu);
     }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,6 +169,22 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         lv.setAdapter(adapter);
         ListView elv = (ListView) findViewById(R.id.listViewGroups);
         elv.setAdapter(arrayAdapter);
+
+        elv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int groupID = groupIDs.get(position);
+                Intent toClients = new Intent(ClientActivity.this, GroupClientActivity.class);
+                String passedData = (String.valueOf(groupID)+","+groupNames.get(position));
+                Log.v("group intent",passedData);
+                toClients.putExtra("GroupID",passedData);
+                startActivity(toClients);
+
+
+            }
+        });
+
+
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
