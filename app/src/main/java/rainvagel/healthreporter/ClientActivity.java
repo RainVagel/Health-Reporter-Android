@@ -43,6 +43,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     final  ArrayList<String> names = new ArrayList<>();
     final  ArrayList<Integer> groupIDs = new ArrayList<>();
     final  Map<Integer, String> groups = new HashMap<>();
+    final Map<String,Integer> groupsreversed = new HashMap<>();
     final ArrayList<String> groupNames = new ArrayList<>();
 
 
@@ -101,7 +102,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         int rowIndex = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
         int firstNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
         int lastNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
-        int groupIndex  = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
+        final int groupIndex  = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
 
 
 
@@ -133,11 +134,13 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         int nameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
 
 
+
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
             //Log.v("ClientActivity", "Made it here");
             int groupId = Integer.parseInt(cursor.getString(idIndex));
             if(groupIDs.contains(groupId)) {
                 groups.put(groupId, cursor.getString(nameIndex));
+                groupsreversed.put(cursor.getString(nameIndex),groupId);
                 groupNames.add(cursor.getString(nameIndex));
             }
         }
@@ -170,12 +173,14 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         ListView elv = (ListView) findViewById(R.id.listViewGroups);
         elv.setAdapter(arrayAdapter);
 
+
+
         elv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int groupID = groupIDs.get(position);
                 Intent toClients = new Intent(ClientActivity.this, GroupClientActivity.class);
-                String passedData = (String.valueOf(groupID)+","+groupNames.get(position));
+                String passedData = (groupsreversed.get(groupNames.get(position))+","+groupNames.get(position));
                 Log.v("group intent",passedData);
                 toClients.putExtra("GroupID",passedData);
                 startActivity(toClients);
