@@ -1,9 +1,9 @@
 package rainvagel.healthreporter;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -11,16 +11,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
-public class CategoriesActivity extends AppCompatActivity {
+import rainvagel.healthreporter.CategoryClasses.CategoriesAdapter;
+import rainvagel.healthreporter.CategoryClasses.Category;
+
+public class CategoriesActivity extends Activity {
     static final String TAG = "CATEGORIES ACTIVITY";
     final ArrayList<Category> categories = new ArrayList<>();
     final ArrayList<String> categorynames = new ArrayList<>();
@@ -42,7 +42,7 @@ public class CategoriesActivity extends AppCompatActivity {
         Log.v(TAG, "In categories");
         //first element is clientID, second is client's name and third is the group name
 
-            intentData = getIntent().getStringExtra("ClientId").split(",");
+        intentData = getIntent().getStringExtra("ClientId").split(",");
 
         tb = (Toolbar) findViewById(R.id.my_toolbar);
         CharSequence title =  intentData[1];//first name
@@ -75,16 +75,17 @@ public class CategoriesActivity extends AppCompatActivity {
         );
 
 
-        lv.setAdapter(arrayAdapter);
+
 
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String entry = (String) parent.getItemAtPosition(position);
+                Category category = (Category) parent.getItemAtPosition(position);
+
                 //Based on the name of the category we retrieve the correct category object and redirect to another window
                 //which displays said category data
-                Category category = categories.get(categorynames.indexOf(entry));
+                //Category category = categories.get(categorynames.indexOf(entry));
                 Log.v(TAG, category.getName());
                 //After retrieving the category object we send an intent to TestActivity which contains said category id and clientid
                 Intent intent = new Intent(CategoriesActivity.this, TestActivity.class);// class does not exist
@@ -92,9 +93,27 @@ public class CategoriesActivity extends AppCompatActivity {
                 Log.v(TAG, category.getId()+","+intentData[0]+","+intentData[1]+","+String.valueOf(age)+"," +intentData[2]);
                 startActivity(intent);
 
+
+
+
             }
         });
 
+        CategoriesAdapter ca = new CategoriesAdapter(this, categories);
+
+       /* ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.activity_categories_list,android.R.id.text1,categories){
+            public View getView(int position, View convertView,ViewGroup parent){
+                View view = super.getView(position,convertView,parent);
+                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+                TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+
+                text1.setText(categories.get(position).getName());
+                text2.setText(categories.get(position).getId());
+                text2.setTextSize(text1.getTextSize()/4);
+                return view;
+            }
+        };*/
+        lv.setAdapter(ca);
 
     }
 
