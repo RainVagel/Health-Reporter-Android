@@ -10,16 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
+import rainvagel.healthreporter.TestClasses.AppraisalTests;
+import rainvagel.healthreporter.TestClasses.Test;
+import rainvagel.healthreporter.TestClasses.TestAdapter;
 
 
 public class TestActivity extends AppCompatActivity {
@@ -29,7 +29,7 @@ public class TestActivity extends AppCompatActivity {
     ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
     ArrayList<Test> testArray = new ArrayList<>();
     ArrayList<String> correctTests= new ArrayList<>();
-    Map<Integer, Test> appraisalToTest = new HashMap<>();
+    Map<Integer, AppraisalTests> testToAppraisal = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,21 +50,17 @@ public class TestActivity extends AppCompatActivity {
                 getTests();
             }}).start();
 
-        Log.v(TAG, String.valueOf(appraisalTests.size()));
-        Log.v(TAG, String.valueOf(appraisalToTest.keySet().size()));
+
         ListView listView = (ListView) findViewById(R.id.listViewTests);
+        
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,
-                android.R.id.text1, correctTests) {
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+        TestAdapter ta = new TestAdapter(this,testToAppraisal,testArray);
 
-                text1.setText(appraisalToTest.get(Integer.parseInt(correctTests.get(position))).getName());
-                return view;
-            }
-        };
-        listView.setAdapter(adapter);
+
+
+
+
+        listView.setAdapter(ta);
 
 
     }
@@ -158,7 +154,7 @@ public class TestActivity extends AppCompatActivity {
                             res.getString(unitsIndex),res.getString(decimalsIndex),
                             res.getString(weightIndex),res.getString(formulaFIndex),res.getString(formulaMIndex),
                             Integer.parseInt(res.getString(positionIndex)),res.getString(updatedIndex),res.getString(uploadedIndex));
-                    appraisalToTest.put(test.getId(), test);
+
                     correctTests.add(testIDs.get(testIDs.indexOf(res.getString(testidIndex))));
                     testArray.add(test);
                 }
@@ -168,6 +164,16 @@ public class TestActivity extends AppCompatActivity {
 
         res.close();
         mydb.close();
+
+        //add all appraisal for said category in to a map with the key being appraisals testID
+        for(String i : correctTests){
+            Log.v(TAG, "OLEN SIIN");
+            Log.v(TAG, i);
+            Log.v(TAG, String.valueOf(testArray.size()));
+            testToAppraisal.put(Integer.parseInt(i),appraisalTests.get(testIDs.indexOf(i)));
+        }
+
+
 
 
 

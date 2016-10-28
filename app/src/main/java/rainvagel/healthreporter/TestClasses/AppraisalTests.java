@@ -1,4 +1,4 @@
-package rainvagel.healthreporter;
+package rainvagel.healthreporter.TestClasses;
 
 /**
  * Created by Karl on 10/9/2016.
