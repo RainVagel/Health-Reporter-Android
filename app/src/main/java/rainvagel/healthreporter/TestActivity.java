@@ -52,17 +52,7 @@ public class TestActivity extends AppCompatActivity {
 
 
         ListView listView = (ListView) findViewById(R.id.listViewTests);
-
-       /* ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,
-                android.R.id.text1, correctTests) {
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-
-                text1.setText(appraisalToTest.get(Integer.parseInt(correctTests.get(position))).getName());
-                return view;
-            }
-        };*/
+        
 
         TestAdapter ta = new TestAdapter(this,testToAppraisal,testArray);
 
