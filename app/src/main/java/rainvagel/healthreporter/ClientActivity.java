@@ -36,7 +36,7 @@ import java.util.Map;
 public class ClientActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Boolean isFabOpen = false;
-    private FloatingActionButton fab1, fab2, fab3;
+    private FloatingActionButton fab1;
     private Animation openfab, closefab, initialrotate,finalrotate;
 
     final  ArrayList<Integer> clientIDs = new ArrayList<>();
@@ -56,8 +56,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         return super.onCreateOptionsMenu(menu);
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,15 +69,11 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         FrameLayout dimbackground = (FrameLayout) findViewById(R.id.main);
 
         fab1 = (FloatingActionButton) findViewById(R.id.fab1);
-        fab2 = (FloatingActionButton) findViewById(R.id.fab2);
-        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
         openfab = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.openfab);
         closefab = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.closefab);
         initialrotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.initialrotate);
         finalrotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.finalrotate);
         fab1.setOnClickListener(this);
-        fab2.setOnClickListener(this);
-        fab3.setOnClickListener(this);
 
         TabHost host = (TabHost)findViewById(R.id.tabHost);
         host.setup();
@@ -184,8 +178,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 Log.v("group intent",passedData);
                 toClients.putExtra("GroupID",passedData);
                 startActivity(toClients);
-
-
             }
         });
 
@@ -209,16 +201,16 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         int id = v.getId();
         switch (id){
+//            case R.id.fab1:
+//                animateFAB();
+//                dimback();
+//                break;
+//            case R.id.fab2:
+//                break;
+//            case R.id.fab3:
+//                break;
             case R.id.fab1:
-                animateFAB();
-                dimback();
-                break;
-            case R.id.fab2:
-                break;
-            case R.id.fab3:
-                break;
-
-
+                addNewClient(v);
         }
     }
     public void dimback(){
@@ -249,17 +241,17 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         if(isFabOpen){
 
             fab1.startAnimation(finalrotate);
-            fab2.startAnimation(closefab);
-            fab3.startAnimation(closefab);
-            fab2.setClickable(false);
-            fab3.setClickable(false);
+//            fab2.startAnimation(closefab);
+//            fab3.startAnimation(closefab);
+//            fab2.setClickable(false);
+//            fab3.setClickable(false);
             isFabOpen = false;
         } else {
             fab1.startAnimation(initialrotate);
-            fab2.startAnimation(openfab);
-            fab3.startAnimation(openfab);
-            fab2.setClickable(true);
-            fab3.setClickable(true);
+//            fab2.startAnimation(openfab);
+//            fab3.startAnimation(openfab);
+//            fab2.setClickable(true);
+//            fab3.setClickable(true);
             isFabOpen = true;
         }
     }
@@ -269,10 +261,4 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         Intent intent = new Intent(this, NewClientActivity.class);
         startActivity(intent);
     }
-
-
-
-
-
-
 }
