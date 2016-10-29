@@ -40,8 +40,6 @@ public class NewClientActivity extends AppCompatActivity {
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             int groupId = Integer.parseInt(cursor.getString(idIndex));
-//            Log.v("NewClientActivity", "groupId: " + String.valueOf(groupId));
-//            Log.v("NewClientActivity", "Made to for");
             groups.put(groupId, cursor.getString(nameIndex));
             groupsReversed.put(cursor.getString(nameIndex), groupId);
             groupNames.add(cursor.getString(nameIndex));
@@ -59,7 +57,6 @@ public class NewClientActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int groupId = groupIDs.get(position);
                 Intent toInsertClient = new Intent(NewClientActivity.this, InsertClientActivity.class);
                 String passedData = groupsReversed.get(groupNames.get(position))
                         + "," + groupNames.get(position);
