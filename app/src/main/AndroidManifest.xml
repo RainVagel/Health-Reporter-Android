@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ClientActivity"
+            android:name=".ClientClasses.ClientActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
             >
@@ -25,9 +25,9 @@
         </activity>
         <activity
             android:name=".CategoriesActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".TestActivity" />
-        <activity android:name=".NewClientActivity"></activity>
+        <activity android:name=".ClientClasses.NewClientActivity" />
         <activity android:name=".NewCategoryActivity" />
         <activity android:name=".SearchResultsActivity">
             <intent-filter>
@@ -47,7 +47,8 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".GroupClientActivity"></activity>
+        <activity android:name=".GroupClientActivity" />
+        <activity android:name=".ClientClasses.InsertClientActivity"></activity>
     </application>
 
 </manifest>

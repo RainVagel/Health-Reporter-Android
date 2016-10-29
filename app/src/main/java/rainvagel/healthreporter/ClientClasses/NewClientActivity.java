@@ -1,17 +1,22 @@
-package rainvagel.healthreporter;
+package rainvagel.healthreporter.ClientClasses;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import rainvagel.healthreporter.DBContract;
+import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.R;
 
 public class NewClientActivity extends AppCompatActivity {
 
@@ -37,12 +42,9 @@ public class NewClientActivity extends AppCompatActivity {
             int groupId = Integer.parseInt(cursor.getString(idIndex));
 //            Log.v("NewClientActivity", "groupId: " + String.valueOf(groupId));
 //            Log.v("NewClientActivity", "Made to for");
-//            if (groupIDs.contains(groupId)) {
-//                Log.v("NewClientActivity", "Made to contains");
             groups.put(groupId, cursor.getString(nameIndex));
             groupsReversed.put(cursor.getString(nameIndex), groupId);
             groupNames.add(cursor.getString(nameIndex));
-//            }
         }
         cursor.close();
         mydb.close();
@@ -54,6 +56,17 @@ public class NewClientActivity extends AppCompatActivity {
         );
         listView.setAdapter(arrayAdapter);
 //        Log.v("NewClientActivity", groupNames.toString());
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int groupId = groupIDs.get(position);
+                Intent toInsertClient = new Intent(NewClientActivity.this, InsertClientActivity.class);
+                String passedData = groupsReversed.get(groupNames.get(position))
+                        + "," + groupNames.get(position);
+                Log.v("NewClientActivity", passedData);
+                toInsertClient.putExtra("GroupID", passedData);
+                startActivity(toInsertClient);
+            }
+        });
     }
 }

@@ -1,9 +1,8 @@
-package rainvagel.healthreporter;
+package rainvagel.healthreporter.ClientClasses;
 
 import android.app.SearchManager;
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,17 +19,19 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TabHost;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import rainvagel.healthreporter.CategoriesActivity;
+import rainvagel.healthreporter.DBContract;
+import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.GroupClientActivity;
+import rainvagel.healthreporter.R;
 
 
 public class ClientActivity extends AppCompatActivity implements View.OnClickListener {

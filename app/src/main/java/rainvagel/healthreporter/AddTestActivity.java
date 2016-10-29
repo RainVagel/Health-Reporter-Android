@@ -12,7 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.Calendar;
-import java.util.StringTokenizer;
+
+import rainvagel.healthreporter.ClientClasses.ClientActivity;
 
 public class AddTestActivity extends AppCompatActivity {
 
