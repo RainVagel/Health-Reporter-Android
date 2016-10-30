@@ -51,5 +51,26 @@
         android:layout_height="wrap_content"
         android:text="Pick birthdate"
         android:onClick="showDatePickerDialog"/>
+    <TextView
+        android:id="@+id/textview_birth_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="07"/>
+    <TextView
+        android:id="@+id/textview_birth_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="05"/>
+    <TextView
+        android:id="@+id/textview_birth_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="1995"/>
+    <Button
+        android:id="@+id/button_add_client"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add client"
+        android:onClick="onAddClientClicked"/>
 
 </LinearLayout>

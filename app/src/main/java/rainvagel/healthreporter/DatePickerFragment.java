@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.widget.DatePicker;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -16,6 +16,8 @@ import java.util.Calendar;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     OnDataPass dataPasser;
+    String finalMonth;
+    String finalDay;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar c = Calendar.getInstance();
@@ -33,7 +35,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-//        Do something with the chosen date
-        dataPasser.onDataPass(year + "," + month + "," + day);
+        if (month < 10) finalMonth = "0" + month;
+        else finalMonth = String.valueOf(month);
+        if (day < 10) finalDay = "0" + day;
+        else finalDay = String.valueOf(day);
+        dataPasser.onDataPass(year + "," + finalMonth + "," + finalDay);
     }
 }
