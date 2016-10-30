@@ -282,7 +282,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion > 1) {
+        if (newVersion > 1) {
             dropTables(db);
             onCreate(db);
         }
