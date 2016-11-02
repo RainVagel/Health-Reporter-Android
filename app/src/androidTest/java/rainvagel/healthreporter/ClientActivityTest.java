@@ -10,12 +10,14 @@ import android.widget.EditText;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.junit.Test;
 
 import rainvagel.healthreporter.ClientClasses.ClientActivity;
+import rainvagel.healthreporter.ClientClasses.NewClientActivity;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -79,30 +81,14 @@ public class ClientActivityTest {
     }
 
     // ---------------------------------------------------------------------------------------------
-    // for buttons
+    // for button
 
     @Test
-    public void checkIf_miniFABsAreClickable() {
+    public void checkIf_insertClientActivtyIsStarted() {
+        Intents.init();
         onView(withId(R.id.fab1)).perform(click());
-        onView(withId(R.id.fab2)).check(matches(isClickable()));
-        onView(withId(R.id.fab3)).check(matches(isClickable()));
-
-    }
-
-    @Test
-    public void testClosingAddButton () {
-        onView(withId(R.id.fab1)).perform(click());
-        onView(withId(R.id.fab1)).perform(click());
-        onView(withId(R.id.fab2)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.fab3)).check(matches(not(isDisplayed())));
-    }
-
-    @Test
-    public void checkIf_backgroundIsDimmedAndNotClickable() {  // should fail
-        onView(withId(R.id.fab1)).perform(click());
-        onView(withId(R.id.tabHost)).check(matches(not(isEnabled())));
-        onView(withId(R.id.listViewClients)).check(matches(not(isClickable())));
-        onView(withId(R.id.listViewGroups)).check(matches(not(isClickable())));
+        intended(hasComponent(NewClientActivity.class.getName()));
+        Intents.release();
     }
 
 
@@ -121,5 +107,20 @@ public class ClientActivityTest {
         // Check the empty view is displayed
         onView(withId(R.id.activity_search_results)).check(matches(isDisplayed()));
         matchToolbarTitle(SEARCH_NAME);
+    }
+
+    @Test
+    public void testClientFound() {
+        //TODO
+    }
+
+    @Test
+    public void testGroupNotFound() {
+        //TODO
+    }
+
+    @Test
+    public void testGroupFound() {
+        //TODO
     }
 }
