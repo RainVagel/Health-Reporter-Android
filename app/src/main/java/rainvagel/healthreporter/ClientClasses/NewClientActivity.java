@@ -47,7 +47,7 @@ public class NewClientActivity extends AppCompatActivity {
         cursor.close();
         mydb.close();
 
-        ListView listView = (ListView) findViewById(R.id.listViewGroups);
+        final ListView listView = (ListView) findViewById(R.id.listViewGroups);
 //        Log.v("NewClientActivity", String.valueOf(R.id.listViewGroups));
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_list_item_1, groupNames
