@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.UUID;
 
+import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 import rainvagel.healthreporter.DBContract;
 import rainvagel.healthreporter.DBHelper;
 import rainvagel.healthreporter.DatePickerFragment;
@@ -31,6 +31,7 @@ public class InsertClientActivity extends AppCompatActivity implements OnDataPas
     EditText firstName;
     EditText lastName;
     EditText email;
+    String groupName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +94,7 @@ public class InsertClientActivity extends AppCompatActivity implements OnDataPas
 //        In final product must use the generator
 
 //        String uniqueID = UUID.randomUUID().toString();
-        String uniqueID = "98076";
+        String uniqueID = "98006";
 
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
@@ -105,6 +106,7 @@ public class InsertClientActivity extends AppCompatActivity implements OnDataPas
         Log.v("InsertClientActivity", getIntent().getStringExtra("GroupID"));
         String[] groupInfo = getIntent().getStringExtra("GroupID").split(",");
         String group = groupInfo[0];
+        groupName = groupInfo[1];
         values.put(DBContract.Clients.KEY_ID, uniqueID);
         values.put(DBContract.Clients.KEY_GROUP_ID, group);
         values.put(DBContract.Clients.KEY_FIRSTNAME, firstNameString);
@@ -117,10 +119,9 @@ public class InsertClientActivity extends AppCompatActivity implements OnDataPas
         sqLiteDatabase.insert(DBContract.Clients.TABLE_NAME, null, values);
         sqLiteDatabase.close();
 
-//        This intent is for testing pruposes. In the final version it would take to the CategoryActivity
-//        with the newly created client selected
-
-        Intent returnToClients = new Intent(this, ClientActivity.class);
-        startActivity(returnToClients);
+        Intent toCategories = new Intent(this, CategoriesActivity.class);
+        String passedData = (uniqueID + "," + firstNameString + " " + lastNameString + "," + groupName);
+        toCategories.putExtra("ClientId", passedData);
+        startActivity(toCategories);
     }
 }

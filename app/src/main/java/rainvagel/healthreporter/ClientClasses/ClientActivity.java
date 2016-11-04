@@ -3,13 +3,17 @@ package rainvagel.healthreporter.ClientClasses;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import android.view.ViewGroup;
@@ -27,7 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import rainvagel.healthreporter.CategoriesActivity;
+import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 import rainvagel.healthreporter.DBContract;
 import rainvagel.healthreporter.DBHelper;
 import rainvagel.healthreporter.GroupClientActivity;
@@ -35,6 +39,8 @@ import rainvagel.healthreporter.R;
 
 
 public class ClientActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private String TAG = "ClientActivity";
 
     private Boolean isFabOpen = false;
     private FloatingActionButton fab1;
@@ -46,6 +52,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     final  Map<Integer, String> groups = new HashMap<>();
     final Map<String,Integer> groupsreversed = new HashMap<>();
     final ArrayList<String> groupNames = new ArrayList<>();
+    ArrayAdapter adapter = null;
 
 
     @Override
@@ -99,14 +106,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         int lastNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
         final int groupIndex  = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
 
-
-
-
-
-
-
        // Log.v("ClientActivity", String.valueOf(cursor.getCount()));
-
 
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
             //Log.v("ClientActivity", "Made it here");
@@ -128,8 +128,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         int idIndex = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
         int nameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
 
-
-
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
             //Log.v("ClientActivity", "Made it here");
             int groupId = Integer.parseInt(cursor.getString(idIndex));
@@ -146,7 +144,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
 
         ListView lv = (ListView) findViewById(R.id.listViewClients);
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,android.R.id.text1,names){
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,android.R.id.text1,names){
             public View getView(int position, View convertView,ViewGroup parent){
                 View view = super.getView(position,convertView,parent);
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
@@ -165,6 +163,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 android.R.layout.simple_list_item_1,
                 groupNames);
         lv.setAdapter(adapter);
+        registerForContextMenu(lv);
         ListView elv = (ListView) findViewById(R.id.listViewGroups);
         elv.setAdapter(arrayAdapter);
 
@@ -189,75 +188,50 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 int clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(ClientActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
-                String passedData =(String.valueOf(clientId)+","+names.get(position)+","+ groups.get(groupIDs.get(position)));
+                String passedData = (String.valueOf(clientId)+","+names.get(position)+","+ groups.get(groupIDs.get(position)));
                 Log.v("client intet", passedData);
                 toCategories.putExtra("ClientId", passedData);// pass on the data
-
                 startActivity(toCategories);
 
             }
         });
-}
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.cnt_mnu_edit:
+                break;
+            case R.id.cnt_mnu_delete:
+                Log.v(TAG, "Made to context menu delete action");
+                int clientId = clientIDs.get(info.position);
+                DBHelper db = new DBHelper(this);
+                SQLiteDatabase sqLiteDatabase = db.getWritableDatabase();
+                sqLiteDatabase.delete(DBContract.Clients.TABLE_NAME,
+                        DBContract.Clients.KEY_ID + "=" + clientId, null);
+                sqLiteDatabase.close();
+                recreate();
+                break;
+        }
+        return true;
+    }
 
     public void onClick(View v) {
         int id = v.getId();
         switch (id){
-//            case R.id.fab1:
-//                animateFAB();
-//                dimback();
-//                break;
-//            case R.id.fab2:
-//                break;
-//            case R.id.fab3:
-//                break;
             case R.id.fab1:
                 addNewClient(v);
         }
     }
-    public void dimback(){
-        if(isFabOpen){
-            View  main = findViewById(R.id.main);
-            main.setAlpha(0.2f);
-            //setClickable(main, false);
-        }
-        else {
-            View  main = findViewById(R.id.main);
-            main.setAlpha(1);
-            //setClickable(main, true);
-
-        }
-    }
-    public void setClickable(View view, boolean bol) {
-        if (view != null) {
-            view.setClickable(bol);
-            if (view instanceof ViewGroup) {
-                ViewGroup vg = ((ViewGroup) view);
-                for (int i = 0; i < vg.getChildCount(); i++) {
-                    setClickable(vg.getChildAt(i),bol);
-                }
-            }
-        }
-    }
-    public void animateFAB(){
-        if(isFabOpen){
-
-            fab1.startAnimation(finalrotate);
-//            fab2.startAnimation(closefab);
-//            fab3.startAnimation(closefab);
-//            fab2.setClickable(false);
-//            fab3.setClickable(false);
-            isFabOpen = false;
-        } else {
-            fab1.startAnimation(initialrotate);
-//            fab2.startAnimation(openfab);
-//            fab3.startAnimation(openfab);
-//            fab2.setClickable(true);
-//            fab3.setClickable(true);
-            isFabOpen = true;
-        }
-    }
-
-
+    
     public void addNewClient(View v){
         Intent intent = new Intent(this, NewClientActivity.class);
         startActivity(intent);

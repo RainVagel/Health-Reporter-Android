@@ -24,11 +24,11 @@
                 android:value=".SearchResultsActivity" />
         </activity>
         <activity
-            android:name=".CategoriesActivity"
+            android:name=".CategoryClasses.CategoriesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".TestActivity" />
+        <activity android:name=".TestClasses.TestActivity" />
         <activity android:name=".ClientClasses.NewClientActivity" />
-        <activity android:name=".NewCategoryActivity" />
+        <activity android:name=".CategoryClasses.NewCategoryActivity" />
         <activity android:name=".SearchResultsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -38,7 +38,7 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".AddTestActivity" />
+        <activity android:name=".TestClasses.AddTestActivity" />
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.

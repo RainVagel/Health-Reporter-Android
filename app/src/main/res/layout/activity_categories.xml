@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
 
     android:theme="@style/AppTheme.NoActionBar"
-    tools:context="rainvagel.healthreporter.CategoriesActivity">
+    tools:context="rainvagel.healthreporter.CategoryClasses.CategoriesActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"

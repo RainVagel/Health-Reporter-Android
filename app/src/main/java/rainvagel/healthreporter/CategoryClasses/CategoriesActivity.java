@@ -1,4 +1,4 @@
-package rainvagel.healthreporter;
+package rainvagel.healthreporter.CategoryClasses;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,8 +17,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import rainvagel.healthreporter.CategoryClasses.CategoriesAdapter;
-import rainvagel.healthreporter.CategoryClasses.Category;
+import rainvagel.healthreporter.TestClasses.AddTestActivity;
+import rainvagel.healthreporter.ClientClasses.ClientActivity;
+import rainvagel.healthreporter.DBContract;
+import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.R;
+import rainvagel.healthreporter.TestClasses.TestActivity;
 
 public class CategoriesActivity extends Activity {
     static final String TAG = "CATEGORIES ACTIVITY";
@@ -126,7 +130,7 @@ public class CategoriesActivity extends Activity {
     public void getCategories(){
 
 
-        DBHelper  mydb = new DBHelper(CategoriesActivity.this);
+        DBHelper mydb = new DBHelper(CategoriesActivity.this);
         //retrieve the KEY_IDS OF APPRAISALS WHICH WE WILL USE TO GO TO THE APPRAISAL_TESTS TABLE
 
         //QUERY FILTERS
@@ -235,5 +239,9 @@ public class CategoriesActivity extends Activity {
         mydb.close();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        Intent toClient = new Intent(this, ClientActivity.class);
+        startActivity(toClient);
+    }
 }
