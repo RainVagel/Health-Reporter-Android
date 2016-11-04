@@ -17,12 +17,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import rainvagel.healthreporter.AddTestActivity;
+import rainvagel.healthreporter.TestClasses.AddTestActivity;
 import rainvagel.healthreporter.ClientClasses.ClientActivity;
 import rainvagel.healthreporter.DBContract;
 import rainvagel.healthreporter.DBHelper;
 import rainvagel.healthreporter.R;
-import rainvagel.healthreporter.TestActivity;
+import rainvagel.healthreporter.TestClasses.TestActivity;
 
 public class CategoriesActivity extends Activity {
     static final String TAG = "CATEGORIES ACTIVITY";

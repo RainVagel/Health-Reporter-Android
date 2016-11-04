@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import android.view.ViewGroup;
@@ -99,14 +102,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         int lastNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
         final int groupIndex  = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
 
-
-
-
-
-
-
        // Log.v("ClientActivity", String.valueOf(cursor.getCount()));
-
 
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
             //Log.v("ClientActivity", "Made it here");
@@ -127,8 +123,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         cursor = mydb.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, columns1,null,null,null,null,null );
         int idIndex = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
         int nameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
-
-
 
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
             //Log.v("ClientActivity", "Made it here");
@@ -165,6 +159,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 android.R.layout.simple_list_item_1,
                 groupNames);
         lv.setAdapter(adapter);
+        registerForContextMenu(lv);
         ListView elv = (ListView) findViewById(R.id.listViewGroups);
         elv.setAdapter(arrayAdapter);
 
@@ -197,7 +192,32 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
 
             }
         });
-}
+
+//        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                int clientId = clientIDs.get(position);
+//
+//                return false;
+//            }
+//        });
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+
+        }
+        return false;
+    }
 
     public void onClick(View v) {
         int id = v.getId();

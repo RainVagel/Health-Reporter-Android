@@ -4,7 +4,7 @@
     android:id="@+id/activity_new_test"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="rainvagel.healthreporter.NewTestActivity">
+    tools:context="rainvagel.healthreporter.TestClasses.NewTestActivity">
 
     <EditText
         android:layout_width="wrap_content"

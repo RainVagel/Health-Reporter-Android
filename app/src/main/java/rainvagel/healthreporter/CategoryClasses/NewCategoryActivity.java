@@ -1,4 +1,4 @@
-package rainvagel.healthreporter;
+package rainvagel.healthreporter.CategoryClasses;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -11,6 +11,9 @@ import android.widget.EditText;
 import java.util.Calendar;
 
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
+import rainvagel.healthreporter.DBContract;
+import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.R;
 
 public class NewCategoryActivity extends AppCompatActivity {
     static int lastId;

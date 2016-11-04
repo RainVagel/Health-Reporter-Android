@@ -1,4 +1,4 @@
-package rainvagel.healthreporter;
+package rainvagel.healthreporter.TestClasses;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -14,6 +14,9 @@ import android.widget.EditText;
 import java.util.Calendar;
 
 import rainvagel.healthreporter.ClientClasses.ClientActivity;
+import rainvagel.healthreporter.DBContract;
+import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.R;
 
 public class AddTestActivity extends AppCompatActivity {
 

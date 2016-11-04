@@ -11,6 +11,8 @@ import org.junit.Test;
 
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 import rainvagel.healthreporter.ClientClasses.ClientActivity;
+import rainvagel.healthreporter.TestClasses.AddTestActivity;
+import rainvagel.healthreporter.TestClasses.TestActivity;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
