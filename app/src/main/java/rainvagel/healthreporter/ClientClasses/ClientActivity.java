@@ -3,6 +3,7 @@ package rainvagel.healthreporter.ClientClasses;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,6 +40,8 @@ import rainvagel.healthreporter.R;
 
 public class ClientActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private String TAG = "ClientActivity";
+
     private Boolean isFabOpen = false;
     private FloatingActionButton fab1;
     private Animation openfab, closefab, initialrotate,finalrotate;
@@ -49,6 +52,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     final  Map<Integer, String> groups = new HashMap<>();
     final Map<String,Integer> groupsreversed = new HashMap<>();
     final ArrayList<String> groupNames = new ArrayList<>();
+    ArrayAdapter adapter = null;
 
 
     @Override
@@ -140,7 +144,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
 
         ListView lv = (ListView) findViewById(R.id.listViewClients);
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,android.R.id.text1,names){
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,android.R.id.text1,names){
             public View getView(int position, View convertView,ViewGroup parent){
                 View view = super.getView(position,convertView,parent);
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
@@ -187,20 +191,10 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 String passedData = (String.valueOf(clientId)+","+names.get(position)+","+ groups.get(groupIDs.get(position)));
                 Log.v("client intet", passedData);
                 toCategories.putExtra("ClientId", passedData);// pass on the data
-
                 startActivity(toCategories);
 
             }
         });
-
-//        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                int clientId = clientIDs.get(position);
-//
-//                return false;
-//            }
-//        });
     }
 
     @Override
@@ -214,9 +208,20 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
-
+            case R.id.cnt_mnu_edit:
+                break;
+            case R.id.cnt_mnu_delete:
+                Log.v(TAG, "Made to context menu delete action");
+                int clientId = clientIDs.get(info.position);
+                DBHelper db = new DBHelper(this);
+                SQLiteDatabase sqLiteDatabase = db.getWritableDatabase();
+                sqLiteDatabase.delete(DBContract.Clients.TABLE_NAME,
+                        DBContract.Clients.KEY_ID + "=" + clientId, null);
+                sqLiteDatabase.close();
+                recreate();
+                break;
         }
-        return false;
+        return true;
     }
 
     public void onClick(View v) {
@@ -226,32 +231,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 addNewClient(v);
         }
     }
-    public void dimback(){
-        if(isFabOpen){
-            View  main = findViewById(R.id.main);
-            main.setAlpha(0.2f);
-            //setClickable(main, false);
-        }
-        else {
-            View  main = findViewById(R.id.main);
-            main.setAlpha(1);
-            //setClickable(main, true);
-
-        }
-    }
-    public void setClickable(View view, boolean bol) {
-        if (view != null) {
-            view.setClickable(bol);
-            if (view instanceof ViewGroup) {
-                ViewGroup vg = ((ViewGroup) view);
-                for (int i = 0; i < vg.getChildCount(); i++) {
-                    setClickable(vg.getChildAt(i),bol);
-                }
-            }
-        }
-    }
-
-
+    
     public void addNewClient(View v){
         Intent intent = new Intent(this, NewClientActivity.class);
         startActivity(intent);
