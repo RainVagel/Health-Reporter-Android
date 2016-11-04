@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import rainvagel.healthreporter.CategoriesActivity;
+import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 import rainvagel.healthreporter.DBContract;
 import rainvagel.healthreporter.DBHelper;
 import rainvagel.healthreporter.GroupClientActivity;
@@ -189,7 +189,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 int clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(ClientActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
-                String passedData =(String.valueOf(clientId)+","+names.get(position)+","+ groups.get(groupIDs.get(position)));
+                String passedData = (String.valueOf(clientId)+","+names.get(position)+","+ groups.get(groupIDs.get(position)));
                 Log.v("client intet", passedData);
                 toCategories.putExtra("ClientId", passedData);// pass on the data
 
@@ -202,14 +202,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         int id = v.getId();
         switch (id){
-//            case R.id.fab1:
-//                animateFAB();
-//                dimback();
-//                break;
-//            case R.id.fab2:
-//                break;
-//            case R.id.fab3:
-//                break;
             case R.id.fab1:
                 addNewClient(v);
         }
@@ -236,24 +228,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                     setClickable(vg.getChildAt(i),bol);
                 }
             }
-        }
-    }
-    public void animateFAB(){
-        if(isFabOpen){
-
-            fab1.startAnimation(finalrotate);
-//            fab2.startAnimation(closefab);
-//            fab3.startAnimation(closefab);
-//            fab2.setClickable(false);
-//            fab3.setClickable(false);
-            isFabOpen = false;
-        } else {
-            fab1.startAnimation(initialrotate);
-//            fab2.startAnimation(openfab);
-//            fab3.startAnimation(openfab);
-//            fab2.setClickable(true);
-//            fab3.setClickable(true);
-            isFabOpen = true;
         }
     }
 

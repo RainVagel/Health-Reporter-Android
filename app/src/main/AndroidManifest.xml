@@ -24,7 +24,7 @@
                 android:value=".SearchResultsActivity" />
         </activity>
         <activity
-            android:name=".CategoriesActivity"
+            android:name=".CategoryClasses.CategoriesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".TestActivity" />
         <activity android:name=".ClientClasses.NewClientActivity" />

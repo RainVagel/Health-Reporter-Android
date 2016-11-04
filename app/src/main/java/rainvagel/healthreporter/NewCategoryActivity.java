@@ -2,16 +2,15 @@ package rainvagel.healthreporter;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.icu.text.DateFormat;
-import android.icu.text.SimpleDateFormat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
 import java.util.Calendar;
+
+import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 
 public class NewCategoryActivity extends AppCompatActivity {
     static int lastId;
