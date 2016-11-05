@@ -3,4 +3,5 @@
     <string name="menu_search">Search</string>
     <string name="searchable">Search</string>
     <string name="my_tb_title">Health Reporter</string>
+    <string name="updateTestResult">Update test result</string>
 </resources>

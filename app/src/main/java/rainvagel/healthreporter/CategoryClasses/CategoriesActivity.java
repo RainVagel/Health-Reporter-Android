@@ -127,6 +127,8 @@ public class CategoriesActivity extends Activity {
         startActivity(intent);
     }
 
+
+
     public void getCategories(){
 
 
