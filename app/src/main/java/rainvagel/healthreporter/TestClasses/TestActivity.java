@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -24,14 +25,16 @@ public class TestActivity extends AppCompatActivity {
     Button createButton;
     String[] fromCategoriesData;
     ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
-    ArrayList<Test> testArray = new ArrayList<>();
+     ArrayList<Test> testArray = new ArrayList<>();
     ArrayList<String> correctTests= new ArrayList<>();
-    Map<Integer, AppraisalTests> testToAppraisal = new HashMap<>();
+   Map<Integer, AppraisalTests> testToAppraisal = new HashMap<>();
+    public static Intent fromCategories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+        fromCategories = getIntent();
         String[] fromCategoriesData = getIntent().getStringExtra("IntentData").split(",");
         //Intent from categories contains client id(index 0) and category id in sa string which has been split by ","
         Toolbar my_toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -60,6 +63,12 @@ public class TestActivity extends AppCompatActivity {
         listView.setAdapter(ta);
 
 
+
+
+    }
+    public void editTestResult(View v){
+
+        Log.v(TAG, "editTestResult method");
     }
 
     public void createTestResult(View v){

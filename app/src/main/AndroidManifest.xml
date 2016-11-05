@@ -48,7 +48,8 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".GroupClientActivity" />
-        <activity android:name=".ClientClasses.InsertClientActivity"></activity>
+        <activity android:name=".ClientClasses.InsertClientActivity" />
+        <activity android:name=".TestClasses.testResultActivity"></activity>
     </application>
 
 </manifest>
