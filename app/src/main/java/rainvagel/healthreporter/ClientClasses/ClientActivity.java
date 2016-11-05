@@ -128,8 +128,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         int idIndex = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
         int nameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
 
-
-
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
             //Log.v("ClientActivity", "Made it here");
             int groupId = Integer.parseInt(cursor.getString(idIndex));
