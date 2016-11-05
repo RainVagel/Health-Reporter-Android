@@ -80,17 +80,6 @@ public class ClientActivityTest {
         matchToolbarTitle("Health Reporter");
     }
 
-    // ---------------------------------------------------------------------------------------------
-    // for button
-
-    @Test
-    public void checkIf_insertClientActivtyIsStarted() {
-        Intents.init();
-        onView(withId(R.id.fab1)).perform(click());
-        intended(hasComponent(NewClientActivity.class.getName()));
-        Intents.release();
-    }
-
 
     // ---------------------------------------------------------------------------------------------
     // for search
