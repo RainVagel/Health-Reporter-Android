@@ -28,6 +28,7 @@ public class CategoriesActivity extends Activity {
     static final String TAG = "CATEGORIES ACTIVITY";
     final ArrayList<Category> categories = new ArrayList<>();
     final ArrayList<String> categorynames = new ArrayList<>();
+    final ArrayList<Category> divider = new ArrayList<>();
     Intent fromClients;
     static String[] intentData;
     Toolbar tb;
@@ -149,20 +150,27 @@ public class CategoriesActivity extends Activity {
                 birthdate = res.getString(birthdateIndex);
             }
         }
-
+        Log.v(TAG, "synnikuupaev: " + birthdate);
         String[] dates = birthdate.split("-");
-        Log.v(TAG,dates[0]);
+
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String[] current = df.format(date).split("-");
-        age = Integer.parseInt(current[0])-Integer.parseInt(dates[0]);
-        if(Integer.parseInt(dates[1])== Integer.parseInt(current[1])){
-            if(Integer.parseInt(dates[2])<Integer.parseInt(current[2]))
+
+        int age = Integer.parseInt(current[0])-Integer.parseInt(dates[0]);
+        int delta_month = Integer.parseInt(current[1])-Integer.parseInt(dates[1]);//delta aka difference
+        int delta_day = Integer.parseInt(current[2])-Integer.parseInt(dates[2]);
+
+        if(delta_month <= 0){
+            if(delta_month == 0){
+                if(delta_day <0)
+                    age -= 1;
+            }
+            else{
                 age -=1;
+            }
 
         }
-        else if(Integer.parseInt(dates[1])<Integer.parseInt(dates[1]))
-            age -=1 ;
 
         CharSequence titleage = intentData[1] + ", " +String.valueOf(age);//correct toolbar title with age
         tb.setTitle(titleage);
@@ -233,6 +241,14 @@ public class CategoriesActivity extends Activity {
                             , res.getString(posRow), res.getString(updatedRow), res.getString(uploadedRow));
                     categories.add(cat);
                     categorynames.add(name);
+                }
+            }
+            else{//divider
+                if(categoriesID.contains(res.getString(idRow))){
+                    Log.v(TAG, "divider");
+                    Category cat = new Category(res.getString(idRow), res.getString(parentidRow), res.getString(nameRow)
+                            , res.getString(posRow), res.getString(updatedRow), res.getString(uploadedRow));
+                    divider.add(cat);
                 }
             }
 
