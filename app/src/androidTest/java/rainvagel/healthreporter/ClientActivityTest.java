@@ -1,5 +1,8 @@
 package rainvagel.healthreporter;
 
+import android.app.Instrumentation;
+import android.database.Cursor;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.espresso.matcher.BoundedMatcher;
@@ -7,6 +10,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
+import android.widget.TwoLineListItem;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -29,16 +33,23 @@ import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasData;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
+import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withInputType;
+import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 
 /**
@@ -48,10 +59,18 @@ import static org.hamcrest.Matchers.startsWith;
 @RunWith(AndroidJUnit4.class)
 public class ClientActivityTest {
 
-    public static final String SEARCH_NAME = "Mary Jane";
+    private static final String SEARCH_NAME = "Mary Jane";
+    private DBHelper database;
 
     @Rule
     public ActivityTestRule<ClientActivity> activityRule = new ActivityTestRule<>(ClientActivity.class);
+
+    @Before
+    public void setUp() {
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        database = new DBHelper(instrumentation.getTargetContext());
+
+    }
 
     // for toolbar
     private static ViewInteraction matchToolbarTitle(CharSequence title) {
@@ -87,29 +106,35 @@ public class ClientActivityTest {
     // works when autocorrect is turned off
     @Test
     public void testClientNotFound() {
-        // Click on the search icon
         onView(withId(R.id.menu_search)).perform(click());
-
-        // Type the text in the search field and submit the query
         onView(isAssignableFrom(EditText.class)).perform(typeText(SEARCH_NAME), pressImeActionButton());
-
-        // Check the empty view is displayed
         onView(withId(R.id.activity_search_results)).check(matches(isDisplayed()));
+        //onData().inAdapterView(withId(R.id.main)).perform(click());
+        // maybe later should display some message like "no clients found"
         matchToolbarTitle(SEARCH_NAME);
+    }
+
+    public String getFirstClientsName() {
+        String[] clientColumns = {DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME};
+        Cursor cursor = database.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, clientColumns, null,null,null,null,null);
+        int firstNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
+        int lastNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
+
+        cursor.moveToFirst();
+        String firstName = cursor.getString(firstNameIdx);
+        String lastName = cursor.getString(lastNameIdx);
+
+        return firstName + " " + lastName;
     }
 
     @Test
     public void testClientFound() {
-        //TODO
-    }
+        String search = getFirstClientsName();
+        onView(withId(R.id.menu_search)).perform(click());
+        onView(isAssignableFrom(EditText.class)).perform(typeText(search), pressImeActionButton());
+        onView(withId(R.id.activity_search_results)).check(matches(isDisplayed()));
 
-    @Test
-    public void testGroupNotFound() {
-        //TODO
-    }
-
-    @Test
-    public void testGroupFound() {
-        //TODO
+        onData(startsWith(search)).inAdapterView(withId(R.id.main)).check(matches(isDisplayed()));
+        matchToolbarTitle(search);
     }
 }
