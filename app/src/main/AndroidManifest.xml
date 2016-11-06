@@ -50,7 +50,8 @@
         <activity android:name=".GroupClientActivity" />
         <activity android:name=".ClientClasses.InsertClientActivity" />
         <activity android:name=".TestClasses.testResultActivity" />
-        <activity android:name=".InsertGroupActivity"></activity>
+        <activity android:name=".InsertGroupActivity" />
+        <activity android:name=".ClientClasses.EditClientActivity"></activity>
     </application>
 
 </manifest>
