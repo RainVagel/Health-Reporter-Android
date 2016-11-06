@@ -23,7 +23,7 @@ import rainvagel.healthreporter.R;
 public class TestAdapter extends ArrayAdapter<Test> {
     private static final String TAG = "TESTADAPTER";
     private final Context context;
-    private final Map<Integer,AppraisalTests> appraisals_Tests;
+    private final Map<Integer,ArrayList<AppraisalTests>> appraisals_Tests;
     private final ArrayList<Test> tests;
     private static TextView test_name;
     private static TextView result;
@@ -31,7 +31,7 @@ public class TestAdapter extends ArrayAdapter<Test> {
 
 
 
-    public TestAdapter(Context context,  Map<Integer,AppraisalTests> appraisals,ArrayList<Test> tests){
+    public TestAdapter(Context context,  Map<Integer,ArrayList<AppraisalTests>> appraisals,ArrayList<Test> tests){
         super(context, R.layout.activity_tests_list,tests);
         this.context = context;
         this.tests = tests;
@@ -48,7 +48,62 @@ public class TestAdapter extends ArrayAdapter<Test> {
             View rowView = inflater.inflate(R.layout.activity_tests_list,parent,false);
             test_name = (TextView) rowView.findViewById(R.id.textView);
             result = (TextView) rowView.findViewById(R.id.result);
-            result.setText(appraisals_Tests.get(tests.get(position).getId()).getScore());
+
+
+            ArrayList<AppraisalTests> at = appraisals_Tests.get(tests.get(position).getId());
+            int lastScore = -5000;
+            int year = 1900;
+            int day = -2;
+            int month = 0;
+
+            for(AppraisalTests a : at){
+                Log.v(TAG, a.getScore());
+                Log.v(TAG, a.getUpdated());
+                String[] dates = a.getUpdated().split("-");
+                int a_score =  Integer.parseInt(a.getScore());
+                if(at.indexOf(a) == 0){
+                    lastScore = Integer.parseInt(a.getScore());
+                }
+                else{
+                    Log.v(TAG, "siin");
+
+                    int a_year = Integer.parseInt(dates[0]);
+                    int a_month = Integer.parseInt(dates[1]);
+                    int a_day = Integer.parseInt(dates[2]);
+                    if(a_year >= year) {
+                       if(a_year > year) {
+                           lastScore = a_score;
+                           year = a_year;
+                           day = a_day;
+                           month = a_month;
+                       }
+                        else{
+                           if(a_month>= month){
+                               if(a_month > month) {
+                                   lastScore = a_score;
+                                   year = a_year;
+                                   day = a_day;
+                                   month = a_month;
+                               }
+                               else{
+                                   if(a_day >= day){
+                                       if(a_day>day){
+                                           lastScore = a_score;
+                                           year = a_year;
+                                           day = a_day;
+                                           month = a_month;
+                                       }
+                                       //else stay the same
+                                   }
+                               }
+                           }
+                       }
+                    }
+
+                }
+            }
+            Log.v("lastscore", String.valueOf(lastScore));
+            result.setText(String.valueOf(lastScore));//displaay the last one updated aka the last test taken
 
             test_name.setText(tests.get(position).getName());
 
@@ -65,7 +120,7 @@ public class TestAdapter extends ArrayAdapter<Test> {
                     Log.v(TAG, "clicked on test result");
                     // we have to edit appraisals Map and then set that to the testactivity one.
 
-                    int appraisal_id = appraisals_Tests.get(tests.get(position).getId()).getId();
+                    String appraisal_id = appraisals_Tests.get(tests.get(position).getId()).get(0).getId();
 
                     // send the user to another activity to update the result
                     Intent editAppraisal = new Intent(context, testResultActivity.class);
