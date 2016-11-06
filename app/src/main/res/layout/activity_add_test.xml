@@ -10,97 +10,37 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="rainvagel.healthreporter.TestClasses.AddTestActivity">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:ems="10"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"
-        android:id="@+id/appraiserID"
-        android:hint="appraisalID" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:ems="10"
-        android:layout_below="@+id/appraiserID"
-        android:layout_alignEnd="@+id/appraiserID"
-        android:layout_marginTop="12dp"
-        android:id="@+id/testID"
-        android:hint="testID" />
 
-    <EditText
-        android:layout_width="wrap_content"
+    <Spinner
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
-        android:ems="10"
-        android:layout_below="@+id/testID"
-        android:layout_alignStart="@+id/testID"
-        android:id="@+id/score"
-        android:hint="score" />
+        android:id="@+id/categories_spinner" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:ems="10"
-        android:layout_marginTop="13dp"
-        android:id="@+id/note"
-        android:hint="note"
-        android:layout_below="@+id/score"
-        android:layout_alignStart="@+id/score" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:ems="10"
-        android:layout_below="@+id/note"
-        android:layout_alignEnd="@+id/note"
-        android:id="@+id/trial1"
-        android:hint="trial1" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:ems="10"
-        android:layout_below="@+id/trial1"
-        android:layout_alignEnd="@+id/trial1"
-        android:id="@+id/trial2"
-        android:hint="trial2" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:ems="10"
-        android:layout_below="@+id/trial2"
-        android:layout_alignStart="@+id/trial2"
-        android:id="@+id/trial3"
-        android:hint="trial3" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="date"
-        android:ems="10"
-        android:layout_below="@+id/trial3"
-        android:layout_alignEnd="@+id/trial3"
-        android:id="@+id/date"
-        android:hint="date" />
-
+<FrameLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+    android:id="@+id/add_test_frame"
+android:layout_below="@+id/categories_spinner">
+<ListView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/test_list"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentStart="true"
+    android:paddingBottom="10dp"
+    />
+</FrameLayout>
     <Button
-        android:text="Complete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/date"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="23dp"
-        android:id="@+id/complete"
-        />
+        android:layout_below="@id/add_test_frame"
+        android:paddingBottom="10dp"
+        android:onClick="addTests"/>
+
+
+
 
 </RelativeLayout>

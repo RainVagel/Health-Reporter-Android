@@ -27,7 +27,7 @@ public class TestActivity extends AppCompatActivity {
     ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
      ArrayList<Test> testArray = new ArrayList<>();
     ArrayList<String> correctTests= new ArrayList<>();
-   Map<Integer, AppraisalTests> testToAppraisal = new HashMap<>();
+   public static Map<Integer, ArrayList<AppraisalTests>> testToAppraisal = new HashMap<>();//TODO VALUE SHOULD BE AN ARRAY LIST OF APPRAISTESTS
     public static Intent fromCategories;
 
     @Override
@@ -113,7 +113,7 @@ public class TestActivity extends AppCompatActivity {
         for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
             if(appraisalIDs.contains(res.getString(appraisalIndex))) {
                 testIDs.add(res.getString(testID));
-                appraisalTests.add(new AppraisalTests(Integer.parseInt(res.getString(appraisalIndex)),
+                appraisalTests.add(new AppraisalTests(res.getString(appraisalIndex),
                         Integer.parseInt(res.getString(testID)), res.getString(scoreID), res.getString(noteID), res.getString(trial1ID),
                         res.getString(trial2ID), res.getString(trial3ID), res.getString(updatedIndex), res.getString(uploadedIndex)));
             }
@@ -176,7 +176,16 @@ public class TestActivity extends AppCompatActivity {
             Log.v(TAG, "OLEN SIIN");
             Log.v(TAG, i);
             Log.v(TAG, String.valueOf(testArray.size()));
-            testToAppraisal.put(Integer.parseInt(i),appraisalTests.get(testIDs.indexOf(i)));
+
+            if(testToAppraisal.containsKey(Integer.parseInt(i))){//if the map already has said key
+                testToAppraisal.put(Integer.parseInt(i), testToAppraisal.get(Integer.parseInt(i))).add(appraisalTests.get(testIDs.indexOf(i)));
+            }
+            else{
+                ArrayList<AppraisalTests> appraisals = new ArrayList<>();
+                appraisals.add(appraisalTests.get(testIDs.indexOf(i)));
+                testToAppraisal.put(Integer.parseInt(i),appraisals );
+            }
+
             if(divider.contains(testIDs.indexOf(i))){// if current test has a divider
                 testArray.add(correctTests.indexOf(i),null);
             }

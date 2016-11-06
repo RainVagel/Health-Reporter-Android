@@ -16,6 +16,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import rainvagel.healthreporter.TestClasses.AddTestActivity;
 import rainvagel.healthreporter.ClientClasses.ClientActivity;
@@ -27,10 +29,11 @@ import rainvagel.healthreporter.TestClasses.TestActivity;
 public class CategoriesActivity extends Activity {
     static final String TAG = "CATEGORIES ACTIVITY";
     final ArrayList<Category> categories = new ArrayList<>();
-    final ArrayList<String> categorynames = new ArrayList<>();
+     final ArrayList<String> categorynames = new ArrayList<>();
     final ArrayList<Category> divider = new ArrayList<>();
-    Intent fromClients;
-    static String[] intentData;
+    public static Map<String, Category> forAddTest = new HashMap<>();
+    public static Intent fromClients;
+    public static String[] intentData;
     Toolbar tb;
     int age;
 
@@ -46,7 +49,7 @@ public class CategoriesActivity extends Activity {
         setContentView(R.layout.activity_categories);
         Log.v(TAG, "In categories");
         //first element is clientID, second is client's name and third is the group name
-
+        fromClients = getIntent();
         intentData = getIntent().getStringExtra("ClientId").split(",");
 
         tb = (Toolbar) findViewById(R.id.my_toolbar);
@@ -234,18 +237,21 @@ public class CategoriesActivity extends Activity {
             // If parentid == null then real category
             // if parentid != null then a divider
             if(res.getString(parentidRow).equals("null")) {
+                String name = res.getString(nameRow);
+                Category cat = new Category(res.getString(idRow), res.getString(parentidRow), name
+                        , res.getString(posRow), res.getString(updatedRow), res.getString(uploadedRow));
+                forAddTest.put(name, cat);
                 if(categoriesID.contains(res.getString(idRow))) {
                     Log.v(TAG,"categories table");
-                    String name = res.getString(nameRow);
-                    Category cat = new Category(res.getString(idRow), res.getString(parentidRow), name
-                            , res.getString(posRow), res.getString(updatedRow), res.getString(uploadedRow));
                     categories.add(cat);
                     categorynames.add(name);
+
                 }
             }
 
 
         }
+        Log.v(TAG, String.valueOf(forAddTest.size()));
         res.close();
         mydb.close();
     }
