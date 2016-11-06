@@ -28,7 +28,6 @@ public class TestActivity extends AppCompatActivity {
      ArrayList<Test> testArray = new ArrayList<>();
     ArrayList<String> correctTests= new ArrayList<>();
    Map<Integer, AppraisalTests> testToAppraisal = new HashMap<>();
-    Map<Integer, Boolean> dividers = new HashMap<>();
     public static Intent fromCategories;
 
     @Override
@@ -67,19 +66,8 @@ public class TestActivity extends AppCompatActivity {
 
 
     }
-    public void editTestResult(View v){
 
-        Log.v(TAG, "editTestResult method");
-    }
 
-    public void createTestResult(View v){
-        Intent intent = new Intent(this, NewTestActivity.class);
-        startActivity(intent);
-    }
-
-    protected void searchTests() {
-        //TODO method for searching tests
-    }
 
 
     protected void getTests(){
