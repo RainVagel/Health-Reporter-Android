@@ -4,4 +4,6 @@
     <string name="searchable">Search</string>
     <string name="my_tb_title">Health Reporter</string>
     <string name="updateTestResult">Update test result</string>
+    <string name="action_settings">Order by first name</string>
+    <string name="action_settings1">Order by last name</string>
 </resources>

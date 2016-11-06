@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.nfc.Tag;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,9 +27,14 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
@@ -45,6 +51,8 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     private Boolean isFabOpen = false;
     private FloatingActionButton fab1;
     private Animation openfab, closefab, initialrotate,finalrotate;
+    ListView lv;
+
 
     final  ArrayList<Integer> clientIDs = new ArrayList<>();
     final  ArrayList<String> names = new ArrayList<>();
@@ -52,6 +60,14 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     final  Map<Integer, String> groups = new HashMap<>();
     final Map<String,Integer> groupsreversed = new HashMap<>();
     final ArrayList<String> groupNames = new ArrayList<>();
+
+    final Map<Integer,Integer> clientIdGroupId = new HashMap<>();
+    final Map<String, Integer>  namesGroupKeys = new HashMap<>();
+    final Map<String, Integer>  namesClientKeys = new HashMap<>();
+
+
+    int settingmenu = 0;
+
     ArrayAdapter adapter = null;
 
 
@@ -64,6 +80,75 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         return super.onCreateOptionsMenu(menu);
     }
 
+
+    //TOOLBAR SETTINGS BUTTON ACTION HANDLING
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+
+            sortbyfirstname();
+            return true;
+        }
+
+        if(id == R.id.action_settings1){
+            sortbylastname();
+            return false;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void sortbyfirstname() {
+
+
+        Collections.sort(names);
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,android.R.id.text1,names){
+            public View getView(int position, View convertView,ViewGroup parent){
+                View view = super.getView(position,convertView,parent);
+                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+                TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+                text1.setText(names.get(position));
+                text2.setText(groups.get(namesGroupKeys.get(names.get(position))));
+                text2.setTextSize(text1.getTextSize()/4);
+                return view;
+            }
+        };
+
+
+
+
+
+        lv.setAdapter(adapter);
+
+    }
+    private void sortbylastname() {
+
+
+        sortLast(names);
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,android.R.id.text1,names){
+            public View getView(int position, View convertView,ViewGroup parent){
+                View view = super.getView(position,convertView,parent);
+                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+                TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+                text1.setText(names.get(position));
+                text2.setText(groups.get(namesGroupKeys.get(names.get(position))));
+                text2.setTextSize(text1.getTextSize()/4);
+                return view;
+            }
+        };
+
+
+
+
+
+        lv.setAdapter(adapter);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +157,10 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         Toolbar my_toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(my_toolbar);
         getSupportActionBar().setTitle(R.string.my_tb_title);
+
+
+
+
 
 
         FrameLayout dimbackground = (FrameLayout) findViewById(R.id.main);
@@ -106,7 +195,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         int lastNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
         final int groupIndex  = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
 
-       // Log.v("ClientActivity", String.valueOf(cursor.getCount()));
+        // Log.v("ClientActivity", String.valueOf(cursor.getCount()));
 
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
             //Log.v("ClientActivity", "Made it here");
@@ -114,6 +203,15 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
             groupIDs.add(Integer.valueOf(cursor.getString(groupIndex)));
             //groupids contains exact amount of groupids as clientids
             names.add(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex));
+
+            clientIdGroupId.put(Integer.valueOf(cursor.getString(rowIndex)),Integer.valueOf(cursor.getString(groupIndex)));
+
+            namesGroupKeys.put(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex),(Integer.valueOf(cursor.getString(groupIndex))));
+
+            namesClientKeys.put(cursor.getString(firstNameIndex)+ " "+ cursor.getString(lastNameIndex),(Integer.valueOf(cursor.getString(rowIndex))));
+
+
+
             Log.v("cursor for", String.valueOf(clientIDs.size()));
             Log.v("cursor for", String.valueOf(names.size()));
 
@@ -142,20 +240,18 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         Log.v("ats", groups.toString());
 
 
-        ListView lv = (ListView) findViewById(R.id.listViewClients);
+
+        lv = (ListView) findViewById(R.id.listViewClients);
 
         adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,android.R.id.text1,names){
             public View getView(int position, View convertView,ViewGroup parent){
                 View view = super.getView(position,convertView,parent);
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                 TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-                Log.v("arrayadapter", String.valueOf(position));
-                Log.v("asd size", String.valueOf(names.size()));
-                Log.v("searchGroupNames size", String.valueOf(groups.size()));
                 text1.setText(names.get(position));
                 text2.setText(groups.get(groupIDs.get(position)));
                 text2.setTextSize(text1.getTextSize()/4);
-            return view;
+                return view;
             }
         };
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
@@ -175,21 +271,19 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 int groupID = groupIDs.get(position);
                 Intent toClients = new Intent(ClientActivity.this, GroupClientActivity.class);
                 String passedData = (groupsreversed.get(groupNames.get(position))+","+groupNames.get(position));
-                Log.v("group intent",passedData);
                 toClients.putExtra("GroupID",passedData);
                 startActivity(toClients);
             }
         });
 
-
+        //  groups.get(namesClientKeys.get(names.get(position))
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(ClientActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
-                String passedData = (String.valueOf(clientId)+","+names.get(position)+","+ groups.get(groupIDs.get(position)));
-                Log.v("client intet", passedData);
+                String passedData = (namesClientKeys.get(names.get(position))+","+names.get(position)+","+ groups.get(namesGroupKeys.get(names.get(position))));
                 toCategories.putExtra("ClientId", passedData);// pass on the data
                 startActivity(toCategories);
 
@@ -211,7 +305,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.cnt_mnu_edit:
                 break;
             case R.id.cnt_mnu_delete:
-                Log.v(TAG, "Made to context menu delete action");
                 int clientId = clientIDs.get(info.position);
                 DBHelper db = new DBHelper(this);
                 SQLiteDatabase sqLiteDatabase = db.getWritableDatabase();
@@ -231,9 +324,25 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 addNewClient(v);
         }
     }
-    
+
     public void addNewClient(View v){
         Intent intent = new Intent(this, NewClientActivity.class);
         startActivity(intent);
+    }
+    public void sortLast(ArrayList<String> al) {
+        Collections.sort(al, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String[] split1 = o1.split(" ");
+                String[] split2 = o2.split(" ");
+                String lastName1 = split1[1];
+                String lastName2 = split2[1];
+                if (lastName1.compareTo(lastName2) > 0) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        });
     }
 }
