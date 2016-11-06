@@ -42,43 +42,52 @@ public class TestAdapter extends ArrayAdapter<Test> {
     @Override
     public View getView(final int position, final View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.activity_tests_list,parent,false);
-         test_name = (TextView) rowView.findViewById(R.id.textView);
-         result = (TextView) rowView.findViewById(R.id.result);
 
 
-        result.setText(appraisals_Tests.get(tests.get(position).getId()).getScore());
+        if(tests.get(position) != null) {//if not divider
+            View rowView = inflater.inflate(R.layout.activity_tests_list,parent,false);
+            test_name = (TextView) rowView.findViewById(R.id.textView);
+            result = (TextView) rowView.findViewById(R.id.result);
+            result.setText(appraisals_Tests.get(tests.get(position).getId()).getScore());
 
-        test_name.setText(tests.get(position).getName());
+            test_name.setText(tests.get(position).getName());
 
-        test_name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v(TAG,"clicked on test name");
-            }
-        });
+            test_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.v(TAG, "clicked on test name");
+                }
+            });
 
-        result.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Log.v(TAG, "clicked on test result");
-               // we have to edit appraisals Map and then set that to the testactivity one.
+            result.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.v(TAG, "clicked on test result");
+                    // we have to edit appraisals Map and then set that to the testactivity one.
 
-                int appraisal_id = appraisals_Tests.get(tests.get(position).getId()).getId();
+                    int appraisal_id = appraisals_Tests.get(tests.get(position).getId()).getId();
 
-                // send the user to another activity to update the result
-                Intent editAppraisal = new Intent(context, testResultActivity.class);
-                editAppraisal.putExtra("appraisal_id",String.valueOf(appraisal_id));
-                context.getApplicationContext().startActivity(editAppraisal);
-                
-
-            }
-        });
-
-
+                    // send the user to another activity to update the result
+                    Intent editAppraisal = new Intent(context, testResultActivity.class);
+                    editAppraisal.putExtra("appraisal_id", String.valueOf(appraisal_id));
+                    context.getApplicationContext().startActivity(editAppraisal);
 
 
-        return rowView;
+                }
+            });
+            return rowView;
+        }
+        else{
+
+            View rowView = inflater.inflate(R.layout.activity_tests_list_divider, parent ,false);
+           // test_name.setText("DIDIVDEEEEEEEEEEEEEEEEEEEER");
+
+            //result.setText("DIVIDEEEEEEEEEEEEEEEEEEEEEEER");
+
+            return rowView;
+        }
+
+
 
     }
 

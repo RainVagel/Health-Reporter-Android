@@ -66,19 +66,8 @@ public class TestActivity extends AppCompatActivity {
 
 
     }
-    public void editTestResult(View v){
 
-        Log.v(TAG, "editTestResult method");
-    }
 
-    public void createTestResult(View v){
-        Intent intent = new Intent(this, NewTestActivity.class);
-        startActivity(intent);
-    }
-
-    protected void searchTests() {
-        //TODO method for searching tests
-    }
 
 
     protected void getTests(){
@@ -166,6 +155,17 @@ public class TestActivity extends AppCompatActivity {
                 }
             }
         }
+        //retrieve dividers
+        columns =new String[] {DBContract.TestCategories.KEY_ID, DBContract.TestCategories.KEY_PARENT_ID};
+
+        res = mydb.getReadableDatabase().query(DBContract.TestCategories.TABLE_NAME,columns,null,null,null,null,null);
+        ArrayList<Integer> divider = new ArrayList<>();
+        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
+            if(correctTests.contains(res.getString(res.getColumnIndex(DBContract.TestCategories.KEY_PARENT_ID))) && !res.getString(res.getColumnIndex(DBContract.TestCategories.KEY_PARENT_ID)).equals(null)){
+                divider.add(Integer.parseInt(res.getString(res.getColumnIndex(DBContract.TestCategories.KEY_PARENT_ID))));
+                Log.v(TAG, "added divider");
+            }
+        }
 
 
         res.close();
@@ -177,9 +177,15 @@ public class TestActivity extends AppCompatActivity {
             Log.v(TAG, i);
             Log.v(TAG, String.valueOf(testArray.size()));
             testToAppraisal.put(Integer.parseInt(i),appraisalTests.get(testIDs.indexOf(i)));
+            if(divider.contains(testIDs.indexOf(i))){// if current test has a divider
+                testArray.add(correctTests.indexOf(i),null);
+            }
         }
 
-
+        //FOR TESTING PURPOSES BECAUSE NO DIVIDERS IN DATABASE AT THE MOMENT!!!!!!!!!!!!!!
+        // REMOVE IF DATABASE HAS BEEN UPDATED
+        // TODO
+        testArray.add(1,null);
 
 
 

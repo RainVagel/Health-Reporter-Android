@@ -157,7 +157,7 @@ public class CategoriesActivity extends Activity {
         Date date = new Date();
         String[] current = df.format(date).split("-");
 
-        int age = Integer.parseInt(current[0])-Integer.parseInt(dates[0]);
+         age = Integer.parseInt(current[0])-Integer.parseInt(dates[0]);
         int delta_month = Integer.parseInt(current[1])-Integer.parseInt(dates[1]);//delta aka difference
         int delta_day = Integer.parseInt(current[2])-Integer.parseInt(dates[2]);
 
@@ -171,7 +171,7 @@ public class CategoriesActivity extends Activity {
             }
 
         }
-
+        Log.v("age",String.valueOf(age));
         CharSequence titleage = intentData[1] + ", " +String.valueOf(age);//correct toolbar title with age
         tb.setTitle(titleage);
 
@@ -243,14 +243,7 @@ public class CategoriesActivity extends Activity {
                     categorynames.add(name);
                 }
             }
-            else{//divider
-                if(categoriesID.contains(res.getString(idRow))){
-                    Log.v(TAG, "divider");
-                    Category cat = new Category(res.getString(idRow), res.getString(parentidRow), res.getString(nameRow)
-                            , res.getString(posRow), res.getString(updatedRow), res.getString(uploadedRow));
-                    divider.add(cat);
-                }
-            }
+
 
         }
         res.close();
