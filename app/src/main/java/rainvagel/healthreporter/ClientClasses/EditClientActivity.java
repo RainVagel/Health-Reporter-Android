@@ -1,5 +1,6 @@
 package rainvagel.healthreporter.ClientClasses;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -176,7 +177,15 @@ public class EditClientActivity extends AppCompatActivity implements OnDataPass{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100) {
+            if (resultCode == Activity.RESULT_OK) {
+                String[] groupData = data.getStringExtra("group").split(",");
+                Log.v(TAG, "Data1: " + groupData[0]);
+                Log.v(TAG, "Data2: " + groupData[1]);
+                clientGroupId = groupData[0];
+                textViewGroup.setText(groupData[1]);
+            }
+        }
     }
 
     public void showDatePickerDialog(View view) {
@@ -202,6 +211,5 @@ public class EditClientActivity extends AppCompatActivity implements OnDataPass{
         textViewYear.setText(birthYear);
 
         clientBirthDate = birthYear + "-" + birthMonth + "-" + birthDay;
-
     }
 }

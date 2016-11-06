@@ -52,7 +52,8 @@
         <activity android:name=".TestClasses.testResultActivity" />
         <activity android:name=".InsertGroupActivity" />
         <activity android:name=".ClientClasses.EditClientActivity" />
-        <activity android:name=".EditGroupActivity"></activity>
+        <activity android:name=".EditGroupActivity" />
+        <activity android:name=".InsertGroupActivity2"></activity>
     </application>
 
 </manifest>
