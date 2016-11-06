@@ -4,4 +4,5 @@
     <string name="searchable">Search</string>
     <string name="my_tb_title">Health Reporter</string>
     <string name="updateTestResult">Update test result</string>
+    <string name="title_activity_edit_group">EditGroupActivity</string>
 </resources>

@@ -1,23 +1,33 @@
 package rainvagel.healthreporter.ClientClasses;
 
+import android.app.DialogFragment;
+import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import rainvagel.healthreporter.DBContract;
 import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.DatePickerFragment;
+import rainvagel.healthreporter.EditGroupActivity;
+import rainvagel.healthreporter.OnDataPass;
 import rainvagel.healthreporter.R;
 
-public class EditClientActivity extends AppCompatActivity {
+public class EditClientActivity extends AppCompatActivity implements OnDataPass{
 
     String clientId;
     String clientFirstName;
@@ -33,18 +43,29 @@ public class EditClientActivity extends AppCompatActivity {
     String groupName;
     String groupUpdated;
     String TAG = "EditClientActivity";
+    EditText firstName;
+    EditText lastName;
+    EditText email;
+    TextView textViewDay;
+    TextView textViewMonth;
+    TextView textviewYear;
+    TextView textViewGroup;
+    RadioGroup gender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_client);
+
         clientId = getIntent().getStringExtra("ClientId");
-        EditText firstName = (EditText) findViewById(R.id.first_name);
-        EditText lastName = (EditText) findViewById(R.id.last_name);
-        EditText email = (EditText) findViewById(R.id.email_address);
-        TextView textViewDay = (TextView) findViewById(R.id.textview_birth_day);
-        TextView textViewMonth = (TextView) findViewById(R.id.textview_birth_month);
-        TextView textviewYear = (TextView) findViewById(R.id.textview_birth_year);
+        firstName = (EditText) findViewById(R.id.first_name);
+        lastName = (EditText) findViewById(R.id.last_name);
+        email = (EditText) findViewById(R.id.email_address);
+        textViewDay = (TextView) findViewById(R.id.textview_birth_day);
+        textViewMonth = (TextView) findViewById(R.id.textview_birth_month);
+        textviewYear = (TextView) findViewById(R.id.textview_birth_year);
+        textViewGroup = (TextView) findViewById(R.id.textview_group_name);
+        gender = (RadioGroup) findViewById(R.id.radio_group_gender);
 
         DBHelper dbHelper = new DBHelper(this);
         String[] columns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME,
@@ -100,5 +121,87 @@ public class EditClientActivity extends AppCompatActivity {
         textViewDay.setText(date[2]);
         textViewMonth.setText(date[1]);
         textviewYear.setText(date[0]);
+        textViewGroup.setText(groupName);
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        clientUpdated = simpleDateFormat.format(calendar.getTime());
+
+        if (clientGender.equals("1")) {
+            gender.check(R.id.radip_male);
+        } else gender.check(R.id.radio_female);
+    }
+
+    public void onEditGroupClicked(View view) {
+        Intent toEditGroup = new Intent(this, EditGroupActivity.class);
+        startActivityForResult(toEditGroup, 100);
+    }
+
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+
+        switch (view.getId()) {
+            case R.id.radio_female:
+                if (checked) {
+//                    Add female as new clients gender
+                    Log.v("InsertClientActivity", "Female checked");
+                    clientGender = "0";
+                } break;
+            case R.id.radip_male:
+                if (checked) {
+//                    Add male as new clients gender
+                    Log.v("InsertClientActivity", "Male checked");
+                    clientGender = "1";
+                } break;
+        }
+    }
+
+    public void onEditClientClicked(View view) {
+        DBHelper dbHelper = new DBHelper(this);
+        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBContract.Clients.KEY_FIRSTNAME, firstName.getText().toString());
+        contentValues.put(DBContract.Clients.KEY_LASTNAME, lastName.getText().toString());
+        contentValues.put(DBContract.Clients.KEY_BIRTHDATE, clientBirthDate);
+        contentValues.put(DBContract.Clients.KEY_EMAIL, email.getText().toString());
+        contentValues.put(DBContract.Clients.KEY_GENDER, clientGender);
+        contentValues.put(DBContract.Clients.KEY_GROUP_ID, clientGroupId);
+        contentValues.put(DBContract.Clients.KEY_UPDATED, clientUpdated);
+        sqLiteDatabase.update(DBContract.Clients.TABLE_NAME, contentValues,
+                DBContract.Clients.KEY_ID + "=" + clientId, null);
+        sqLiteDatabase.close();
+        Intent toClientActivity = new Intent(this, ClientActivity.class);
+        startActivity(toClientActivity);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void showDatePickerDialog(View view) {
+        DialogFragment dialogFragment = new DatePickerFragment();
+        dialogFragment.show(getFragmentManager(), "datePicker");
+    }
+
+    @Override
+    public void onDataPass(String data) {
+        Log.v(TAG, data);
+
+        String[] splittedData = data.split(",");
+        String birthDay = splittedData[2];
+        String birthMonth = splittedData[1];
+        String birthYear = splittedData[0];
+
+        TextView textViewDay = (TextView) findViewById(R.id.textview_birth_day);
+        TextView textViewMonth = (TextView) findViewById(R.id.textview_birth_month);
+        TextView textViewYear = (TextView) findViewById(R.id.textview_birth_year);
+
+        textViewDay.setText(birthDay);
+        textViewMonth.setText(birthMonth);
+        textViewYear.setText(birthYear);
+
+        clientBirthDate = birthYear + "-" + birthMonth + "-" + birthDay;
+
     }
 }
