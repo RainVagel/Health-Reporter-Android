@@ -27,6 +27,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     final  ArrayList<String> asd = new ArrayList<>();
     final  ArrayList<Integer> searchGroupIDs = new ArrayList<>();
     final Map<Integer, String> searchGroupNames = new HashMap<>();
+    final Map<String, Integer> finalClientId= new HashMap<String,Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class SearchResultsActivity extends AppCompatActivity {
           query = searchintent.getStringExtra(SearchManager.QUERY);
             getSupportActionBar().setTitle(query);
                     }
+
 
         ListView lv = (ListView) findViewById(R.id.main);
 
@@ -71,6 +73,9 @@ public class SearchResultsActivity extends AppCompatActivity {
             searchGroupIDs.add(Integer.valueOf(cursor.getString(groupIndex)));
             asd.add(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex));
 
+
+            finalClientId.put(cursor.getString(firstNameIndex)+" "+cursor.getString(lastNameIndex),Integer.valueOf(cursor.getString(rowIndex)));
+
         }
 
         cursor.close();
@@ -88,6 +93,8 @@ public class SearchResultsActivity extends AppCompatActivity {
             if(searchGroupIDs.contains(groupId))
                 searchGroupNames.put(groupId,cursor.getString(nameIndex));
 
+
+
         }
         Log.v("groupids size", String.valueOf(searchGroupIDs.size()));
 
@@ -102,6 +109,7 @@ public class SearchResultsActivity extends AppCompatActivity {
             if(asd.get(i).toLowerCase().contains(query.toLowerCase())){
                 SearchResults.add(asd.get(i));
                 Log.v("searchgroupsname", String.valueOf(searchGroupNames.size()));
+
 
                 //GROUP NAMES DONT HAVE AS MANY ENTRIES AS ASD
                 SearchResultsGroups.add(searchGroupNames.get(searchGroupIDs.get(i)));
@@ -128,9 +136,12 @@ public class SearchResultsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int clientId= searchClientIDs.get(position);
+
                 Intent toCategories = new Intent(SearchResultsActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
-                String passedData =(String.valueOf(clientId)+","+ asd.get(position)+","+ searchGroupNames.get(position));
+                String passedData =(finalClientId.get(SearchResults.get(position))+","+ SearchResults.get(position)+","+ SearchResultsGroups.get(position));
+
+
                 Log.v("client intet", passedData);
                 toCategories.putExtra("ClientId", passedData);// pass on the data
 
