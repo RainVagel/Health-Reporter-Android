@@ -2,6 +2,7 @@ package rainvagel.healthreporter.ClientClasses;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,21 +17,25 @@ import java.util.Map;
 
 import rainvagel.healthreporter.DBContract;
 import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.InsertGroupActivity;
 import rainvagel.healthreporter.R;
 
-public class NewClientActivity extends AppCompatActivity {
+public class NewClientActivity extends AppCompatActivity implements View.OnClickListener {
 
     final ArrayList<Integer> groupIDs = new ArrayList<>();
     final ArrayList<String> groupNames = new ArrayList<>();
     final Map<Integer, String> groups = new HashMap<>();
     final Map<String, Integer> groupsReversed = new HashMap<>();
-
+    private FloatingActionButton fab1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_client);
 
         DBHelper mydb = new DBHelper(this);
+
+        fab1 = (FloatingActionButton) findViewById(R.id.fab1);
+        fab1.setOnClickListener(this);
 
         String[] columns = {DBContract.Groups.KEY_ID, DBContract.Groups.KEY_NAME};
         Cursor cursor = mydb.getReadableDatabase().query(DBContract.Groups.TABLE_NAME,
@@ -65,5 +70,19 @@ public class NewClientActivity extends AppCompatActivity {
                 startActivity(toInsertClient);
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id){
+            case R.id.fab1:
+                addNewGroup(v);
+        }
+    }
+    public void addNewGroup(View v){
+        Intent intent = new Intent(this, InsertGroupActivity.class);
+        startActivity(intent);
+
     }
 }

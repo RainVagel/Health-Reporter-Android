@@ -49,7 +49,8 @@
 
         <activity android:name=".GroupClientActivity" />
         <activity android:name=".ClientClasses.InsertClientActivity" />
-        <activity android:name=".TestClasses.testResultActivity"></activity>
+        <activity android:name=".TestClasses.testResultActivity" />
+        <activity android:name=".InsertGroupActivity"></activity>
     </application>
 
 </manifest>
