@@ -207,12 +207,19 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int clientId;
         switch (item.getItemId()) {
             case R.id.cnt_mnu_edit:
+                Log.v(TAG, "Made it to context menu edit action");
+                clientId = clientIDs.get(info.position);
+                Intent toClientEdit = new Intent(this, EditClientActivity.class);
+                toClientEdit.putExtra("ClientId", String.valueOf(clientId));
+                Log.v(TAG, "ClientID: " + toClientEdit.getStringExtra("ClientId"));
+                startActivity(toClientEdit);
                 break;
             case R.id.cnt_mnu_delete:
                 Log.v(TAG, "Made to context menu delete action");
-                int clientId = clientIDs.get(info.position);
+                clientId = clientIDs.get(info.position);
                 DBHelper db = new DBHelper(this);
                 SQLiteDatabase sqLiteDatabase = db.getWritableDatabase();
                 sqLiteDatabase.delete(DBContract.Clients.TABLE_NAME,
