@@ -70,7 +70,7 @@ public class TestAdapter extends ArrayAdapter<Test> {
                     // send the user to another activity to update the result
                     Intent editAppraisal = new Intent(context, testResultActivity.class);
                     editAppraisal.putExtra("appraisal_id", String.valueOf(appraisal_id));
-                    context.getApplicationContext().startActivity(editAppraisal);
+                    context.startActivity(editAppraisal);
 
 
                 }
