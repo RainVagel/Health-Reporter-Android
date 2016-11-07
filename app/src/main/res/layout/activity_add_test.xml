@@ -19,25 +19,49 @@
 
 
 
-<FrameLayout
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-    android:id="@+id/add_test_frame"
-android:layout_below="@+id/categories_spinner">
-<ListView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/test_list"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentStart="true"
-    android:paddingBottom="10dp"
-    />
-</FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_test_frame"
+        android:layout_below="@+id/categories_spinner">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/test_list"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:paddingBottom="10dp"
+            />
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Presets:"
+        android:id="@+id/prestTextview"
+        android:layout_below="@id/add_test_frame"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_test_presetframe"
+        android:layout_below="@+id/prestTextview">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/preset_list"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:paddingBottom="10dp"
+            />
+    </FrameLayout>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/add_test_frame"
+        android:layout_below="@id/add_test_presetframe"
         android:paddingBottom="10dp"
+        android:text="@string/Add_Tests"
         android:onClick="addTests"/>
 
 

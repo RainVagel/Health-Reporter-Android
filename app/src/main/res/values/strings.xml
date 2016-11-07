@@ -9,5 +9,6 @@
     <string name="action_settings1">Order by last name</string>
 
     <string name="title_activity_edit_group">EditGroupActivity</string>
+    <string name="Add_Tests">Add Test</string>
 
 </resources>

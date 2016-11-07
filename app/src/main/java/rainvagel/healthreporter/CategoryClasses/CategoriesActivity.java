@@ -28,9 +28,9 @@ import rainvagel.healthreporter.TestClasses.TestActivity;
 
 public class CategoriesActivity extends Activity {
     static final String TAG = "CATEGORIES ACTIVITY";
-    final ArrayList<Category> categories = new ArrayList<>();
-     final ArrayList<String> categorynames = new ArrayList<>();
-    final ArrayList<Category> divider = new ArrayList<>();
+    private ArrayList<Category> categories ;
+    private ArrayList<String> categorynames ;
+    private ArrayList<Category> divider = new ArrayList<>();
     public static Map<String, Category> forAddTest = new HashMap<>();
     public static Intent fromClients;
     public static String[] intentData;
@@ -51,6 +51,8 @@ public class CategoriesActivity extends Activity {
         //first element is clientID, second is client's name and third is the group name
         fromClients = getIntent();
         intentData = getIntent().getStringExtra("ClientId").split(",");
+        categories = new ArrayList<>();
+        categorynames = new ArrayList<>();
 
         tb = (Toolbar) findViewById(R.id.my_toolbar);
         CharSequence title =  intentData[1];//first name
@@ -106,21 +108,10 @@ public class CategoriesActivity extends Activity {
 
             }
         });
+        Log.v(TAG+"siin",String.valueOf(categories.size()));
 
         CategoriesAdapter ca = new CategoriesAdapter(this, categories);
 
-       /* ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.activity_categories_list,android.R.id.text1,categories){
-            public View getView(int position, View convertView,ViewGroup parent){
-                View view = super.getView(position,convertView,parent);
-                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-                TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-
-                text1.setText(categories.get(position).getName());
-                text2.setText(categories.get(position).getId());
-                text2.setTextSize(text1.getTextSize()/4);
-                return view;
-            }
-        };*/
         lv.setAdapter(ca);
 
     }
@@ -160,7 +151,7 @@ public class CategoriesActivity extends Activity {
         Date date = new Date();
         String[] current = df.format(date).split("-");
 
-         age = Integer.parseInt(current[0])-Integer.parseInt(dates[0]);
+        age = Integer.parseInt(current[0])-Integer.parseInt(dates[0]);
         int delta_month = Integer.parseInt(current[1])-Integer.parseInt(dates[1]);//delta aka difference
         int delta_day = Integer.parseInt(current[2])-Integer.parseInt(dates[2]);
 
