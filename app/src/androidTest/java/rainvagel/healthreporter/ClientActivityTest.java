@@ -123,13 +123,47 @@ public class ClientActivityTest {
         cursor.moveToFirst();
         String firstName = cursor.getString(firstNameIdx);
         String lastName = cursor.getString(lastNameIdx);
-
+        cursor.close();
         return firstName + " " + lastName;
     }
 
     @Test
     public void testClientFound() {
         String search = getFirstClientsName();
+        onView(withId(R.id.menu_search)).perform(click());
+        onView(isAssignableFrom(EditText.class)).perform(typeText(search), pressImeActionButton());
+        onView(withId(R.id.activity_search_results)).check(matches(isDisplayed()));
+
+        onData(startsWith(search)).inAdapterView(withId(R.id.main)).check(matches(isDisplayed()));
+        matchToolbarTitle(search);
+    }
+
+    @Test
+    public void testGroupNotFound() {
+        onView(withText("Groups")).perform(click());
+        onView(withId(R.id.menu_search)).perform(click());
+        onView(isAssignableFrom(EditText.class)).perform(typeText(SEARCH_NAME), pressImeActionButton());
+        onView(withId(R.id.activity_search_results)).check(matches(isDisplayed()));
+        //onData().inAdapterView(withId(R.id.main)).perform(click());
+        // maybe later should display some message like "no clients found"
+        matchToolbarTitle(SEARCH_NAME);
+    }
+
+    public String getFirstGroupName() {
+        String[] groupColumns = {DBContract.Groups.KEY_NAME};
+        Cursor cursor = database.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, groupColumns, null,null,null,null,null);
+        int nameIdx = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
+
+        cursor.moveToFirst();
+        String name = cursor.getString(nameIdx);
+        cursor.close();
+        return name;
+    }
+
+    @Test
+    public void testGroupFound() {
+        String search = getFirstGroupName();
+        onView(withText("Groups")).perform(click());
         onView(withId(R.id.menu_search)).perform(click());
         onView(isAssignableFrom(EditText.class)).perform(typeText(search), pressImeActionButton());
         onView(withId(R.id.activity_search_results)).check(matches(isDisplayed()));
