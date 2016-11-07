@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 import android.view.Menu;
 import android.view.MenuInflater;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import rainvagel.healthreporter.ClientClasses.ClientActivity;
 import rainvagel.healthreporter.ClientClasses.InsertClientActivity;
@@ -31,7 +33,7 @@ import static org.hamcrest.Matchers.startsWith;
 /**
  * Created by Cornelia on 06/11/2016.
  */
-
+@RunWith(AndroidJUnit4.class)
 public class RemoveClientTest {
 
     @Rule

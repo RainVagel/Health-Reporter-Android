@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 import android.widget.EditText;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,7 +36,7 @@ import static org.hamcrest.Matchers.startsWith;
 /**
  * Created by Cornelia on 07/11/2016.
  */
-
+@RunWith(AndroidJUnit4.class)
 public class EditClientTest {
 
     private DBHelper database;
@@ -55,7 +57,6 @@ public class EditClientTest {
         cursor.moveToFirst();
         String name = cursor.getString(firstNameIdx);
         String lastName = cursor.getString(lastNameIdx);
-        database.close();
 
         onData(startsWith(name + " " + lastName)).inAdapterView(withId(R.id.listViewClients)).perform(longClick());
         onView(withText("Edit")).perform(click());
@@ -64,8 +65,8 @@ public class EditClientTest {
     @Test
     public void testEditingClient() {
         onView(withId(R.id.first_name)).perform(replaceText("Sander"));
-        onView(withId(R.id.last_name)).perform(replaceText("Õigus"));
-        onView(withId(R.id.email_address)).perform(replaceText("Sander.Õigus@gmail.com"));
+        onView(withId(R.id.last_name)).perform(replaceText("Oigus"));
+        onView(withId(R.id.email_address)).perform(replaceText("Sander.Oigus@gmail.com"));
         closeSoftKeyboard();
         onView(withId(R.id.birthdate_picker)).perform(click());
         onView(withText("OK")).perform(click());
@@ -76,29 +77,29 @@ public class EditClientTest {
         String[] clientColumns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_GROUP_ID, DBContract.Clients.KEY_FIRSTNAME,
                 DBContract.Clients.KEY_LASTNAME, DBContract.Clients.KEY_EMAIL, DBContract.Clients.KEY_GENDER,
                 DBContract.Clients.KEY_BIRTHDATE, DBContract.Clients.KEY_UPDATED, DBContract.Clients.KEY_UPLOADED};
-        Cursor cursor2 = database.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, clientColumns, null,null,null,null,null);
+        Cursor cursor = database.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, clientColumns, null,null,null,null,null);
 
-        int idIdx = cursor2.getColumnIndex(DBContract.Clients.KEY_ID);
-        int groupIdx = cursor2.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
-        int firstNameIdx = cursor2.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
-        int lastNameIdx = cursor2.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
-        int emailIdx = cursor2.getColumnIndex(DBContract.Clients.KEY_EMAIL);
-        int genIdx = cursor2.getColumnIndex(DBContract.Clients.KEY_GENDER);
-        int birtdayIdx = cursor2.getColumnIndex(DBContract.Clients.KEY_BIRTHDATE);
-        int updateIdx = cursor2.getColumnIndex(DBContract.Clients.KEY_UPDATED);
+        int idIdx = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
+        int groupIdx = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
+        int firstNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
+        int lastNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
+        int emailIdx = cursor.getColumnIndex(DBContract.Clients.KEY_EMAIL);
+        int genIdx = cursor.getColumnIndex(DBContract.Clients.KEY_GENDER);
+        int birtdayIdx = cursor.getColumnIndex(DBContract.Clients.KEY_BIRTHDATE);
+        int updateIdx = cursor.getColumnIndex(DBContract.Clients.KEY_UPDATED);
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = simpleDateFormat.format(calendar.getTime());
 
-        cursor2.moveToFirst();
-        assertEquals("Sander", cursor2.getString(firstNameIdx));
-        assertEquals("Õigus", cursor2.getString(lastNameIdx));
-        assertEquals("Sander.Õigus@gmail.com", cursor2.getString(emailIdx));
-        assertEquals(3, cursor2.getInt(groupIdx));
-        assertEquals(1, cursor2.getInt(genIdx));
-        assertEquals(formattedDate, cursor2.getString(birtdayIdx));
-        assertEquals(formattedDate, cursor2.getString(updateIdx));
+        cursor.moveToFirst();
+        assertEquals("Sander", cursor.getString(firstNameIdx));
+        assertEquals("Oigus", cursor.getString(lastNameIdx));
+        assertEquals("Sander.Oigus@gmail.com", cursor.getString(emailIdx));
+        assertEquals(3, cursor.getInt(groupIdx));
+        assertEquals(1, cursor.getInt(genIdx));
+        assertEquals(formattedDate, cursor.getString(birtdayIdx));
+        assertEquals(formattedDate, cursor.getString(updateIdx));
     }
 
     @Test

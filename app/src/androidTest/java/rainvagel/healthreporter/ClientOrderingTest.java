@@ -2,9 +2,11 @@ package rainvagel.healthreporter;
 
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import rainvagel.healthreporter.ClientClasses.ClientActivity;
 
@@ -16,7 +18,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 /**
  * Created by Cornelia on 07/11/2016.
  */
-
+@RunWith(AndroidJUnit4.class)
 public class ClientOrderingTest {
 
     @Rule
