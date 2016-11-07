@@ -41,9 +41,12 @@ public class EditClientTest {
 
     private DBHelper database;
 
+    /*
     @Rule
     public ActivityTestRule<ClientActivity> clientActivityRule =
             new ActivityTestRule<>(ClientActivity.class);
+
+    */
 
     @Before
     public void setUp() {
