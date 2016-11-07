@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_insert_client"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="rainvagel.healthreporter.ClientClasses.EditClientActivity">
+    <EditText
+        android:id="@+id/first_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="John"
+        android:inputType="textCapWords"/>
+    <EditText
+        android:id="@+id/last_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Smith"
+        android:inputType="text"/>
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/radio_group_gender">
+        <RadioButton
+            android:id="@+id/radio_female"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="F"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton
+            android:id="@+id/radip_male"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="M"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
+    <EditText
+        android:id="@+id/email_address"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="john.smith@gmail.com"
+        android:inputType="textEmailAddress"/>
+    <Button
+        android:id="@+id/birthdate_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pick birthdate"
+        android:onClick="showDatePickerDialog"/>
+    <TextView
+        android:id="@+id/textview_birth_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="07"/>
+    <TextView
+        android:id="@+id/textview_birth_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="05"/>
+    <TextView
+        android:id="@+id/textview_birth_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="1995"/>
+    <TextView
+        android:id="@+id/textview_group_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/button_select_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select group"
+        android:onClick="onEditGroupClicked"/>
+    <Button
+        android:id="@+id/button_add_client"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit client"
+        android:onClick="onEditClientClicked"/>
+
+</LinearLayout>

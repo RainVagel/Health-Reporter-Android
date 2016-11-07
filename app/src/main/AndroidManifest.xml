@@ -9,41 +9,36 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ClientActivity"
+            android:name=".ClientClasses.ClientActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
-
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
-                         android:name="android.app.default_searchable"
-                            android:value=".SearchResultsActivity" />
+                android:name="android.app.default_searchable"
+                android:value=".SearchResultsActivity" />
         </activity>
-        <activity android:name=".CategoriesActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
-        <activity android:name=".TestActivity" />
-
-
-        <activity android:name=".NewClientActivity">
-
-        </activity>
-
-        <activity android:name=".NewCategoryActivity"/>
+        <activity
+            android:name=".CategoryClasses.CategoriesActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".TestClasses.TestActivity" />
+        <activity android:name=".ClientClasses.NewClientActivity" />
+        <activity android:name=".CategoryClasses.NewCategoryActivity" />
         <activity android:name=".SearchResultsActivity">
-                        <intent-filter>
-                            <action android:name="android.intent.action.SEARCH" />
-                        </intent-filter>
-                        <meta-data
-                            android:name="android.app.searchable"
-                            android:resource="@xml/searchable" />
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".AddTestActivity"></activity>
+        <activity android:name=".TestClasses.AddTestActivity" />
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -52,7 +47,13 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-
+        <activity android:name=".GroupClientActivity" />
+        <activity android:name=".ClientClasses.InsertClientActivity" />
+        <activity android:name=".TestClasses.testResultActivity" />
+        <activity android:name=".InsertGroupActivity" />
+        <activity android:name=".ClientClasses.EditClientActivity" />
+        <activity android:name=".EditGroupActivity" />
+        <activity android:name=".InsertGroupActivity2"></activity>
     </application>
 
 </manifest>

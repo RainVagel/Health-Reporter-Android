@@ -1,9 +1,9 @@
-package rainvagel.healthreporter;
+package rainvagel.healthreporter.CategoryClasses;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -11,21 +11,29 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CategoriesActivity extends AppCompatActivity {
+import rainvagel.healthreporter.TestClasses.AddTestActivity;
+import rainvagel.healthreporter.ClientClasses.ClientActivity;
+import rainvagel.healthreporter.DBContract;
+import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.R;
+import rainvagel.healthreporter.TestClasses.TestActivity;
+
+public class CategoriesActivity extends Activity {
     static final String TAG = "CATEGORIES ACTIVITY";
-    final ArrayList<Category> categories = new ArrayList<>();
-    final ArrayList<String> categorynames = new ArrayList<>();
-    Intent fromClients;
-    static String[] intentData;
+    private ArrayList<Category> categories ;
+    private ArrayList<String> categorynames ;
+    private ArrayList<Category> divider = new ArrayList<>();
+    public static Map<String, Category> forAddTest = new HashMap<>();
+    public static Intent fromClients;
+    public static String[] intentData;
     Toolbar tb;
     int age;
 
@@ -41,8 +49,10 @@ public class CategoriesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_categories);
         Log.v(TAG, "In categories");
         //first element is clientID, second is client's name and third is the group name
-
-            intentData = getIntent().getStringExtra("ClientId").split(",");
+        fromClients = getIntent();
+        intentData = getIntent().getStringExtra("ClientId").split(",");
+        categories = new ArrayList<>();
+        categorynames = new ArrayList<>();
 
         tb = (Toolbar) findViewById(R.id.my_toolbar);
         CharSequence title =  intentData[1];//first name
@@ -75,16 +85,17 @@ public class CategoriesActivity extends AppCompatActivity {
         );
 
 
-        lv.setAdapter(arrayAdapter);
+
 
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String entry = (String) parent.getItemAtPosition(position);
+                Category category = (Category) parent.getItemAtPosition(position);
+
                 //Based on the name of the category we retrieve the correct category object and redirect to another window
                 //which displays said category data
-                Category category = categories.get(categorynames.indexOf(entry));
+                //Category category = categories.get(categorynames.indexOf(entry));
                 Log.v(TAG, category.getName());
                 //After retrieving the category object we send an intent to TestActivity which contains said category id and clientid
                 Intent intent = new Intent(CategoriesActivity.this, TestActivity.class);// class does not exist
@@ -97,7 +108,11 @@ public class CategoriesActivity extends AppCompatActivity {
 
             }
         });
+        Log.v(TAG+"siin",String.valueOf(categories.size()));
 
+        CategoriesAdapter ca = new CategoriesAdapter(this, categories);
+
+        lv.setAdapter(ca);
 
     }
 
@@ -107,10 +122,12 @@ public class CategoriesActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+
     public void getCategories(){
 
 
-        DBHelper  mydb = new DBHelper(CategoriesActivity.this);
+        DBHelper mydb = new DBHelper(CategoriesActivity.this);
         //retrieve the KEY_IDS OF APPRAISALS WHICH WE WILL USE TO GO TO THE APPRAISAL_TESTS TABLE
 
         //QUERY FILTERS
@@ -127,21 +144,28 @@ public class CategoriesActivity extends AppCompatActivity {
                 birthdate = res.getString(birthdateIndex);
             }
         }
-
+        Log.v(TAG, "synnikuupaev: " + birthdate);
         String[] dates = birthdate.split("-");
-        Log.v(TAG,dates[0]);
+
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String[] current = df.format(date).split("-");
+
         age = Integer.parseInt(current[0])-Integer.parseInt(dates[0]);
-        if(Integer.parseInt(dates[1])== Integer.parseInt(current[1])){
-            if(Integer.parseInt(dates[2])<Integer.parseInt(current[2]))
+        int delta_month = Integer.parseInt(current[1])-Integer.parseInt(dates[1]);//delta aka difference
+        int delta_day = Integer.parseInt(current[2])-Integer.parseInt(dates[2]);
+
+        if(delta_month <= 0){
+            if(delta_month == 0){
+                if(delta_day <0)
+                    age -= 1;
+            }
+            else{
                 age -=1;
+            }
 
         }
-        else if(Integer.parseInt(dates[1])<Integer.parseInt(dates[1]))
-            age -=1 ;
-
+        Log.v("age",String.valueOf(age));
         CharSequence titleage = intentData[1] + ", " +String.valueOf(age);//correct toolbar title with age
         tb.setTitle(titleage);
 
@@ -204,20 +228,28 @@ public class CategoriesActivity extends AppCompatActivity {
             // If parentid == null then real category
             // if parentid != null then a divider
             if(res.getString(parentidRow).equals("null")) {
+                String name = res.getString(nameRow);
+                Category cat = new Category(res.getString(idRow), res.getString(parentidRow), name
+                        , res.getString(posRow), res.getString(updatedRow), res.getString(uploadedRow));
+                forAddTest.put(name, cat);
                 if(categoriesID.contains(res.getString(idRow))) {
                     Log.v(TAG,"categories table");
-                    String name = res.getString(nameRow);
-                    Category cat = new Category(res.getString(idRow), res.getString(parentidRow), name
-                            , res.getString(posRow), res.getString(updatedRow), res.getString(uploadedRow));
                     categories.add(cat);
                     categorynames.add(name);
+
                 }
             }
 
+
         }
+        Log.v(TAG, String.valueOf(forAddTest.size()));
         res.close();
         mydb.close();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        Intent toClient = new Intent(this, ClientActivity.class);
+        startActivity(toClient);
+    }
 }
