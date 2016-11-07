@@ -136,7 +136,7 @@ public class DBTest {
         cursor.moveToNext();
         assertEquals("null", cursor.getString(parentIdx));
         assertEquals("Hüperboloid", cursor.getString(nameIdx));
-        assertEquals(3, Integer.parseInt(cursor.getString(posIdx)));
+        assertEquals(1, Integer.parseInt(cursor.getString(posIdx)));
     }
 
     @Test
