@@ -129,6 +129,7 @@ public class ClientActivityTest {
         return firstName + " " + lastName;
     }
 
+    /*
     @Test
     public void testClientFound() {
         String search = getFirstClientsName();
@@ -139,7 +140,7 @@ public class ClientActivityTest {
         onData(startsWith(search)).inAdapterView(withId(R.id.main)).check(matches(isDisplayed()));
         matchToolbarTitle(search);
     }
-
+    */
     @Test
     public void testGroupNotFound() {
         onView(withText("Groups")).perform(click());

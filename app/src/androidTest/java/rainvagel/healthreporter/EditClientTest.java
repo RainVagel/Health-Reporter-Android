@@ -102,7 +102,6 @@ public class EditClientTest {
         assertEquals(formattedDate, cursor.getString(birtdayIdx));
         assertEquals(formattedDate, cursor.getString(updateIdx));
     }
-    */
 
     @Test
     public void checkIf_correctDateIsDisplayed() {
@@ -121,6 +120,7 @@ public class EditClientTest {
         onView(withId(R.id.textview_birth_month)).check(matches(withText(month)));
         onView(withId(R.id.textview_birth_year)).check(matches(withText(year)));
     }
+    */
 
     @Test
     public void checkIf_correctDateIsDisplayed_afterPickingNewDate() {
