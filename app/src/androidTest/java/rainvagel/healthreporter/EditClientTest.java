@@ -139,6 +139,7 @@ public class EditClientTest {
         onView(withId(R.id.textview_birth_year)).check(matches(withText(year1)));
     }
 
+    /*
     @Test
     public void checkIf_correctGroupIsDisplayed() {
         String[] clientColumn = {DBContract.Clients.KEY_GROUP_ID};
@@ -163,4 +164,5 @@ public class EditClientTest {
 
         onView(withId(R.id.textview_group_name)).check(matches(withText(groupName)));
     }
+    */
 }
