@@ -66,7 +66,11 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     final Map<String, Integer>  namesClientKeys = new HashMap<>();
 
 
-    int settingmenu = 0;
+    public static TabHost host;
+
+
+
+
 
     ArrayAdapter adapter = null;
 
@@ -172,7 +176,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         finalrotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.finalrotate);
         fab1.setOnClickListener(this);
 
-        TabHost host = (TabHost)findViewById(R.id.tabHost);
+         host = (TabHost)findViewById(R.id.tabHost);
         host.setup();
         //CLIENTS TAB
         TabHost.TabSpec spec = host.newTabSpec("Clients");
