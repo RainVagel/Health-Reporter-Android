@@ -14,7 +14,7 @@ import rainvagel.healthreporter.*;
 
 public class testResultActivity extends AppCompatActivity {
     private static final String TAG = "editTestResult";
-    private static  int appraisal_id;
+    private static  String appraisal_id;
     private static Intent fromTestAdapter;
     private static NumberPicker np;
 
@@ -28,7 +28,7 @@ public class testResultActivity extends AppCompatActivity {
         np.setMaxValue(25);
         fromTestAdapter = getIntent();
         // intent always passes on the appraisal_id
-        appraisal_id = Integer.parseInt(fromTestAdapter.getStringExtra("appraisal_id"));
+        appraisal_id = fromTestAdapter.getStringExtra("appraisal_id");
         Log.v(TAG, "In test result acitivity");
 
 

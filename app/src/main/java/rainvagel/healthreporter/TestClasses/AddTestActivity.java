@@ -4,23 +4,17 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +22,6 @@ import java.util.UUID;
 
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 import rainvagel.healthreporter.CategoryClasses.Category;
-import rainvagel.healthreporter.ClientClasses.ClientActivity;
 import rainvagel.healthreporter.DBContract;
 import rainvagel.healthreporter.DBHelper;
 import rainvagel.healthreporter.R;
@@ -39,11 +32,18 @@ public class AddTestActivity extends AppCompatActivity  {
     List<String> categories = new ArrayList<>();
     ArrayList<Category> category_objects = new ArrayList<>() ;
     Map<String, Category> category_map = CategoriesActivity.forAddTest;
+    ArrayList<Test> allSuitableTests = new ArrayList<>();
     ArrayList<Test> allTests = new ArrayList<>();
-    ArrayList<String> testIDs = new ArrayList<>();
+    ArrayList<String> allTestIDs = new ArrayList<>();
+    ArrayList<String> allSuitableTestIDs = new ArrayList<>();
+    Map<String, Test> preset = new HashMap<>();
+    Map<String, String> preset_names = new HashMap<>();
+    ArrayList<String> presetTests_testid;
+    ArrayList<String> presetTest_id;
+    ArrayList<String> arrayPresetNames;
     public static ArrayList<Test> selectedTests = new ArrayList<>();
-    ListView lv;
-
+    ListView testListView;
+    ListView presetListView;
 
 
     @Override
@@ -80,12 +80,18 @@ public class AddTestActivity extends AppCompatActivity  {
                 Toast.makeText(AddTestActivity.this, "Selected",
                         Toast.LENGTH_SHORT).show();
                 // here we should display all the tests that match said category and don't exist in test activity.
+                allSuitableTests = new ArrayList<>();
+                allSuitableTestIDs = new ArrayList<String>();
                 getCategoryTests(category_objects.get(arg2));
-                 lv = (ListView)findViewById(R.id.test_list);
-                Log.v("alltestsbefore adapter",String.valueOf(allTests.size()));
-                AddTestAdapter ata = new AddTestAdapter(AddTestActivity.this, allTests);
-                lv.setAdapter(ata);
+                getPresets(category_objects.get(arg2));
+                testListView = (ListView)findViewById(R.id.test_list);
 
+                Log.v("alltestsbefore adapter",String.valueOf(allSuitableTests.size()));
+                AddTestAdapter ata = new AddTestAdapter(AddTestActivity.this, allSuitableTests);
+                testListView.setAdapter(ata);
+                presetListView = (ListView) findViewById(R.id.preset_list);
+                AddPreSetAdapter apsa = new AddPreSetAdapter(AddTestActivity.this, preset,preset_names,arrayPresetNames);
+                presetListView.setAdapter(apsa);
 
             }
 
@@ -95,9 +101,6 @@ public class AddTestActivity extends AppCompatActivity  {
 
             }
         });
-
-
-
 
 
     }
@@ -157,7 +160,7 @@ public class AddTestActivity extends AppCompatActivity  {
 
 
         selectedTests = new ArrayList<>();
-        lv.setAdapter(new AddTestAdapter(this,allTests));
+        testListView.setAdapter(new AddTestAdapter(this, allSuitableTests));
 
         db.close();
         mydb.close();
@@ -170,6 +173,51 @@ public class AddTestActivity extends AppCompatActivity  {
 
 
 
+    }
+
+    protected void getPresets(Category c){
+
+        Map<String, String> presets = new HashMap<>();//id key and value is name
+        DBHelper mydb = new DBHelper(this);
+        String[] columns = {DBContract.PresetTests.KEY_PRESET_ID,DBContract.PresetTests.KEY_TEST_ID};
+
+        Cursor res = mydb.getReadableDatabase().query(DBContract.PresetTests.TABLE_NAME,columns,null,null,null,null,null);
+        preset = new HashMap<>();
+        presetTests_testid = new ArrayList<>();
+        presetTest_id = new ArrayList<>();
+        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
+            if(allTestIDs.contains(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID)))){
+                preset.put(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)),allTests.get(allTestIDs.indexOf(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID)))));
+                //preset_names.put(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)), res.getString(res.getColumnIndex(DBContract.PresetTests.)))
+
+                presetTests_testid.add(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID)));
+                presetTest_id.add(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)));
+            }
+
+        }
+
+
+        columns = new String[] {DBContract.Presets.KEY_ID,DBContract.Presets.KEY_NAME};
+
+        res = mydb.getReadableDatabase().query(DBContract.Presets.TABLE_NAME,columns,null,null,null,null,null);
+        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
+            if(preset.keySet().contains(res.getString(res.getColumnIndex(DBContract.Presets.KEY_ID)))){
+                preset_names.put(res.getString(res.getColumnIndex(DBContract.Presets.KEY_ID)),res.getString(res.getColumnIndex(DBContract.Presets.KEY_NAME)));
+            }
+        }
+        arrayPresetNames = new ArrayList<>();
+        for(String s : preset_names.values()){
+            Log.v("asdasd", s);
+            arrayPresetNames.add(s);
+        }
+
+        Log.v("preseti suurus", String.valueOf(preset.size()));
+        Log.v("presetinimede suurus", String.valueOf(preset_names.size()));
+        Log.v("presetnimedarray suurus",String.valueOf(arrayPresetNames.size()));
+
+
+        res.close();
+        mydb.close();
     }
 
 
@@ -197,22 +245,25 @@ public class AddTestActivity extends AppCompatActivity  {
         int uploadedIndex = res.getColumnIndex(DBContract.Tests.KEY_UPLOADED);
 
         for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
+            Test test = new Test(Integer.parseInt(res.getString(testidIndex)),
+                    Integer.parseInt(res.getString(categoryIndex)), res.getString(nameIndex), res.getString(descriptionIndex),
+                    res.getString(unitsIndex), res.getString(decimalsIndex),
+                    res.getString(weightIndex), res.getString(formulaFIndex), res.getString(formulaMIndex),
+                    Integer.parseInt(res.getString(positionIndex)), res.getString(updatedIndex), res.getString(uploadedIndex));
+            allTests.add(test);
+            allTestIDs.add(res.getString(testidIndex));
             if(c.getId().equals(res.getString(categoryIndex)) ) {//look only for said category indexes
-                Test test = new Test(Integer.parseInt(res.getString(testidIndex)),
-                        Integer.parseInt(res.getString(categoryIndex)), res.getString(nameIndex), res.getString(descriptionIndex),
-                        res.getString(unitsIndex), res.getString(decimalsIndex),
-                        res.getString(weightIndex), res.getString(formulaFIndex), res.getString(formulaMIndex),
-                        Integer.parseInt(res.getString(positionIndex)), res.getString(updatedIndex), res.getString(uploadedIndex));
-                testIDs.add(res.getString(testidIndex));
-                allTests.add(test);
+                allSuitableTestIDs.add(res.getString(testidIndex));
+                allSuitableTests.add(test);
             }
+
         }
         String clientid = CategoriesActivity.intentData[0];
 
         // now we have to get all the appraisal_tests for said client
 
         columns = new String[]{DBContract.Appraisals.KEY_ID,DBContract.Appraisals.KEY_CLIENT_ID};
-         res = mydb.getReadableDatabase().query(DBContract.Appraisals.TABLE_NAME,columns,null,null,null,null,null);
+        res = mydb.getReadableDatabase().query(DBContract.Appraisals.TABLE_NAME,columns,null,null,null,null,null);
         ArrayList<String> appraisal_tests = new ArrayList<>();
         int idIndex = res.getColumnIndex(DBContract.Appraisals.KEY_ID);
         int clientIndex = res.getColumnIndex(DBContract.Appraisals.KEY_CLIENT_ID);
@@ -227,32 +278,41 @@ public class AddTestActivity extends AppCompatActivity  {
                 DBContract.AppraisalTests.KEY_TRIAL_2,  DBContract.AppraisalTests.KEY_TRIAL_3, DBContract.AppraisalTests.KEY_UPDATED,
                 DBContract.AppraisalTests.KEY_UPLOADED};
         res = mydb.getReadableDatabase().query(DBContract.AppraisalTests.TABLE_NAME,columns,null,null,null,null,null);
-        Log.v("testids size",String.valueOf(testIDs.size()));
-        Log.v("alltests sie",String.valueOf(allTests.size()));
+        Log.v("testids size",String.valueOf(allSuitableTestIDs.size()));
+        Log.v("alltests sie",String.valueOf(allSuitableTests.size()));
+
+        Log.v("koiktestid", String.valueOf(allTests.size()));
+        Log.v("koikidetestide IDd",String.valueOf(allTestIDs.size()));
         int test_id = res.getColumnIndex(DBContract.AppraisalTests.KEY_TEST_ID);
         int appraisal_id = res.getColumnIndex(DBContract.AppraisalTests.KEY_APPRAISAL_ID);
         for(res.moveToFirst();!res.isAfterLast();res.moveToNext()) {
             if(appraisal_tests.contains(res.getString(appraisal_id))){//look only for appraisals that said client has
-                if(testIDs.contains(res.getString(test_id))){
-                    allTests.remove(testIDs.indexOf(res.getString(test_id)));
-                    testIDs.remove(res.getString(test_id));
+                if(allSuitableTestIDs.contains(res.getString(test_id))){
+                    allSuitableTests.remove(allSuitableTestIDs.indexOf(res.getString(test_id)));
+                    allSuitableTestIDs.remove(res.getString(test_id));
                 }
 
+                if(allTestIDs.contains(res.getString(test_id))) {
+                    allTests.remove(allTestIDs.indexOf(res.getString(test_id)));
+                    allTestIDs.remove(res.getString(test_id));
+                }
             }
-          //remove all tests from the array that already exist in test activity
+
+            //remove all tests from the array that already exist in test activity
 
         }
 
-        Log.v("alltestszise",String.valueOf(allTests.size()));
-
+        Log.v("alltestszise",String.valueOf(allSuitableTests.size()));
+        Log.v("koiktestid", String.valueOf(allTests.size()));
+        Log.v("koikidetestide IDd",String.valueOf(allTestIDs.size()));
         res.close();
         mydb.close();
 
-        }
-
-
-
     }
+
+
+
+}
 
 
 
