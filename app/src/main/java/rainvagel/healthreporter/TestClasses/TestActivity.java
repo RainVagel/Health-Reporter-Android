@@ -1,4 +1,4 @@
-package rainvagel.healthreporter;
+package rainvagel.healthreporter.TestClasses;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -7,19 +7,17 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
+import rainvagel.healthreporter.DBContract;
+import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.R;
 
 
 public class TestActivity extends AppCompatActivity {
@@ -27,14 +25,16 @@ public class TestActivity extends AppCompatActivity {
     Button createButton;
     String[] fromCategoriesData;
     ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
-    ArrayList<Test> testArray = new ArrayList<>();
+     ArrayList<Test> testArray = new ArrayList<>();
     ArrayList<String> correctTests= new ArrayList<>();
-    Map<Integer, Test> appraisalToTest = new HashMap<>();
+   public static Map<Integer, ArrayList<AppraisalTests>> testToAppraisal = new HashMap<>();//TODO VALUE SHOULD BE AN ARRAY LIST OF APPRAISTESTS
+    public static Intent fromCategories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+        fromCategories = getIntent();
         String[] fromCategoriesData = getIntent().getStringExtra("IntentData").split(",");
         //Intent from categories contains client id(index 0) and category id in sa string which has been split by ","
         Toolbar my_toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -50,37 +50,28 @@ public class TestActivity extends AppCompatActivity {
                 getTests();
             }}).start();
 
-        Log.v(TAG, String.valueOf(appraisalTests.size()));
-        Log.v(TAG, String.valueOf(appraisalToTest.keySet().size()));
+
         ListView listView = (ListView) findViewById(R.id.listViewTests);
+        
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2,
-                android.R.id.text1, correctTests) {
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+        TestAdapter ta = new TestAdapter(this,testToAppraisal,testArray);
 
-                text1.setText(appraisalToTest.get(Integer.parseInt(correctTests.get(position))).getName());
-                return view;
-            }
-        };
-        listView.setAdapter(adapter);
+
+
+
+
+        listView.setAdapter(ta);
+
+
 
 
     }
 
-    public void createTestResult(View v){
-        Intent intent = new Intent(this, NewTestActivity.class);
-        startActivity(intent);
-    }
 
-    protected void searchTests() {
-        //TODO method for searching tests
-    }
 
 
     protected void getTests(){
-        DBHelper  mydb = new DBHelper(TestActivity.this);
+        DBHelper mydb = new DBHelper(TestActivity.this);
         String[] fromCategoriesData = getIntent().getStringExtra("IntentData").split(",");
         // Using clientID we have to query the database to get all appraisal_tests that belong to said Client
         // Then using the categoryID we filter out unneccessary tests.
@@ -122,7 +113,7 @@ public class TestActivity extends AppCompatActivity {
         for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
             if(appraisalIDs.contains(res.getString(appraisalIndex))) {
                 testIDs.add(res.getString(testID));
-                appraisalTests.add(new AppraisalTests(Integer.parseInt(res.getString(appraisalIndex)),
+                appraisalTests.add(new AppraisalTests(res.getString(appraisalIndex),
                         Integer.parseInt(res.getString(testID)), res.getString(scoreID), res.getString(noteID), res.getString(trial1ID),
                         res.getString(trial2ID), res.getString(trial3ID), res.getString(updatedIndex), res.getString(uploadedIndex)));
             }
@@ -158,16 +149,52 @@ public class TestActivity extends AppCompatActivity {
                             res.getString(unitsIndex),res.getString(decimalsIndex),
                             res.getString(weightIndex),res.getString(formulaFIndex),res.getString(formulaMIndex),
                             Integer.parseInt(res.getString(positionIndex)),res.getString(updatedIndex),res.getString(uploadedIndex));
-                    appraisalToTest.put(test.getId(), test);
+
                     correctTests.add(testIDs.get(testIDs.indexOf(res.getString(testidIndex))));
                     testArray.add(test);
                 }
+            }
+        }
+        //retrieve dividers
+        columns =new String[] {DBContract.TestCategories.KEY_ID, DBContract.TestCategories.KEY_PARENT_ID};
+
+        res = mydb.getReadableDatabase().query(DBContract.TestCategories.TABLE_NAME,columns,null,null,null,null,null);
+        ArrayList<Integer> divider = new ArrayList<>();
+        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
+            if(correctTests.contains(res.getString(res.getColumnIndex(DBContract.TestCategories.KEY_PARENT_ID))) && !res.getString(res.getColumnIndex(DBContract.TestCategories.KEY_PARENT_ID)).equals(null)){
+                divider.add(Integer.parseInt(res.getString(res.getColumnIndex(DBContract.TestCategories.KEY_PARENT_ID))));
+                Log.v(TAG, "added divider");
             }
         }
 
 
         res.close();
         mydb.close();
+
+        //add all appraisal for said category in to a map with the key being appraisals testID
+        for(String i : correctTests){
+            Log.v(TAG, "OLEN SIIN");
+            Log.v(TAG, i);
+            Log.v(TAG, String.valueOf(testArray.size()));
+
+            if(testToAppraisal.containsKey(Integer.parseInt(i))){//if the map already has said key
+                testToAppraisal.put(Integer.parseInt(i), testToAppraisal.get(Integer.parseInt(i))).add(appraisalTests.get(testIDs.indexOf(i)));
+            }
+            else{
+                ArrayList<AppraisalTests> appraisals = new ArrayList<>();
+                appraisals.add(appraisalTests.get(testIDs.indexOf(i)));
+                testToAppraisal.put(Integer.parseInt(i),appraisals );
+            }
+
+            if(divider.contains(testIDs.indexOf(i))){// if current test has a divider
+                testArray.add(correctTests.indexOf(i),null);
+            }
+        }
+
+        //FOR TESTING PURPOSES BECAUSE NO DIVIDERS IN DATABASE AT THE MOMENT!!!!!!!!!!!!!!
+        // REMOVE IF DATABASE HAS BEEN UPDATED
+        // TODO
+        testArray.add(1,null);
 
 
 

@@ -3,4 +3,12 @@
     <string name="menu_search">Search</string>
     <string name="searchable">Search</string>
     <string name="my_tb_title">Health Reporter</string>
+    <string name="updateTestResult">Update test result</string>
+
+    <string name="action_settings">Order by first name</string>
+    <string name="action_settings1">Order by last name</string>
+
+    <string name="title_activity_edit_group">EditGroupActivity</string>
+    <string name="Add_Tests">Add Test</string>
+
 </resources>
