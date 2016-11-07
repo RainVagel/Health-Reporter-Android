@@ -132,11 +132,7 @@ public class DBTest {
         assertEquals("null", cursor.getString(parentIdx));
         assertEquals("Insener", cursor.getString(nameIdx));
         assertEquals(1, Integer.parseInt(cursor.getString(posIdx)));
-        cursor.moveToNext();
-        cursor.moveToNext();
-        assertEquals("null", cursor.getString(parentIdx));
-        assertEquals("Hüperboloid", cursor.getString(nameIdx));
-        assertEquals(1, Integer.parseInt(cursor.getString(posIdx)));
+        cursor.close();
     }
 
     @Test
