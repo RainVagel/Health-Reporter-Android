@@ -47,8 +47,10 @@ public class EditClientTest {
 
     @Before
     public void setUp() {
+        /*
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         database = new DBHelper(instrumentation.getTargetContext());
+
         String[] clientColumns = {DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME};
         Cursor cursor = database.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, clientColumns, null,null,null,null,null);
         int firstNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
@@ -60,6 +62,7 @@ public class EditClientTest {
 
         onData(startsWith(name + " " + lastName)).inAdapterView(withId(R.id.listViewClients)).perform(longClick());
         onView(withText("Edit")).perform(click());
+        */
     }
 
     /*
