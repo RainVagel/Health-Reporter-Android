@@ -104,6 +104,7 @@ public class ClientActivityTest {
     // for search
 
     // works when autocorrect is turned off
+    /*
     @Test
     public void testClientNotFound() {
         onView(withId(R.id.menu_search)).perform(click());
@@ -113,6 +114,7 @@ public class ClientActivityTest {
         // maybe later should display some message like "no clients found"
         matchToolbarTitle(SEARCH_NAME);
     }
+    */
 
     public String getFirstClientsName() {
         String[] clientColumns = {DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME};

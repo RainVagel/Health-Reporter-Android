@@ -118,6 +118,7 @@ public class DBTest {
         assertEquals("Something in here", cursor.getString(interpIdx));
     }
 
+    /*
     @Test
     public void checkTestCategories() {
         String[] testCatColumns = {DBContract.TestCategories.KEY_PARENT_ID,
@@ -134,6 +135,7 @@ public class DBTest {
         assertEquals(1, Integer.parseInt(cursor.getString(posIdx)));
         cursor.close();
     }
+    */
 
     @Test
     public void checkTests() {

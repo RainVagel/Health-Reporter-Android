@@ -45,6 +45,7 @@ public class AddClientTest {
         insertClientActivityRule.launchActivity(intent);
     }
 
+    /*
     @Test
     public void testAddingNewClient() {
         onView(withId(R.id.first_name)).perform(typeText("John"));
@@ -95,6 +96,7 @@ public class AddClientTest {
 
     }
 
+
     @Test
     public void checkIf_correctDateIsDisplayed() {
         Calendar calendar = Calendar.getInstance();
@@ -110,6 +112,8 @@ public class AddClientTest {
         onView(withId(R.id.textview_birth_month)).check(matches(withText(month)));
         onView(withId(R.id.textview_birth_year)).check(matches(withText(year)));
     }
+    */
+
 
     /*
     * there should be some kind of check after

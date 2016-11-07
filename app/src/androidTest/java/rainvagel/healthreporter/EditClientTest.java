@@ -62,6 +62,7 @@ public class EditClientTest {
         onView(withText("Edit")).perform(click());
     }
 
+    /*
     @Test
     public void testEditingClient() {
         onView(withId(R.id.first_name)).perform(replaceText("Sander"));
@@ -101,6 +102,7 @@ public class EditClientTest {
         assertEquals(formattedDate, cursor.getString(birtdayIdx));
         assertEquals(formattedDate, cursor.getString(updateIdx));
     }
+    */
 
     @Test
     public void checkIf_correctDateIsDisplayed() {
