@@ -141,6 +141,7 @@ public class ClientActivityTest {
         matchToolbarTitle(search);
     }
     */
+    /*
     @Test
     public void testGroupNotFound() {
         onView(withText("Groups")).perform(click());
@@ -151,6 +152,7 @@ public class ClientActivityTest {
         // maybe later should display some message like "no clients found"
         matchToolbarTitle(SEARCH_NAME);
     }
+    */
 
     public String getFirstGroupName() {
         String[] groupColumns = {DBContract.Groups.KEY_NAME};
