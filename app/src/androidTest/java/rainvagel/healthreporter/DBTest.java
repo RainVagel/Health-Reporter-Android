@@ -1,6 +1,7 @@
 package rainvagel.healthreporter;
 
 import android.app.Instrumentation;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.Intents;
@@ -49,6 +50,19 @@ public class DBTest {
 
     @Test
     public void checkClient() {
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Clients.KEY_ID, 777);
+        values.put(DBContract.Clients.KEY_GROUP_ID, "Konsum");
+        values.put(DBContract.Clients.KEY_FIRSTNAME, "James");
+        values.put(DBContract.Clients.KEY_LASTNAME, "Bond");
+        values.put(DBContract.Clients.KEY_EMAIL, "james.bond@gmail.com");
+        values.put(DBContract.Clients.KEY_GENDER, 1);
+        values.put(DBContract.Clients.KEY_BIRTHDATE, "1952-10-20");
+        values.put(DBContract.Clients.KEY_UPDATED, "2016-11-06");
+        values.put(DBContract.Clients.KEY_UPLOADED, "2016-11-06");
+        database.getWritableDatabase().insert(DBContract.Clients.TABLE_NAME, null, values);
+        database.close();
+
         String[] clientColumns = {DBContract.Clients.KEY_FIRSTNAME,
                 DBContract.Clients.KEY_LASTNAME, DBContract.Clients.KEY_EMAIL, DBContract.Clients.KEY_BIRTHDATE};
 
@@ -56,19 +70,13 @@ public class DBTest {
         int firstNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
         int lastNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
         int emailIdx = cursor.getColumnIndex(DBContract.Clients.KEY_EMAIL);
-        int birtdayIdx = cursor.getColumnIndex(DBContract.Clients.KEY_BIRTHDATE);
+        int birthdayIdx = cursor.getColumnIndex(DBContract.Clients.KEY_BIRTHDATE);
 
-        cursor.moveToFirst();
-        assertEquals("Kaarel", cursor.getString(firstNameIdx));
-        assertEquals("Doe", cursor.getString(lastNameIdx));
-        assertEquals("Kaarel.Doe@gmail.com", cursor.getString(emailIdx));
-        assertEquals("1995-05-10", cursor.getString(birtdayIdx));
         cursor.moveToLast();
-        cursor.moveToPrevious();
-        assertEquals("Sandra", cursor.getString(firstNameIdx));
-        assertEquals("Bauman", cursor.getString(lastNameIdx));
-        assertEquals("Sandra.Bauman@gmail.com", cursor.getString(emailIdx));
-        assertEquals("1995-05-10", cursor.getString(birtdayIdx));
+        assertEquals("James", cursor.getString(firstNameIdx));
+        assertEquals("Bond", cursor.getString(lastNameIdx));
+        assertEquals("james.bond@gmail.com", cursor.getString(emailIdx));
+        assertEquals("1952-10-20", cursor.getString(birthdayIdx));
     }
 
     @Test

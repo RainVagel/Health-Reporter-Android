@@ -5,7 +5,7 @@ package rainvagel.healthreporter.TestClasses;
  */
 
 public class AppraisalTests {
-    int id;
+    String id;
     int testid;
     String score;
     String note;
@@ -15,7 +15,7 @@ public class AppraisalTests {
     String updated;
     String uploaded;
 
-    public AppraisalTests(int id, int testid, String score, String note, String trial1, String trial2, String trial3, String updated, String uploaded) {
+    public AppraisalTests(String id, int testid, String score, String note, String trial1, String trial2, String trial3, String updated, String uploaded) {
 
         this.id = id;
         this.testid = testid;
@@ -28,11 +28,11 @@ public class AppraisalTests {
         this.uploaded = uploaded;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
