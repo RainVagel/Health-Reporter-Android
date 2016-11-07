@@ -13,7 +13,7 @@ import java.util.Calendar;
 
 import rainvagel.healthreporter.ClientClasses.ClientActivity;
 
-public class InsertGroupActivity extends AppCompatActivity implements OnDataPass {
+public class InsertGroupActivity extends AppCompatActivity {
 
 
     EditText groupName;
@@ -22,11 +22,6 @@ public class InsertGroupActivity extends AppCompatActivity implements OnDataPass
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_group);
-    }
-
-    @Override
-    public void onDataPass(String data) {
-
     }
 
     public void onAddGroupClicked(View view){
@@ -48,7 +43,6 @@ public class InsertGroupActivity extends AppCompatActivity implements OnDataPass
         values.put(DBContract.Groups.KEY_UPLOADED,"0000-00-00");
         sqLiteDatabase.insert(DBContract.Groups.TABLE_NAME,null,values);
         sqLiteDatabase.close();
-
 
         Intent returnToClients = new Intent(this, ClientActivity.class);
         startActivity(returnToClients);

@@ -63,8 +63,8 @@ public class InsertClientActivity extends AppCompatActivity implements OnDataPas
         Log.v("InsertClientActivity", data);
 
         String[] splittedData = data.split(",");
-        birthDay = splittedData[2];
-        birthMonth = splittedData[1];
+        birthDay = String.valueOf(Integer.parseInt(splittedData[2]) + 1);
+        birthMonth = String.valueOf(Integer.parseInt(splittedData[1]) + 1);
         birthYear = splittedData[0];
 
         TextView textViewDay = (TextView) findViewById(R.id.textview_birth_day);

@@ -198,8 +198,8 @@ public class EditClientActivity extends AppCompatActivity implements OnDataPass{
         Log.v(TAG, data);
 
         String[] splittedData = data.split(",");
-        String birthDay = splittedData[2];
-        String birthMonth = splittedData[1];
+        String birthDay = String.valueOf(Integer.parseInt(splittedData[2]) + 1);
+        String birthMonth = String.valueOf(Integer.parseInt(splittedData[1]) + 1);
         String birthYear = splittedData[0];
 
         TextView textViewDay = (TextView) findViewById(R.id.textview_birth_day);
