@@ -309,7 +309,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         switch (item.getItemId()) {
             case R.id.cnt_mnu_edit:
                 Log.v(TAG, "Made it to context menu edit action");
-                clientId = clientIDs.get(info.position);
+                clientId = namesClientKeys.get(names.get(info.position));
                 Intent toClientEdit = new Intent(this, EditClientActivity.class);
                 toClientEdit.putExtra("ClientId", String.valueOf(clientId));
                 Log.v(TAG, "ClientID: " + toClientEdit.getStringExtra("ClientId"));
@@ -320,7 +320,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 clientId = clientIDs.get(info.position);
 
                 Log.v(TAG, "Made to context menu delete action");
-                clientId = clientIDs.get(info.position);
+                clientId = namesClientKeys.get(names.get(info.position));
 
                 DBHelper db = new DBHelper(this);
                 SQLiteDatabase sqLiteDatabase = db.getWritableDatabase();
