@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rainvagel.healthreporter.ClientClasses.EditClientActivity;
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
 
 public class EditGroupActivity extends AppCompatActivity implements View.OnClickListener{
     final ArrayList<Integer> groupIDs = new ArrayList<>();

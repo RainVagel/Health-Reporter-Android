@@ -21,8 +21,8 @@ import java.util.Map;
 
 import rainvagel.healthreporter.TestClasses.AddTestActivity;
 import rainvagel.healthreporter.ClientClasses.ClientActivity;
-import rainvagel.healthreporter.DBContract;
-import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
 import rainvagel.healthreporter.R;
 import rainvagel.healthreporter.TestClasses.TestActivity;
 

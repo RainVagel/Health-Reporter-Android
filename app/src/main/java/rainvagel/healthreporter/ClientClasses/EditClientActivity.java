@@ -2,10 +2,8 @@ package rainvagel.healthreporter.ClientClasses;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,8 +19,10 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import rainvagel.healthreporter.DBContract;
-import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBQueries;
+import rainvagel.healthreporter.DBClasses.DBTransporter;
 import rainvagel.healthreporter.DatePickerFragment;
 import rainvagel.healthreporter.EditGroupActivity;
 import rainvagel.healthreporter.OnDataPass;
@@ -38,9 +38,9 @@ public class EditClientActivity extends AppCompatActivity implements OnDataPass{
     String clientGender;
     String clientEmail;
     String clientUpdated;
-    final ArrayList<Integer> groupIDs = new ArrayList<>();
-    final Map<Integer, String> groups = new HashMap<>();
-    final Map<String, Integer> groupsReversed = new HashMap<>();
+    ArrayList<String> groupIDs = new ArrayList<>();
+    Map<String, String> groups = new HashMap<>();
+    Map<String, String> groupsReversed = new HashMap<>();
     String groupName;
     String groupUpdated;
     String TAG = "EditClientActivity";
@@ -68,51 +68,26 @@ public class EditClientActivity extends AppCompatActivity implements OnDataPass{
         textViewGroup = (TextView) findViewById(R.id.textview_group_name);
         gender = (RadioGroup) findViewById(R.id.radio_group_gender);
 
-        DBHelper dbHelper = new DBHelper(this);
-        String[] columns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME,
-        DBContract.Clients.KEY_GROUP_ID, DBContract.Clients.KEY_EMAIL, DBContract.Clients.KEY_BIRTHDATE,
-        DBContract.Clients.KEY_GENDER, DBContract.Clients.KEY_UPDATED};
-        Cursor cursor = dbHelper.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, columns,
-                null, null, null, null, null);
+        DBQueries dbQueries = new DBQueries();
+        ArrayList<String> clientDetails = dbQueries.getClientDetailsFromDB(this, clientId);
+        clientFirstName = clientDetails.get(0);
+        clientLastName = clientDetails.get(1);
+        clientBirthDate = clientDetails.get(2);
+        clientGender = clientDetails.get(3);
+        clientGroupId = clientDetails.get(4);
+        clientEmail = clientDetails.get(5);
+        clientUpdated = clientDetails.get(6);
 
-        int clientIndex = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
-        int firstNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
-        int lastNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
-        int genderIndex = cursor.getColumnIndex(DBContract.Clients.KEY_GENDER);
-        int groupIndex = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
-        int emailIndex = cursor.getColumnIndex(DBContract.Clients.KEY_EMAIL);
-        int birthDateIndex = cursor.getColumnIndex(DBContract.Clients.KEY_BIRTHDATE);
-        int updatedIndex = cursor.getColumnIndex(DBContract.Clients.KEY_UPDATED);
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            if (clientId.equals(cursor.getString(clientIndex))) {
-                clientFirstName = cursor.getString(firstNameIndex);
-                clientLastName = cursor.getString(lastNameIndex);
-                clientBirthDate = cursor.getString(birthDateIndex);
-                clientGender = cursor.getString(genderIndex);
-                clientGroupId = cursor.getString(groupIndex);
-                clientEmail = cursor.getString(emailIndex);
-                clientUpdated = cursor.getString(updatedIndex);
-            }
-        }
-        cursor.close();
+//        Siiani hetkel mõttetu
 
-        String[] columnsGroups = {DBContract.Groups.KEY_ID, DBContract.Groups.KEY_NAME,
-                DBContract.Groups.KEY_UPDATED};
-        cursor = dbHelper.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, columnsGroups,
-                null, null, null, null, null);
-        groupIndex = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
-        int groupNameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
-        int groupUpdatedIndex = cursor.getColumnIndex(DBContract.Groups.KEY_UPDATED);
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            if (clientGroupId.equals(cursor.getString(groupIndex))) {
-                groupName = cursor.getString(groupNameIndex);
-                groupUpdated = cursor.getString(groupUpdatedIndex);
-            }
-            groupIDs.add(Integer.parseInt(cursor.getString(groupIndex)));
-            groups.put(Integer.parseInt(cursor.getString(groupIndex)), cursor.getString(groupNameIndex));
-            groupsReversed.put(cursor.getString(groupNameIndex), Integer.parseInt(cursor.getString(groupIndex)));
-        }
-        cursor.close();
+        ArrayList<String> groupDetails = dbQueries.getGroupDetailsFromDB(this, clientGroupId);
+        groupName = groupDetails.get(0);
+        groupUpdated = groupDetails.get(1);
+
+        DBTransporter dbTransporter = dbQueries.getGroupsFromDB(this);
+        groups = dbTransporter.getIdToName();
+        groupsReversed = dbTransporter.getNameToId();
+        groupIDs = dbTransporter.getGroupID();
 
         String[] date = clientBirthDate.split("-");
 
@@ -158,19 +133,10 @@ public class EditClientActivity extends AppCompatActivity implements OnDataPass{
     }
 
     public void onEditClientClicked(View view) {
-        DBHelper dbHelper = new DBHelper(this);
-        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBContract.Clients.KEY_FIRSTNAME, firstName.getText().toString());
-        contentValues.put(DBContract.Clients.KEY_LASTNAME, lastName.getText().toString());
-        contentValues.put(DBContract.Clients.KEY_BIRTHDATE, clientBirthDate);
-        contentValues.put(DBContract.Clients.KEY_EMAIL, email.getText().toString());
-        contentValues.put(DBContract.Clients.KEY_GENDER, clientGender);
-        contentValues.put(DBContract.Clients.KEY_GROUP_ID, clientGroupId);
-        contentValues.put(DBContract.Clients.KEY_UPDATED, clientUpdated);
-        sqLiteDatabase.update(DBContract.Clients.TABLE_NAME, contentValues,
-                DBContract.Clients.KEY_ID + "=" + clientId, null);
-        sqLiteDatabase.close();
+        DBQueries dbQueries = new DBQueries();
+        dbQueries.editClientInDB(this, clientId, firstName.getText().toString(),
+                lastName.getText().toString(), clientBirthDate, email.getText().toString(),
+                clientGender, clientGroupId, clientUpdated);
         Intent toClientActivity = new Intent(this, ClientActivity.class);
         startActivity(toClientActivity);
     }

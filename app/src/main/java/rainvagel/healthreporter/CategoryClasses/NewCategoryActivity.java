@@ -1,8 +1,6 @@
 package rainvagel.healthreporter.CategoryClasses;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,9 +8,7 @@ import android.widget.EditText;
 
 import java.util.Calendar;
 
-import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
-import rainvagel.healthreporter.DBContract;
-import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBQueries;
 import rainvagel.healthreporter.R;
 
 public class NewCategoryActivity extends AppCompatActivity {
@@ -43,23 +39,13 @@ public class NewCategoryActivity extends AppCompatActivity {
         EditText nameValue = (EditText) findViewById(R.id.newCategory);
         String name = nameValue.getText().toString();
 
-
         Calendar cal = Calendar.getInstance();
-        String currentDate = String.valueOf(cal.get(Calendar.YEAR))+"-"+String.valueOf(cal.get(Calendar.MONTH))+"-" +String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
-        DBHelper mydb = new DBHelper(this);
+        String currentDate = String.valueOf(cal.get(Calendar.YEAR))+"-"
+                +String.valueOf(cal.get(Calendar.MONTH))+"-"
+                +String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
 
-        SQLiteDatabase db = mydb.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(DBContract.TestCategories.KEY_ID, lastId+1);
-        values.put(DBContract.TestCategories.KEY_PARENT_ID, "null");
-        values.put(DBContract.TestCategories.KEY_NAME, name);
-        values.put(DBContract.TestCategories.KEY_POSITION, lastPos+1);
-        values.put(DBContract.TestCategories.KEY_UPDATED, currentDate);
-        values.put(DBContract.TestCategories.KEY_UPLOADED, "null");
-
-        db.insert(DBContract.TestCategories.TABLE_NAME, null, values);
-        db.close();
+        DBQueries dbQueries = new DBQueries();
+        dbQueries.insertCategoryToDB(this, "null", name, lastPos+1, currentDate);
 
         Intent returnToCategoriesActivity = new Intent(this,CategoriesActivity.class);
         startActivity(returnToCategoriesActivity);

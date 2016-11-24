@@ -22,8 +22,8 @@ import java.util.UUID;
 
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 import rainvagel.healthreporter.CategoryClasses.Category;
-import rainvagel.healthreporter.DBContract;
-import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
 import rainvagel.healthreporter.R;
 
 

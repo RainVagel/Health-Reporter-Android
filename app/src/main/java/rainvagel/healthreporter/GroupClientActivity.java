@@ -15,6 +15,10 @@ import java.util.ArrayList;
 
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 import rainvagel.healthreporter.CategoryClasses.Category;
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBQueries;
+import rainvagel.healthreporter.DBClasses.DBTransporter;
 
 public class GroupClientActivity extends AppCompatActivity {
 
@@ -25,8 +29,6 @@ public class GroupClientActivity extends AppCompatActivity {
     static String[] intentData;
     Toolbar tb;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +37,10 @@ public class GroupClientActivity extends AppCompatActivity {
        intentData = getIntent().getStringExtra("GroupID").split(",");
 
         tb = (Toolbar) findViewById(R.id.my_toolbar);
-        CharSequence title =  intentData[1];//Group name
+        String groupID = intentData[0];
+        CharSequence title = intentData[1];//Group name
 
         tb.setTitle(title);
-
 
         DBHelper mydb = new DBHelper(GroupClientActivity.this);
         String [] clientColumns = {DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME,DBContract.Clients.KEY_GROUP_ID,DBContract.Clients.KEY_ID};
@@ -47,7 +49,6 @@ public class GroupClientActivity extends AppCompatActivity {
         int rowIndex = res.getColumnIndex(DBContract.Clients.KEY_ID);
         int name = res.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
         int famname = res.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
-
 
         for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
 
@@ -66,7 +67,6 @@ public class GroupClientActivity extends AppCompatActivity {
                 clientnames
         );
 
-
         lv.setAdapter(arrayAdapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -80,15 +80,8 @@ public class GroupClientActivity extends AppCompatActivity {
                 toCategories.putExtra("ClientId", passedData);// pass on the data
 
                 startActivity(toCategories);
-
             }
         });
-
-
-
-
-
-
 
     }
 }

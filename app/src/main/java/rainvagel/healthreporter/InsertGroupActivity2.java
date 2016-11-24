@@ -11,7 +11,8 @@ import android.widget.EditText;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import rainvagel.healthreporter.ClientClasses.ClientActivity;
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
 
 public class InsertGroupActivity2 extends AppCompatActivity implements OnDataPass {
 

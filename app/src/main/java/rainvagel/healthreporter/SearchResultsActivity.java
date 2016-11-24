@@ -19,7 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
-import rainvagel.healthreporter.ClientClasses.ClientActivity;
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
 
 import static rainvagel.healthreporter.ClientClasses.ClientActivity.host;
 
