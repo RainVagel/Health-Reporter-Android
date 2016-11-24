@@ -27,7 +27,7 @@ public class TestActivity extends AppCompatActivity {
     ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
      ArrayList<Test> testArray = new ArrayList<>();
     ArrayList<String> correctTests= new ArrayList<>();
-   public static Map<Integer, ArrayList<AppraisalTests>> testToAppraisal = new HashMap<>();//TODO VALUE SHOULD BE AN ARRAY LIST OF APPRAISTESTS
+   public static Map<String, ArrayList<AppraisalTests>> testToAppraisal = new HashMap<>();//TODO VALUE SHOULD BE AN ARRAY LIST OF APPRAISTESTS
     public static Intent fromCategories;
 
     @Override
@@ -114,7 +114,7 @@ public class TestActivity extends AppCompatActivity {
             if(appraisalIDs.contains(res.getString(appraisalIndex))) {
                 testIDs.add(res.getString(testID));
                 appraisalTests.add(new AppraisalTests(res.getString(appraisalIndex),
-                        Integer.parseInt(res.getString(testID)), res.getString(scoreID), res.getString(noteID), res.getString(trial1ID),
+                        res.getString(testID), res.getString(scoreID), res.getString(noteID), res.getString(trial1ID),
                         res.getString(trial2ID), res.getString(trial3ID), res.getString(updatedIndex), res.getString(uploadedIndex)));
             }
         }
@@ -144,8 +144,8 @@ public class TestActivity extends AppCompatActivity {
             if(res.getString(categoryIndex).equals(fromCategoriesData[0])){
                 Log.v(TAG,"Tests table");
                 if(testIDs.contains(res.getString(testidIndex))){
-                    Test test = new Test(Integer.parseInt(res.getString(testidIndex)),
-                            Integer.parseInt(res.getString(categoryIndex)),res.getString(nameIndex),res.getString(descriptionIndex),
+                    Test test = new Test(res.getString(testidIndex),
+                            res.getString(categoryIndex),res.getString(nameIndex),res.getString(descriptionIndex),
                             res.getString(unitsIndex),res.getString(decimalsIndex),
                             res.getString(weightIndex),res.getString(formulaFIndex),res.getString(formulaMIndex),
                             Integer.parseInt(res.getString(positionIndex)),res.getString(updatedIndex),res.getString(uploadedIndex));
@@ -177,13 +177,13 @@ public class TestActivity extends AppCompatActivity {
             Log.v(TAG, i);
             Log.v(TAG, String.valueOf(testArray.size()));
 
-            if(testToAppraisal.containsKey(Integer.parseInt(i))){//if the map already has said key
-                testToAppraisal.put(Integer.parseInt(i), testToAppraisal.get(Integer.parseInt(i))).add(appraisalTests.get(testIDs.indexOf(i)));
+            if(testToAppraisal.containsKey(i)){//if the map already has said key
+                testToAppraisal.put(i, testToAppraisal.get(i)).add(appraisalTests.get(testIDs.indexOf(i)));
             }
             else{
                 ArrayList<AppraisalTests> appraisals = new ArrayList<>();
                 appraisals.add(appraisalTests.get(testIDs.indexOf(i)));
-                testToAppraisal.put(Integer.parseInt(i),appraisals );
+                testToAppraisal.put(i,appraisals );
             }
 
             if(divider.contains(testIDs.indexOf(i))){// if current test has a divider

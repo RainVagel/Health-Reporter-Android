@@ -216,8 +216,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
 
 
 
-            Log.v("cursor for", String.valueOf(clientIDs.size()));
-            Log.v("cursor for", String.valueOf(names.size()));
+
 
 
         }

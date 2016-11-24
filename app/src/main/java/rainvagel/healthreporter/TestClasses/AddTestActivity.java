@@ -125,7 +125,7 @@ public class AddTestActivity extends AppCompatActivity  {
         for(Test t : selectedTests) {
             String uniqueID = UUID.randomUUID().toString();
 
-            int test_id = t.getId();
+            String test_id = t.getId();
 
             String tablename = DBContract.Appraisals.TABLE_NAME;
             ContentValues values = new ContentValues();
@@ -245,8 +245,8 @@ public class AddTestActivity extends AppCompatActivity  {
         int uploadedIndex = res.getColumnIndex(DBContract.Tests.KEY_UPLOADED);
 
         for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
-            Test test = new Test(Integer.parseInt(res.getString(testidIndex)),
-                    Integer.parseInt(res.getString(categoryIndex)), res.getString(nameIndex), res.getString(descriptionIndex),
+            Test test = new Test(res.getString(testidIndex),
+                    res.getString(categoryIndex), res.getString(nameIndex), res.getString(descriptionIndex),
                     res.getString(unitsIndex), res.getString(decimalsIndex),
                     res.getString(weightIndex), res.getString(formulaFIndex), res.getString(formulaMIndex),
                     Integer.parseInt(res.getString(positionIndex)), res.getString(updatedIndex), res.getString(uploadedIndex));

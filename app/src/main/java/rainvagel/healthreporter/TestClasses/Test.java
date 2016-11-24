@@ -5,8 +5,8 @@ package rainvagel.healthreporter.TestClasses;
  */
 
 public class Test {
-    int id;
-    int categoryid;
+    String id;
+    String categoryid;
     String name;
     String description;
     String units;
@@ -18,7 +18,7 @@ public class Test {
     String updated;
     String uploaded;
 
-    public Test(int id, int categoryid, String name, String description, String units, String decimals, String weight, String formulaF, String formulaM, int position, String updated, String uploaded) {
+    public Test(String id, String categoryid, String name, String description, String units, String decimals, String weight, String formulaF, String formulaM, int position, String updated, String uploaded) {
         this.id = id;
         this.categoryid = categoryid;
         this.name = name;
@@ -41,19 +41,19 @@ public class Test {
         this.updated = updated;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getCategoryid() {
+    public String getCategoryid() {
         return categoryid;
     }
 
-    public void setCategoryid(int categoryid) {
+    public void setCategoryid(String categoryid) {
         this.categoryid = categoryid;
     }
 
