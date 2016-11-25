@@ -47,6 +47,16 @@ public class AddTestActivity extends AppCompatActivity  {
 
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+       // Intent toTests = new Intent(this, TestActivity.class);
+        //toTests.putExtra("IntentData", TestActivity.fromCategoriesData);
+       // startActivity(toTests);
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_test);
