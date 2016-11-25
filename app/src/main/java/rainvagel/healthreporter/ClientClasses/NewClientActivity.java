@@ -22,10 +22,10 @@ import rainvagel.healthreporter.R;
 
 public class NewClientActivity extends AppCompatActivity implements View.OnClickListener {
 
-    final ArrayList<Integer> groupIDs = new ArrayList<>();
+    final ArrayList<String> groupIDs = new ArrayList<>();
     final ArrayList<String> groupNames = new ArrayList<>();
-    final Map<Integer, String> groups = new HashMap<>();
-    final Map<String, Integer> groupsReversed = new HashMap<>();
+    final Map<String, String> groups = new HashMap<>();
+    final Map<String, String> groupsReversed = new HashMap<>();
     private FloatingActionButton fab1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class NewClientActivity extends AppCompatActivity implements View.OnClick
         int nameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            int groupId = Integer.parseInt(cursor.getString(idIndex));
+            String groupId = cursor.getString(idIndex);
             groups.put(groupId, cursor.getString(nameIndex));
             groupsReversed.put(cursor.getString(nameIndex), groupId);
             groupNames.add(cursor.getString(nameIndex));
