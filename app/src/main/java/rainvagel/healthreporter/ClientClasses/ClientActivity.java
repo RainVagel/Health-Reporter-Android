@@ -54,16 +54,16 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     ListView lv;
 
 
-    final  ArrayList<Integer> clientIDs = new ArrayList<>();
+    final  ArrayList<String> clientIDs = new ArrayList<>();
     final  ArrayList<String> names = new ArrayList<>();
-    final  ArrayList<Integer> groupIDs = new ArrayList<>();
-    final  Map<Integer, String> groups = new HashMap<>();
-    final Map<String,Integer> groupsreversed = new HashMap<>();
+    final  ArrayList<String> groupIDs = new ArrayList<>();
+    final  Map<String, String> groups = new HashMap<>();
+    final Map<String,String> groupsreversed = new HashMap<>();
     final ArrayList<String> groupNames = new ArrayList<>();
 
-    final Map<Integer,Integer> clientIdGroupId = new HashMap<>();
-    final Map<String, Integer>  namesGroupKeys = new HashMap<>();
-    final Map<String, Integer>  namesClientKeys = new HashMap<>();
+    final Map<String,String> clientIdGroupId = new HashMap<>();
+    final Map<String, String>  namesGroupKeys = new HashMap<>();
+    final Map<String, String>  namesClientKeys = new HashMap<>();
 
 
     public static TabHost host;
@@ -203,21 +203,20 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
 
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
             //Log.v("ClientActivity", "Made it here");
-            clientIDs.add(Integer.valueOf(cursor.getString(rowIndex)));
-            groupIDs.add(Integer.valueOf(cursor.getString(groupIndex)));
+            clientIDs.add(cursor.getString(rowIndex));
+            groupIDs.add(cursor.getString(groupIndex));
             //groupids contains exact amount of groupids as clientids
             names.add(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex));
 
-            clientIdGroupId.put(Integer.valueOf(cursor.getString(rowIndex)),Integer.valueOf(cursor.getString(groupIndex)));
+            clientIdGroupId.put(cursor.getString(rowIndex),cursor.getString(groupIndex));
 
-            namesGroupKeys.put(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex),(Integer.valueOf(cursor.getString(groupIndex))));
+            namesGroupKeys.put(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex),cursor.getString(groupIndex));
 
-            namesClientKeys.put(cursor.getString(firstNameIndex)+ " "+ cursor.getString(lastNameIndex),(Integer.valueOf(cursor.getString(rowIndex))));
+            namesClientKeys.put(cursor.getString(firstNameIndex)+ " "+ cursor.getString(lastNameIndex),cursor.getString(rowIndex));
 
 
 
-            Log.v("cursor for", String.valueOf(clientIDs.size()));
-            Log.v("cursor for", String.valueOf(names.size()));
+
 
 
         }
@@ -232,7 +231,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
 
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
             //Log.v("ClientActivity", "Made it here");
-            int groupId = Integer.parseInt(cursor.getString(idIndex));
+            String groupId = cursor.getString(idIndex);
             if(groupIDs.contains(groupId)) {
                 groups.put(groupId, cursor.getString(nameIndex));
                 groupsreversed.put(cursor.getString(nameIndex),groupId);
@@ -272,7 +271,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         elv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int groupID = groupIDs.get(position);
+                String groupID = groupIDs.get(position);
                 Intent toClients = new Intent(ClientActivity.this, GroupClientActivity.class);
                 String passedData = (groupsreversed.get(groupNames.get(position))+","+groupNames.get(position));
                 toClients.putExtra("GroupID",passedData);
@@ -284,7 +283,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int clientId= clientIDs.get(position);
+                String clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(ClientActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
                 String passedData = (namesClientKeys.get(names.get(position))+","+names.get(position)+","+ groups.get(namesGroupKeys.get(names.get(position))));
@@ -305,7 +304,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int clientId;
+        String clientId;
         switch (item.getItemId()) {
             case R.id.cnt_mnu_edit:
                 Log.v(TAG, "Made it to context menu edit action");
