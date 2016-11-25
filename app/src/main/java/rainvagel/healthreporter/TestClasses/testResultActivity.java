@@ -11,12 +11,29 @@ import android.view.View;
 import android.widget.NumberPicker;
 
 import rainvagel.healthreporter.*;
+import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 
 public class testResultActivity extends AppCompatActivity {
     private static final String TAG = "editTestResult";
     private static  String appraisal_id;
     private static Intent fromTestAdapter;
     private static NumberPicker np;
+
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+         Intent toTests = new Intent(this, TestActivity.class);
+        toTests.putExtra("IntentData", TestActivity.fromCategories.getStringExtra("IntentData"));
+        Log.v(TAG, TestActivity.fromCategories.getStringExtra("IntentData"));
+
+        //toCategories.putExtra("ClientId", CategoriesActivity.fromClients.getStringExtra("ClientId"));
+         startActivity(toTests);
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
