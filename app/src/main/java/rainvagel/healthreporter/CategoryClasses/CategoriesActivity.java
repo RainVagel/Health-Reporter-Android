@@ -67,8 +67,6 @@ public class CategoriesActivity extends Activity {
             }
         });
 
-
-
         new Thread(new Runnable() {
             public void run(){
 
@@ -83,9 +81,6 @@ public class CategoriesActivity extends Activity {
                 android.R.layout.simple_list_item_1,
                 categorynames
         );
-
-
-
 
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -104,8 +99,6 @@ public class CategoriesActivity extends Activity {
                 startActivity(intent);
 
 
-
-
             }
         });
         Log.v(TAG+"siin",String.valueOf(categories.size()));
@@ -122,17 +115,11 @@ public class CategoriesActivity extends Activity {
         startActivity(intent);
     }
 
-
-
     public void getCategories(){
-
-
         DBHelper mydb = new DBHelper(CategoriesActivity.this);
         //retrieve the KEY_IDS OF APPRAISALS WHICH WE WILL USE TO GO TO THE APPRAISAL_TESTS TABLE
 
         //QUERY FILTERS
-
-
         String[] clientColumns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_BIRTHDATE};
         Cursor res = mydb.getReadableDatabase().query(DBContract.Clients.TABLE_NAME,clientColumns,null,null,null,null,null);
         int clientidIndex = res.getColumnIndex(DBContract.Clients.KEY_ID);

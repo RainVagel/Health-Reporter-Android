@@ -63,23 +63,13 @@ public class TestActivity extends AppCompatActivity {
 
 
         ListView listView = (ListView) findViewById(R.id.listViewTests);
-        
 
         TestAdapter ta = new TestAdapter(this,testToAppraisal,testArray);
 
-
-
-
-
         listView.setAdapter(ta);
 
-
-
-
     }
-
-
-
+    
 
     protected void getTests(){
         DBHelper mydb = new DBHelper(TestActivity.this);
