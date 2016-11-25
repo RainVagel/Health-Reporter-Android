@@ -30,6 +30,7 @@ public class DBQueries {
         sqLiteDatabase.insert(DBContract.Groups.TABLE_NAME,null,contentValues);
 
         sqLiteDatabase.close();
+        dbHelper.close();
     }
 
     public String insertClientToDB(Context context, String group, String firstNameString, String lastNameString,
@@ -53,6 +54,7 @@ public class DBQueries {
         sqLiteDatabase.insert(DBContract.Clients.TABLE_NAME, null, values);
 
         sqLiteDatabase.close();
+        dbHelper.close();
 
         return uuid;
     }
@@ -74,6 +76,7 @@ public class DBQueries {
         sqLiteDatabase.update(DBContract.Clients.TABLE_NAME, contentValues,
                 DBContract.Clients.KEY_ID + "=" + clientId, null);
         sqLiteDatabase.close();
+        dbHelper.close();
     }
 
     public void insertCategoryToDB(Context context, String parentID, String name, int position,
@@ -94,6 +97,7 @@ public class DBQueries {
 
         db.insert(DBContract.TestCategories.TABLE_NAME, null, values);
         db.close();
+        mydb.close();
     }
 
     public DBTransporter getGroupsFromDB(Context context) {
@@ -111,6 +115,7 @@ public class DBQueries {
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String groupId = cursor.getString(idIndex);
+            groupID.add(groupId);
             groups.put(groupId, cursor.getString(nameIndex));
             groupsReversed.put(cursor.getString(nameIndex), groupId);
             groupNames.add(cursor.getString(nameIndex));
@@ -150,6 +155,7 @@ public class DBQueries {
             }
         }
         cursor.close();
+        dbHelper.close();
         return details;
     }
 
@@ -170,6 +176,7 @@ public class DBQueries {
             }
         }
         cursor.close();
+        dbHelper.close();
         return details;
     }
 
@@ -210,7 +217,57 @@ public class DBQueries {
         }
 
         cursor.close();
+        mydb.close();
         return new DBTransporter(groupIDs, clientIDs, namesClientKeys, namesGroupKeys,
                 clientIdGroupId, names);
+    }
+
+    public void deleteEntryFromDB(Context context, String table, String field, String id) {
+        DBHelper dbHelper = new DBHelper(context);
+        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
+        sqLiteDatabase.delete(table, field + "=" + id, null);
+        sqLiteDatabase.close();
+        dbHelper.close();
+    }
+
+    public DBClientsTransporter getClientsFromDB(Context context) {
+        ArrayList<String> clientID = new ArrayList<>();
+        Map<String, String> clientIdToFirstName = new HashMap<>();
+        Map<String, String> clientIdToLastName = new HashMap<>();
+        Map<String, String> clientIdToEmail = new HashMap<>();
+        Map<String, String> clientIdToGender = new HashMap<>();
+        Map<String, String> clientIdToGroupId = new HashMap<>();
+        Map<String, String> clientIdToBirthDate = new HashMap<>();
+        Map<String, String> clientIdToUpdated = new HashMap<>();
+
+        DBHelper dbHelper = new DBHelper(context);
+        String[] columns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME,
+                DBContract.Clients.KEY_GROUP_ID, DBContract.Clients.KEY_EMAIL, DBContract.Clients.KEY_BIRTHDATE,
+                DBContract.Clients.KEY_GENDER, DBContract.Clients.KEY_UPDATED};
+        Cursor cursor = dbHelper.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, columns,
+                null, null, null, null, null);
+
+        String clientIDWorkable;
+        int clientIndex = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
+        int firstNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
+        int lastNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
+        int genderIndex = cursor.getColumnIndex(DBContract.Clients.KEY_GENDER);
+        int groupIndex = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
+        int emailIndex = cursor.getColumnIndex(DBContract.Clients.KEY_EMAIL);
+        int birthDateIndex = cursor.getColumnIndex(DBContract.Clients.KEY_BIRTHDATE);
+        int updatedIndex = cursor.getColumnIndex(DBContract.Clients.KEY_UPDATED);
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            clientIDWorkable = cursor.getString(clientIndex);
+            clientID.add(clientIDWorkable);
+            clientIdToFirstName.put(clientIDWorkable, cursor.getString(firstNameIndex));
+            clientIdToLastName.put(clientIDWorkable, cursor.getString(lastNameIndex));
+            clientIdToGender.put(clientIDWorkable, cursor.getString(genderIndex));
+            clientIdToGroupId.put(clientIDWorkable, cursor.getString(groupIndex));
+            clientIdToEmail.put(clientIDWorkable, cursor.getString(emailIndex));
+            clientIdToBirthDate.put(clientIDWorkable, cursor.getString(birthDateIndex));
+            clientIdToUpdated.put(clientIDWorkable, cursor.getString(updatedIndex));
+        }
+        return new DBClientsTransporter(clientID,clientIdToFirstName,clientIdToLastName,clientIdToEmail,
+                clientIdToGender, clientIdToGroupId, clientIdToBirthDate, clientIdToUpdated);
     }
 }

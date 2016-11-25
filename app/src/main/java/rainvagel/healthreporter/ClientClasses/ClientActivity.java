@@ -159,37 +159,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         spec.setContent(R.id.Groups);
         spec.setIndicator("Groups");
         host.addTab(spec);
-//
-//        DBHelper mydb = new DBHelper(this);
-//
-//        String[] columns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME, DBContract.Clients.KEY_GROUP_ID};
-//        Cursor cursor = mydb.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, columns, null,null,null,null,null);
-//
-//        int rowIndex = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
-//        int firstNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
-//        int lastNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
-//        final int groupIndex  = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
-//
-//        // Log.v("ClientActivity", String.valueOf(cursor.getCount()));
-//
-//        for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
-//            //Log.v("ClientActivity", "Made it here");
-//            clientIDs.add(cursor.getString(rowIndex));
-//            groupIDs.add(cursor.getString(groupIndex));
-//            //groupids contains exact amount of groupids as clientids
-//            names.add(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex));
-//
-//            clientIdGroupId.put(cursor.getString(rowIndex),cursor.getString(groupIndex));
-//
-//            namesGroupKeys.put(cursor.getString(firstNameIndex)+ " " + cursor.getString(lastNameIndex),(cursor.getString(groupIndex)));
-//
-//            namesClientKeys.put(cursor.getString(firstNameIndex)+ " "+ cursor.getString(lastNameIndex),(cursor.getString(rowIndex)));
-//
-//            Log.v("cursor for", String.valueOf(clientIDs.size()));
-//            Log.v("cursor for", String.valueOf(names.size()));
-//        }
-//
-//        cursor.close();
 
         DBQueries dbQueries = new DBQueries();
         DBTransporter dbTransporter = dbQueries.getGroupsFromDB(this);
@@ -210,7 +179,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
 //        Log.v(TAG, groupNames.toString());
 //        Log.v(TAG, groupsreversed.toString());
 
-//        mydb.close();
         Log.v("ats", groups.toString());
 
         lv = (ListView) findViewById(R.id.listViewClients);
@@ -281,17 +249,13 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 startActivity(toClientEdit);
                 break;
             case R.id.cnt_mnu_delete:
-
                 clientId = clientIDs.get(info.position);
 
                 Log.v(TAG, "Made to context menu delete action");
                 clientId = namesClientKeys.get(names.get(info.position));
-
-                DBHelper db = new DBHelper(this);
-                SQLiteDatabase sqLiteDatabase = db.getWritableDatabase();
-                sqLiteDatabase.delete(DBContract.Clients.TABLE_NAME,
-                        DBContract.Clients.KEY_ID + "=" + clientId, null);
-                sqLiteDatabase.close();
+                DBQueries dbQueries = new DBQueries();
+                dbQueries.deleteEntryFromDB(this, DBContract.Clients.TABLE_NAME, DBContract.Clients.KEY_ID,
+                        clientId);
                 recreate();
                 break;
         }

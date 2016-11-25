@@ -18,12 +18,13 @@ import java.util.Map;
 import rainvagel.healthreporter.ClientClasses.EditClientActivity;
 import rainvagel.healthreporter.DBClasses.DBContract;
 import rainvagel.healthreporter.DBClasses.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBQueries;
+import rainvagel.healthreporter.DBClasses.DBTransporter;
 
 public class EditGroupActivity extends AppCompatActivity implements View.OnClickListener{
-    final ArrayList<Integer> groupIDs = new ArrayList<>();
-    final ArrayList<String> groupNames = new ArrayList<>();
-    final Map<Integer, String> groups = new HashMap<>();
-    final Map<String, Integer> groupsReversed = new HashMap<>();
+    ArrayList<String> groupNames = new ArrayList<>();
+    Map<String, String> groups = new HashMap<>();
+    Map<String, String> groupsReversed = new HashMap<>();
     private FloatingActionButton fab1;
 
     @Override
@@ -31,25 +32,15 @@ public class EditGroupActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_group);
 
-        DBHelper mydb = new DBHelper(this);
+        DBQueries dbQueries = new DBQueries();
+        DBTransporter dbTransporter = dbQueries.getGroupsFromDB(this);
+
+        groups = dbTransporter.getIdToName();
+        groupsReversed = dbTransporter.getNameToId();
+        groupNames = dbTransporter.getNames();
 
         fab1 = (FloatingActionButton) findViewById(R.id.fab1);
         fab1.setOnClickListener(this);
-
-        String[] columns = {DBContract.Groups.KEY_ID, DBContract.Groups.KEY_NAME};
-        Cursor cursor = mydb.getReadableDatabase().query(DBContract.Groups.TABLE_NAME,
-                columns, null, null, null, null, null);
-        int idIndex = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
-        int nameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
-
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            int groupId = Integer.parseInt(cursor.getString(idIndex));
-            groups.put(groupId, cursor.getString(nameIndex));
-            groupsReversed.put(cursor.getString(nameIndex), groupId);
-            groupNames.add(cursor.getString(nameIndex));
-        }
-        cursor.close();
-        mydb.close();
 
         final ListView listView = (ListView) findViewById(R.id.listViewGroups);
 //        Log.v("NewClientActivity", String.valueOf(R.id.listViewGroups));

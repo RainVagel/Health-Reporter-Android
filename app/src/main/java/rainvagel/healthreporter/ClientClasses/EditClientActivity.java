@@ -78,8 +78,6 @@ public class EditClientActivity extends AppCompatActivity implements OnDataPass{
         clientEmail = clientDetails.get(5);
         clientUpdated = clientDetails.get(6);
 
-//        Siiani hetkel mõttetu
-
         ArrayList<String> groupDetails = dbQueries.getGroupDetailsFromDB(this, clientGroupId);
         groupName = groupDetails.get(0);
         groupUpdated = groupDetails.get(1);

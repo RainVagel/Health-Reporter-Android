@@ -23,8 +23,8 @@ import rainvagel.healthreporter.DBClasses.DBTransporter;
 public class GroupClientActivity extends AppCompatActivity {
 
     final ArrayList<Category> categories = new ArrayList<>();
-    final ArrayList<String> clientnames = new ArrayList<>();
-    final  ArrayList<Integer> clientIDs = new ArrayList<>();
+    ArrayList<String> clientnames = new ArrayList<>();
+    ArrayList<Integer> clientIDs = new ArrayList<>();
     Intent toCategories;
     static String[] intentData;
     Toolbar tb;
