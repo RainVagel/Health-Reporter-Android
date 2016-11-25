@@ -26,14 +26,14 @@ import static rainvagel.healthreporter.ClientClasses.ClientActivity.host;
 public class SearchResultsActivity extends AppCompatActivity {
     private static final String TAG = "SearchResultsActivity";
 
-    final  ArrayList<Integer> searchClientIDs = new ArrayList<>();
+    final  ArrayList<String> searchClientIDs = new ArrayList<>();
     final  ArrayList<String> asd = new ArrayList<>();
-    final  ArrayList<Integer> searchGroupIDs = new ArrayList<>();
-    final Map<Integer, String> searchGroupNames = new HashMap<>();
-    final Map<String, Integer> finalClientId= new HashMap<String,Integer>();
+    final  ArrayList<String> searchGroupIDs = new ArrayList<>();
+    final Map<String, String> searchGroupNames = new HashMap<>();
+    final Map<String, String> finalClientId= new HashMap<>();
 
-    final Map<Integer, String> searchGroupNamesindex = new HashMap<>();
-    final Map<String,Integer> searchGroupNamesindexReversed = new HashMap<>();
+    final Map<String, String> searchGroupNamesindex = new HashMap<>();
+    final Map<String,String> searchGroupNamesindexReversed = new HashMap<>();
 
 
 
@@ -83,12 +83,12 @@ public class SearchResultsActivity extends AppCompatActivity {
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 //Log.v("ClientActivity", "Made it here");
-                searchClientIDs.add(Integer.valueOf(cursor.getString(rowIndex)));
-                searchGroupIDs.add(Integer.valueOf(cursor.getString(groupIndex)));
+                searchClientIDs.add(cursor.getString(rowIndex));
+                searchGroupIDs.add(cursor.getString(groupIndex));
                 asd.add(cursor.getString(firstNameIndex) + " " + cursor.getString(lastNameIndex));
 
 
-                finalClientId.put(cursor.getString(firstNameIndex) + " " + cursor.getString(lastNameIndex), Integer.valueOf(cursor.getString(rowIndex)));
+                finalClientId.put(cursor.getString(firstNameIndex) + " " + cursor.getString(lastNameIndex), cursor.getString(rowIndex));
 
             }
 
@@ -103,7 +103,7 @@ public class SearchResultsActivity extends AppCompatActivity {
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 //Log.v("ClientActivity", "Made it here");
-                int groupId = Integer.parseInt(cursor.getString(idIndex));
+                String groupId = cursor.getString(idIndex);
                 if (searchGroupIDs.contains(groupId))
                     searchGroupNames.put(groupId, cursor.getString(nameIndex));
 
@@ -147,7 +147,7 @@ public class SearchResultsActivity extends AppCompatActivity {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    int clientId = searchClientIDs.get(position);
+                    String clientId = searchClientIDs.get(position);
 
                     Intent toCategories = new Intent(SearchResultsActivity.this, CategoriesActivity.class);
                     // we will pass on client's name,group and id in a string, all separated with a comma.
@@ -196,9 +196,9 @@ public class SearchResultsActivity extends AppCompatActivity {
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 //Log.v("ClientActivity", "Made it here");
-                searchGroupIDs.add(Integer.valueOf(cursor.getString(rowIndex)));
-                searchGroupNamesindex.put(Integer.valueOf(cursor.getString(rowIndex)),cursor.getString(groupNameIndex));
-                searchGroupNamesindexReversed.put(cursor.getString(groupNameIndex),Integer.valueOf(cursor.getString(rowIndex)));
+                searchGroupIDs.add(cursor.getString(rowIndex));
+                searchGroupNamesindex.put(cursor.getString(rowIndex),cursor.getString(groupNameIndex));
+                searchGroupNamesindexReversed.put(cursor.getString(groupNameIndex),cursor.getString(rowIndex));
                 asd.add(cursor.getString(groupNameIndex));
 
 
