@@ -20,7 +20,7 @@ public class GroupClientActivity extends AppCompatActivity {
 
     final ArrayList<Category> categories = new ArrayList<>();
     final ArrayList<String> clientnames = new ArrayList<>();
-    final  ArrayList<Integer> clientIDs = new ArrayList<>();
+    final  ArrayList<String> clientIDs = new ArrayList<>();
     Intent toCategories;
     static String[] intentData;
     Toolbar tb;
@@ -55,7 +55,7 @@ public class GroupClientActivity extends AppCompatActivity {
                 Log.v("GROUPCLIENT",res.getString(name)+" "+res.getString(famname)+
                         " "+res.getString(clientGroupID));
                 clientnames.add(res.getString(name)+ " "+ res.getString(famname));
-                clientIDs.add(Integer.valueOf(res.getString(rowIndex)));
+                clientIDs.add(res.getString(rowIndex));
             }
         }
 
@@ -72,7 +72,7 @@ public class GroupClientActivity extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int clientId= clientIDs.get(position);
+                String clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(GroupClientActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
                 String passedData =(String.valueOf(clientId)+","+clientnames.get(position)+","+ intentData[1]);
