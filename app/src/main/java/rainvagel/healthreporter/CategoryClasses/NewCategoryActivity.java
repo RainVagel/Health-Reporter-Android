@@ -49,13 +49,5 @@ public class NewCategoryActivity extends AppCompatActivity {
 
         Intent returnToCategoriesActivity = new Intent(this,CategoriesActivity.class);
         startActivity(returnToCategoriesActivity);
-
-
-
-
-
-
-
-
     }
 }

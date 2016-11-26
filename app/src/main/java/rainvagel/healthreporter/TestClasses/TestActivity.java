@@ -25,7 +25,7 @@ public class TestActivity extends AppCompatActivity {
     ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
      ArrayList<Test> testArray = new ArrayList<>();
     ArrayList<String> correctTests= new ArrayList<>();
-   public static Map<Integer, ArrayList<AppraisalTests>> testToAppraisal = new HashMap<>();//TODO VALUE SHOULD BE AN ARRAY LIST OF APPRAISTESTS
+   public static Map<String, ArrayList<AppraisalTests>> testToAppraisal = new HashMap<>();//TODO VALUE SHOULD BE AN ARRAY LIST OF APPRAISTESTS
     public static Intent fromCategories;
 
     @Override
@@ -50,18 +50,10 @@ public class TestActivity extends AppCompatActivity {
 
 
         ListView listView = (ListView) findViewById(R.id.listViewTests);
-        
 
         TestAdapter ta = new TestAdapter(this,testToAppraisal,testArray);
 
-
-
-
-
         listView.setAdapter(ta);
-
-
-
 
     }
 
@@ -112,7 +104,7 @@ public class TestActivity extends AppCompatActivity {
             if(appraisalIDs.contains(res.getString(appraisalIndex))) {
                 testIDs.add(res.getString(testID));
                 appraisalTests.add(new AppraisalTests(res.getString(appraisalIndex),
-                        Integer.parseInt(res.getString(testID)), res.getString(scoreID), res.getString(noteID), res.getString(trial1ID),
+                        res.getString(testID), res.getString(scoreID), res.getString(noteID), res.getString(trial1ID),
                         res.getString(trial2ID), res.getString(trial3ID), res.getString(updatedIndex), res.getString(uploadedIndex)));
             }
         }
@@ -175,13 +167,13 @@ public class TestActivity extends AppCompatActivity {
             Log.v(TAG, i);
             Log.v(TAG, String.valueOf(testArray.size()));
 
-            if(testToAppraisal.containsKey(Integer.parseInt(i))){//if the map already has said key
-                testToAppraisal.put(Integer.parseInt(i), testToAppraisal.get(Integer.parseInt(i))).add(appraisalTests.get(testIDs.indexOf(i)));
+            if(testToAppraisal.containsKey(i)){//if the map already has said key
+                testToAppraisal.put(i, testToAppraisal.get(i)).add(appraisalTests.get(testIDs.indexOf(i)));
             }
             else{
                 ArrayList<AppraisalTests> appraisals = new ArrayList<>();
                 appraisals.add(appraisalTests.get(testIDs.indexOf(i)));
-                testToAppraisal.put(Integer.parseInt(i),appraisals );
+                testToAppraisal.put(i,appraisals);
             }
 
             if(divider.contains(testIDs.indexOf(i))){// if current test has a divider
@@ -193,10 +185,6 @@ public class TestActivity extends AppCompatActivity {
         // REMOVE IF DATABASE HAS BEEN UPDATED
         // TODO
         testArray.add(1,null);
-
-
-
-
     }
 
 }

@@ -267,7 +267,193 @@ public class DBQueries {
             clientIdToBirthDate.put(clientIDWorkable, cursor.getString(birthDateIndex));
             clientIdToUpdated.put(clientIDWorkable, cursor.getString(updatedIndex));
         }
+        cursor.close();
+        dbHelper.close();
         return new DBClientsTransporter(clientID,clientIdToFirstName,clientIdToLastName,clientIdToEmail,
                 clientIdToGender, clientIdToGroupId, clientIdToBirthDate, clientIdToUpdated);
+    }
+
+    public DBAppraisalsTransporter getAppraisalsFromDB(Context context) {
+        ArrayList<String> appraisalID = new ArrayList<>();
+        Map<String, String> appraisalIdToAppraiserId = new HashMap<>();
+        Map<String, String> appraisalIdToClientId = new HashMap<>();
+        Map<String, String> appraisalIdToAppraisalDate = new HashMap<>();
+        Map<String, String> appraisalIdToUpdated = new HashMap<>();
+        Map<String, String> appraisalIdToUploaded = new HashMap<>();
+
+        DBHelper dbHelper = new DBHelper(context);
+        String[] columns = {DBContract.Appraisals.KEY_ID, DBContract.Appraisals.KEY_APPRAISER_ID,
+                DBContract.Appraisals.KEY_CLIENT_ID, DBContract.Appraisals.KEY_DATE,
+                DBContract.Appraisals.KEY_UPDATED, DBContract.Appraisals.KEY_UPLOADED};
+        Cursor cursor = dbHelper.getReadableDatabase().query(DBContract.Appraisals.TABLE_NAME,
+                columns, null, null, null, null, null);
+
+        String appraisalIDWorkable;
+        int appraisalIndex = cursor.getColumnIndex(DBContract.Appraisals.KEY_ID);
+        int appraiserIndex = cursor.getColumnIndex(DBContract.Appraisals.KEY_APPRAISER_ID);
+        int clientIndex = cursor.getColumnIndex(DBContract.Appraisals.KEY_CLIENT_ID);
+        int dateIndex = cursor.getColumnIndex(DBContract.Appraisals.KEY_DATE);
+        int updatedIndex = cursor.getColumnIndex(DBContract.Appraisals.KEY_UPDATED);
+        int uploadedIndex = cursor.getColumnIndex(DBContract.Appraisals.KEY_UPLOADED);
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            appraisalIDWorkable = cursor.getString(appraisalIndex);
+            appraisalID.add(appraisalIDWorkable);
+            appraisalIdToAppraiserId.put(appraisalIDWorkable, cursor.getString(appraiserIndex));
+            appraisalIdToClientId.put(appraisalIDWorkable, cursor.getString(clientIndex));
+            appraisalIdToAppraisalDate.put(appraisalIDWorkable, cursor.getString(dateIndex));
+            appraisalIdToUpdated.put(appraisalIDWorkable, cursor.getString(updatedIndex));
+            appraisalIdToUploaded.put(appraisalIDWorkable, cursor.getString(uploadedIndex));
+        }
+        cursor.close();
+        dbHelper.close();
+        return new DBAppraisalsTransporter(appraisalID, appraisalIdToAppraiserId, appraisalIdToUpdated,
+                appraisalIdToClientId, appraisalIdToAppraisalDate, appraisalIdToUploaded);
+    }
+
+    public DBAppraisalTestsTransporter getAppraisalTestsFromDB(Context context) {
+        ArrayList<String> appraisalID = new ArrayList<>();
+        ArrayList<String> testID = new ArrayList<>();
+        Map<String, String> appraisalIdToTestId = new HashMap<>();
+        Map<String, String> appraisalIdToTestScores = new HashMap<>();
+        Map<String, String> appraisalIdToNote = new HashMap<>();
+        Map<String, String> appraisalIdToTrial1 = new HashMap<>();
+        Map<String, String> appraisalIdToTrial2 = new HashMap<>();
+        Map<String, String> appraisalIdToTrial3 = new HashMap<>();
+        Map<String, String> appraisalIdToUpdated = new HashMap<>();
+        Map<String, String> appraisalIdToUploaded = new HashMap<>();
+
+        DBHelper dbHelper = new DBHelper(context);
+        String[] columns = {DBContract.AppraisalTests.KEY_APPRAISAL_ID, DBContract.AppraisalTests.KEY_TEST_ID,
+                DBContract.AppraisalTests.KEY_SCORE, DBContract.AppraisalTests.KEY_NOTE,
+                DBContract.AppraisalTests.KEY_TRIAL_1, DBContract.AppraisalTests.KEY_TRIAL_2,
+                DBContract.AppraisalTests.KEY_TRIAL_3, DBContract.AppraisalTests.KEY_UPDATED,
+                DBContract.AppraisalTests.KEY_UPLOADED};
+        Cursor cursor = dbHelper.getReadableDatabase().query(DBContract.AppraisalTests.TABLE_NAME,
+                columns, null, null, null, null, null);
+
+        String appraisalIDWorkable;
+        String testIDWorkable;
+        int appraisalIndex = cursor.getColumnIndex(DBContract.AppraisalTests.KEY_APPRAISAL_ID);
+        int testIndex = cursor.getColumnIndex(DBContract.AppraisalTests.KEY_TEST_ID);
+        int scoreIndex = cursor.getColumnIndex(DBContract.AppraisalTests.KEY_SCORE);
+        int noteIndex = cursor.getColumnIndex(DBContract.AppraisalTests.KEY_NOTE);
+        int trial1Index = cursor.getColumnIndex(DBContract.AppraisalTests.KEY_TRIAL_1);
+        int trial2Index = cursor.getColumnIndex(DBContract.AppraisalTests.KEY_TRIAL_2);
+        int trial3Index = cursor.getColumnIndex(DBContract.AppraisalTests.KEY_TRIAL_3);
+        int updatedIndex = cursor.getColumnIndex(DBContract.AppraisalTests.KEY_UPDATED);
+        int uploadedIndex = cursor.getColumnIndex(DBContract.AppraisalTests.KEY_UPLOADED);
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            appraisalIDWorkable = cursor.getString(appraisalIndex);
+            testIDWorkable = cursor.getString(testIndex);
+            appraisalID.add(appraisalIDWorkable);
+            testID.add(testIDWorkable);
+            appraisalIdToTestId.put(appraisalIDWorkable, testIDWorkable);
+            appraisalIdToTestScores.put(appraisalIDWorkable, cursor.getString(scoreIndex));
+            appraisalIdToNote.put(appraisalIDWorkable, cursor.getString(noteIndex));
+            appraisalIdToTrial1.put(appraisalIDWorkable, cursor.getString(trial1Index));
+            appraisalIdToTrial2.put(appraisalIDWorkable, cursor.getString(trial2Index));
+            appraisalIdToTrial3.put(appraisalIDWorkable, cursor.getString(trial3Index));
+            appraisalIdToUpdated.put(appraisalIDWorkable, cursor.getString(updatedIndex));
+            appraisalIdToUploaded.put(appraisalIDWorkable, cursor.getString(uploadedIndex));
+        }
+        cursor.close();
+        dbHelper.close();
+        return new DBAppraisalTestsTransporter(appraisalID, testID, appraisalIdToTestId, appraisalIdToTestScores,
+                appraisalIdToNote, appraisalIdToTrial1, appraisalIdToTrial2, appraisalIdToTrial3, appraisalIdToUpdated,
+                appraisalIdToUploaded);
+    }
+
+    public DBCategoriesTransporter getCategoriesFromDB(Context context) {
+        ArrayList<String> categoriesID = new ArrayList<>();
+        Map<String, String> categoriesIdToParentId = new HashMap<>();
+        Map<String, String> categoriesIdToName = new HashMap<>();
+        Map<String, String> categoriesIdToPosition = new HashMap<>();
+        Map<String, String> categoriesIdToUpdated = new HashMap<>();
+        Map<String, String> categoriesIdToUploaded = new HashMap<>();
+
+        DBHelper dbHelper = new DBHelper(context);
+        String[] columns = {DBContract.TestCategories.KEY_ID, DBContract.TestCategories.KEY_PARENT_ID,
+                DBContract.TestCategories.KEY_NAME, DBContract.TestCategories.KEY_POSITION,
+                DBContract.TestCategories.KEY_UPDATED, DBContract.TestCategories.KEY_UPLOADED};
+        Cursor cursor = dbHelper.getReadableDatabase().query(DBContract.TestCategories.TABLE_NAME,
+                columns, null, null, null, null, null);
+
+        String categoriesIDWorkable;
+        int categoriesIndex = cursor.getColumnIndex(DBContract.TestCategories.KEY_ID);
+        int parentIndex = cursor.getColumnIndex(DBContract.TestCategories.KEY_PARENT_ID);
+        int nameIndex = cursor.getColumnIndex(DBContract.TestCategories.KEY_NAME);
+        int positionIndex = cursor.getColumnIndex(DBContract.TestCategories.KEY_POSITION);
+        int updatedIndex = cursor.getColumnIndex(DBContract.TestCategories.KEY_UPDATED);
+        int uploadedIndex = cursor.getColumnIndex(DBContract.TestCategories.KEY_UPLOADED);
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            categoriesIDWorkable = cursor.getString(categoriesIndex);
+            categoriesID.add(categoriesIDWorkable);
+            categoriesIdToParentId.put(categoriesIDWorkable, cursor.getString(parentIndex));
+            categoriesIdToName.put(categoriesIDWorkable, cursor.getString(nameIndex));
+            categoriesIdToPosition.put(categoriesIDWorkable, cursor.getString(positionIndex));
+            categoriesIdToUpdated.put(categoriesIDWorkable, cursor.getString(updatedIndex));
+            categoriesIdToUploaded.put(categoriesIDWorkable, cursor.getString(uploadedIndex));
+        }
+        dbHelper.close();
+        cursor.close();
+        return new DBCategoriesTransporter(categoriesID, categoriesIdToParentId, categoriesIdToName,
+                categoriesIdToPosition, categoriesIdToUpdated, categoriesIdToUploaded);
+    }
+
+    public DBTestsTransporter getTestsFromDB(Context context) {
+        ArrayList<String> testID = new ArrayList<>();
+        Map<String, String> testIdToCategoryId = new HashMap<>();
+        Map<String, String> testIdToName = new HashMap<>();
+        Map<String, String> testIdToDescription = new HashMap<>();
+        Map<String, String> testIdToUnits = new HashMap<>();
+        Map<String, String> testIdToDecimals = new HashMap<>();
+        Map<String, String> testIdToWeight = new HashMap<>();
+        Map<String, String> testIdToFormulaF = new HashMap<>();
+        Map<String, String> testIdToFormulaM = new HashMap<>();
+        Map<String, String> testIdToPosition = new HashMap<>();
+        Map<String, String> testIdToUpdated = new HashMap<>();
+        Map<String, String> testIdToUploaded = new HashMap<>();
+
+        DBHelper dbHelper = new DBHelper(context);
+        String[] columns = {DBContract.Tests.KEY_ID, DBContract.Tests.KEY_CATEGORY_ID, DBContract.Tests.KEY_NAME,
+                DBContract.Tests.KEY_DESCRIPTION, DBContract.Tests.KEY_UNITS, DBContract.Tests.KEY_DECIMALS,
+                DBContract.Tests.KEY_WEIGHT, DBContract.Tests.KEY_FORMULA_F, DBContract.Tests.KEY_FORMULA_M,
+                DBContract.Tests.KEY_POSITION, DBContract.Tests.KEY_UPDATED, DBContract.Tests.KEY_UPLOADED};
+        Cursor cursor = dbHelper.getReadableDatabase().query(DBContract.Tests.TABLE_NAME, columns,
+                null, null, null, null, null);
+
+        String testIDWorkable;
+        int testIndex = cursor.getColumnIndex(DBContract.Tests.KEY_ID);
+        int categoryIndex = cursor.getColumnIndex(DBContract.Tests.KEY_CATEGORY_ID);
+        int nameIndex = cursor.getColumnIndex(DBContract.Tests.KEY_NAME);
+        int descriptionIndex = cursor.getColumnIndex(DBContract.Tests.KEY_DESCRIPTION);
+        int unitsIndex = cursor.getColumnIndex(DBContract.Tests.KEY_DECIMALS);
+        int weightIndex = cursor.getColumnIndex(DBContract.Tests.KEY_WEIGHT);
+        int formulaFIndex = cursor.getColumnIndex(DBContract.Tests.KEY_FORMULA_F);
+        int formulaMIndex = cursor.getColumnIndex(DBContract.Tests.KEY_FORMULA_M);
+        int positionIndex = cursor.getColumnIndex(DBContract.Tests.KEY_POSITION);
+        int updatedIndex = cursor.getColumnIndex(DBContract.Tests.KEY_UPDATED);
+        int uploadedIndex = cursor.getColumnIndex(DBContract.Tests.KEY_UPLOADED);
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            testIDWorkable = cursor.getString(testIndex);
+            testID.add(testIDWorkable);
+            testIdToCategoryId.put(testIDWorkable, cursor.getString(categoryIndex));
+            testIdToName.put(testIDWorkable, cursor.getString(nameIndex));
+            testIdToDescription.put(testIDWorkable, cursor.getString(descriptionIndex));
+            testIdToUnits.put(testIDWorkable, cursor.getString(unitsIndex));
+            testIdToWeight.put(testIDWorkable, cursor.getString(weightIndex));
+            testIdToFormulaF.put(testIDWorkable, cursor.getString(formulaFIndex));
+            testIdToFormulaM.put(testIDWorkable, cursor.getString(formulaMIndex));
+            testIdToPosition.put(testIDWorkable, cursor.getString(positionIndex));
+            testIdToUpdated.put(testIDWorkable, cursor.getString(updatedIndex));
+            testIdToUploaded.put(testIDWorkable, cursor.getString(uploadedIndex));
+        }
+        cursor.close();
+        dbHelper.close();
+        return new DBTestsTransporter(testID, testIdToCategoryId, testIdToName, testIdToDescription,
+                testIdToUnits, testIdToDecimals, testIdToWeight, testIdToFormulaF, testIdToFormulaM,
+                testIdToPosition, testIdToUpdated, testIdToUploaded);
     }
 }

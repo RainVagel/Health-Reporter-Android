@@ -9,14 +9,14 @@ import java.util.Map;
  */
 
 public class DBClientsTransporter {
-    ArrayList<String> clientID = new ArrayList<>();
-    Map<String, String> clientIdToFirstName = new HashMap<>();
-    Map<String, String> clientIdToLastName = new HashMap<>();
-    Map<String, String> clientIdToEmail = new HashMap<>();
-    Map<String, String> clientIdToGender = new HashMap<>();
-    Map<String, String> clientIdToGroupId = new HashMap<>();
-    Map<String, String> clientIdToBirthDate = new HashMap<>();
-    Map<String, String> clientIdToUpdated = new HashMap<>();
+    private ArrayList<String> clientID = new ArrayList<>();
+    private Map<String, String> clientIdToFirstName = new HashMap<>();
+    private Map<String, String> clientIdToLastName = new HashMap<>();
+    private Map<String, String> clientIdToEmail = new HashMap<>();
+    private Map<String, String> clientIdToGender = new HashMap<>();
+    private Map<String, String> clientIdToGroupId = new HashMap<>();
+    private Map<String, String> clientIdToBirthDate = new HashMap<>();
+    private Map<String, String> clientIdToUpdated = new HashMap<>();
 
     public DBClientsTransporter(ArrayList<String> clientID, Map<String, String> clientIdToFirstName,
                                 Map<String, String> clientIdToLastName, Map<String, String> clientIdToEmail,
