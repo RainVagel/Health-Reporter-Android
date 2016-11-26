@@ -31,12 +31,7 @@ public class testResultActivity extends AppCompatActivity {
         // intent always passes on the appraisal_id
         appraisal_id = fromTestAdapter.getStringExtra("appraisal_id");
         Log.v(TAG, "In test result acitivity");
-
-
-
     }
-
-
 
     public void updateTestResult(View v){
         int newResult = np.getValue();

@@ -18,12 +18,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 import rainvagel.healthreporter.CategoryClasses.Category;
+import rainvagel.healthreporter.DBClasses.DBAppraisalTestsTransporter;
+import rainvagel.healthreporter.DBClasses.DBAppraisalsTransporter;
 import rainvagel.healthreporter.DBClasses.DBContract;
 import rainvagel.healthreporter.DBClasses.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBPresetTestsTransporter;
+import rainvagel.healthreporter.DBClasses.DBPresetsTransporter;
+import rainvagel.healthreporter.DBClasses.DBQueries;
+import rainvagel.healthreporter.DBClasses.DBTestsTransporter;
 import rainvagel.healthreporter.R;
 
 
@@ -45,12 +52,10 @@ public class AddTestActivity extends AppCompatActivity  {
     ListView testListView;
     ListView presetListView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_test);
-
 
         categories_spinner = (Spinner) findViewById(R.id.categories_spinner);
         Log.v("asdsad", String.valueOf(category_map.keySet().size()));
@@ -60,8 +65,6 @@ public class AddTestActivity extends AppCompatActivity  {
             category_objects.add(category_map.get(s));
             categories.add(s);
         }
-
-
 
         Log.v("addtest", String.valueOf(categories.size()));
 
@@ -102,7 +105,6 @@ public class AddTestActivity extends AppCompatActivity  {
             }
         });
 
-
     }
 
     protected void addTests(View v){
@@ -125,7 +127,7 @@ public class AddTestActivity extends AppCompatActivity  {
         for(Test t : selectedTests) {
             String uniqueID = UUID.randomUUID().toString();
 
-            int test_id = t.getId();
+            String test_id = t.getId();
 
             String tablename = DBContract.Appraisals.TABLE_NAME;
             ContentValues values = new ContentValues();
@@ -158,7 +160,6 @@ public class AddTestActivity extends AppCompatActivity  {
 
         }
 
-
         selectedTests = new ArrayList<>();
         testListView.setAdapter(new AddTestAdapter(this, allSuitableTests));
 
@@ -170,24 +171,29 @@ public class AddTestActivity extends AppCompatActivity  {
         toCategories.putExtra("ClientId",CategoriesActivity.fromClients.getStringExtra("ClientId"));
 
         startActivity(toCategories);
-
-
-
     }
 
     protected void getPresets(Category c){
-
         Map<String, String> presets = new HashMap<>();//id key and value is name
         DBHelper mydb = new DBHelper(this);
         String[] columns = {DBContract.PresetTests.KEY_PRESET_ID,DBContract.PresetTests.KEY_TEST_ID};
 
-        Cursor res = mydb.getReadableDatabase().query(DBContract.PresetTests.TABLE_NAME,columns,null,null,null,null,null);
+        DBQueries dbQueries = new DBQueries();
+        DBPresetTestsTransporter dbPresetTestsTransporter = dbQueries.getPresetTestsFromDB(this);
+        ArrayList<String> testID = dbPresetTestsTransporter.getTestID();
+        Map<String, Set<String>> testIdToPresetId = dbPresetTestsTransporter.getTestIdToPresetId();
         preset = new HashMap<>();
         presetTests_testid = new ArrayList<>();
         presetTest_id = new ArrayList<>();
+
+//        Presete esitav tsükkel on vigane kuna ei võta arvesse asjaolu, et üks test võib olla mitmes presetis.
+//        Parandada ära ja kasutada selleks üleval olevaid ArrayList ja Mapi.
+
+        Cursor res = mydb.getReadableDatabase().query(DBContract.PresetTests.TABLE_NAME,columns,null,null,null,null,null);
         for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
             if(allTestIDs.contains(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID)))){
-                preset.put(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)),allTests.get(allTestIDs.indexOf(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID)))));
+                preset.put(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)),
+                        allTests.get(allTestIDs.indexOf(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID)))));
                 //preset_names.put(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)), res.getString(res.getColumnIndex(DBContract.PresetTests.)))
 
                 presetTests_testid.add(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID)));
@@ -196,15 +202,16 @@ public class AddTestActivity extends AppCompatActivity  {
 
         }
 
+        DBPresetsTransporter dbPresetsTransporter = dbQueries.getPresetsFromDB(this);
+        ArrayList<String> presetID = dbPresetsTransporter.getPresetID();
+        Map<String, String> presetIdToName = dbPresetsTransporter.getPresetIdToName();
 
-        columns = new String[] {DBContract.Presets.KEY_ID,DBContract.Presets.KEY_NAME};
-
-        res = mydb.getReadableDatabase().query(DBContract.Presets.TABLE_NAME,columns,null,null,null,null,null);
-        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
-            if(preset.keySet().contains(res.getString(res.getColumnIndex(DBContract.Presets.KEY_ID)))){
-                preset_names.put(res.getString(res.getColumnIndex(DBContract.Presets.KEY_ID)),res.getString(res.getColumnIndex(DBContract.Presets.KEY_NAME)));
+        for (String ID : presetID) {
+            if (preset.keySet().contains(ID)) {
+                preset_names.put(ID, presetIdToName.get(ID));
             }
         }
+
         arrayPresetNames = new ArrayList<>();
         for(String s : preset_names.values()){
             Log.v("asdasd", s);
@@ -215,104 +222,84 @@ public class AddTestActivity extends AppCompatActivity  {
         Log.v("presetinimede suurus", String.valueOf(preset_names.size()));
         Log.v("presetnimedarray suurus",String.valueOf(arrayPresetNames.size()));
 
-
         res.close();
         mydb.close();
     }
 
-
     protected void getCategoryTests(Category c){
         DBHelper mydb = new DBHelper(this);
-        String[] columns = {DBContract.Tests.KEY_ID, DBContract.Tests.KEY_CATEGORY_ID,DBContract.Tests.KEY_NAME,DBContract.Tests.KEY_DESCRIPTION,
-                DBContract.Tests.KEY_UNITS, DBContract.Tests.KEY_DECIMALS,DBContract.Tests.KEY_WEIGHT,
-                DBContract.Tests.KEY_FORMULA_F,DBContract.Tests.KEY_FORMULA_M,DBContract.Tests.KEY_POSITION,
-                DBContract.Tests.KEY_UPDATED,DBContract.Tests.KEY_UPLOADED};
 
-        Cursor res = mydb.getReadableDatabase().query(DBContract.Tests.TABLE_NAME,columns,null,null,null,null,null);
+        DBQueries dbQueries = new DBQueries();
+        DBTestsTransporter dbTestsTransporter = dbQueries.getTestsFromDB(this);
+        ArrayList<String> testsID = dbTestsTransporter.getTestID();
+        Map<String, String> testsIdToCategoryId = dbTestsTransporter.getTestIdToCategoryId();
+        Map<String, String> testsIdToName = dbTestsTransporter.getTestIdToName();
+        Map<String, String> testsIdToDescription = dbTestsTransporter.getTestIdToDescription();
+        Map<String, String> testsIdToUnits = dbTestsTransporter.getTestIdToUnits();
+        Map<String, String> testsIdToDecimals = dbTestsTransporter.getTestIdToDecimals();
+        Map<String, String> testsIdToWeight = dbTestsTransporter.getTestIdToWeight();
+        Map<String, String> testsIdToFormulaF = dbTestsTransporter.getTestIdToFormulaF();
+        Map<String, String> testsIdToFormulaM = dbTestsTransporter.getTestIdToFormulaM();
+        Map<String, String> testIdToPosition = dbTestsTransporter.getTestIdToPosition();
+        Map<String, String> testsIdToUpdated = dbTestsTransporter.getTestIdToUpdated();
+        Map<String, String> testIdToUploaded = dbTestsTransporter.getTestIdToUploaded();
 
-
-        int testidIndex = res.getColumnIndex(DBContract.Tests.KEY_ID);
-        int categoryIndex = res.getColumnIndex(DBContract.Tests.KEY_CATEGORY_ID);
-        int nameIndex = res.getColumnIndex(DBContract.Tests.KEY_NAME);
-        int descriptionIndex = res.getColumnIndex(DBContract.Tests.KEY_DESCRIPTION);
-        int unitsIndex = res.getColumnIndex(DBContract.Tests.KEY_UNITS);
-        int decimalsIndex = res.getColumnIndex(DBContract.Tests.KEY_DECIMALS);
-        int weightIndex = res.getColumnIndex(DBContract.Tests.KEY_WEIGHT);
-        int formulaFIndex = res.getColumnIndex(DBContract.Tests.KEY_FORMULA_F);
-        int formulaMIndex = res.getColumnIndex(DBContract.Tests.KEY_FORMULA_M);
-        int positionIndex = res.getColumnIndex(DBContract.Tests.KEY_POSITION);
-        int updatedIndex = res.getColumnIndex(DBContract.Tests.KEY_UPDATED);
-        int uploadedIndex = res.getColumnIndex(DBContract.Tests.KEY_UPLOADED);
-
-        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
-            Test test = new Test(Integer.parseInt(res.getString(testidIndex)),
-                    Integer.parseInt(res.getString(categoryIndex)), res.getString(nameIndex), res.getString(descriptionIndex),
-                    res.getString(unitsIndex), res.getString(decimalsIndex),
-                    res.getString(weightIndex), res.getString(formulaFIndex), res.getString(formulaMIndex),
-                    Integer.parseInt(res.getString(positionIndex)), res.getString(updatedIndex), res.getString(uploadedIndex));
+        for (String ID : testsID) {
+            Test test = new Test(ID, testsIdToCategoryId.get(ID), testsIdToName.get(ID), testsIdToDescription.get(ID),
+                    testsIdToUnits.get(ID), testsIdToDecimals.get(ID), testsIdToWeight.get(ID),
+                    testsIdToFormulaF.get(ID), testsIdToFormulaM.get(ID), testIdToPosition.get(ID),
+                    testsIdToUpdated.get(ID), testIdToUploaded.get(ID));
             allTests.add(test);
-            allTestIDs.add(res.getString(testidIndex));
-            if(c.getId().equals(res.getString(categoryIndex)) ) {//look only for said category indexes
-                allSuitableTestIDs.add(res.getString(testidIndex));
+            allTestIDs.add(ID);
+            if (c.getId().equals(testsIdToCategoryId.get(ID))) {
+                allSuitableTestIDs.add(ID);
                 allSuitableTests.add(test);
             }
-
         }
+
         String clientid = CategoriesActivity.intentData[0];
 
         // now we have to get all the appraisal_tests for said client
 
-        columns = new String[]{DBContract.Appraisals.KEY_ID,DBContract.Appraisals.KEY_CLIENT_ID};
-        res = mydb.getReadableDatabase().query(DBContract.Appraisals.TABLE_NAME,columns,null,null,null,null,null);
+        DBAppraisalsTransporter dbAppraisalsTransporter = dbQueries.getAppraisalsFromDB(this);
+        ArrayList<String> appraisalsID = dbAppraisalsTransporter.getAppraisalID();
+        Map<String, String> appraisalsIdToClientId = dbAppraisalsTransporter.getAppraisalIdToClientId();
         ArrayList<String> appraisal_tests = new ArrayList<>();
-        int idIndex = res.getColumnIndex(DBContract.Appraisals.KEY_ID);
-        int clientIndex = res.getColumnIndex(DBContract.Appraisals.KEY_CLIENT_ID);
-        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()) {
-            if(res.getString(clientIndex).equals(clientid))
-                appraisal_tests.add(res.getString(idIndex));
+
+        for (String ID : appraisalsID) {
+            if (appraisalsIdToClientId.get(ID).equals(clientid)) {
+                appraisal_tests.add(ID);
+            }
         }
 
+        DBAppraisalTestsTransporter dbAppraisalTestsTransporter = dbQueries.getAppraisalTestsFromDB(this);
+        ArrayList<String> appraisalTestsID = dbAppraisalTestsTransporter.getAppraisalID();
+        Map<String, String> appraisalTestsIdToTestId = dbAppraisalTestsTransporter.getAppraisalIdToTestId();
+
         //now we have all the appraisals for said client
-        columns = new String[] {DBContract.AppraisalTests.KEY_APPRAISAL_ID,DBContract.AppraisalTests.KEY_TEST_ID,
-                DBContract.AppraisalTests.KEY_SCORE, DBContract.AppraisalTests.KEY_NOTE,  DBContract.AppraisalTests.KEY_TRIAL_1,
-                DBContract.AppraisalTests.KEY_TRIAL_2,  DBContract.AppraisalTests.KEY_TRIAL_3, DBContract.AppraisalTests.KEY_UPDATED,
-                DBContract.AppraisalTests.KEY_UPLOADED};
-        res = mydb.getReadableDatabase().query(DBContract.AppraisalTests.TABLE_NAME,columns,null,null,null,null,null);
         Log.v("testids size",String.valueOf(allSuitableTestIDs.size()));
         Log.v("alltests sie",String.valueOf(allSuitableTests.size()));
 
         Log.v("koiktestid", String.valueOf(allTests.size()));
         Log.v("koikidetestide IDd",String.valueOf(allTestIDs.size()));
-        int test_id = res.getColumnIndex(DBContract.AppraisalTests.KEY_TEST_ID);
-        int appraisal_id = res.getColumnIndex(DBContract.AppraisalTests.KEY_APPRAISAL_ID);
-        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()) {
-            if(appraisal_tests.contains(res.getString(appraisal_id))){//look only for appraisals that said client has
-                if(allSuitableTestIDs.contains(res.getString(test_id))){
-                    allSuitableTests.remove(allSuitableTestIDs.indexOf(res.getString(test_id)));
-                    allSuitableTestIDs.remove(res.getString(test_id));
-                }
 
-                if(allTestIDs.contains(res.getString(test_id))) {
-                    allTests.remove(allTestIDs.indexOf(res.getString(test_id)));
-                    allTestIDs.remove(res.getString(test_id));
+        for (String ID : appraisalTestsID) {
+            if (appraisal_tests.contains(ID)) {
+                if (allSuitableTestIDs.contains(appraisalTestsIdToTestId.get(ID))) {
+                    allSuitableTests.remove(allSuitableTestIDs.indexOf(appraisalTestsIdToTestId.get(ID)));
+                    allSuitableTestIDs.remove(appraisalTestsIdToTestId.get(ID));
+                }
+                if (allTestIDs.contains(appraisalTestsIdToTestId.get(ID))) {
+                    allTests.remove(allTestIDs.indexOf(appraisalTestsIdToTestId.get(ID)));
+                    allTestIDs.remove(appraisalTestsIdToTestId.get(ID));
                 }
             }
+        }
 
             //remove all tests from the array that already exist in test activity
-
-        }
 
         Log.v("alltestszise",String.valueOf(allSuitableTests.size()));
         Log.v("koiktestid", String.valueOf(allTests.size()));
         Log.v("koikidetestide IDd",String.valueOf(allTestIDs.size()));
-        res.close();
-        mydb.close();
-
     }
-
-
-
 }
-
-
-

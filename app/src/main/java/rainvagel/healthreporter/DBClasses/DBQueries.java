@@ -8,7 +8,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -455,5 +457,73 @@ public class DBQueries {
         return new DBTestsTransporter(testID, testIdToCategoryId, testIdToName, testIdToDescription,
                 testIdToUnits, testIdToDecimals, testIdToWeight, testIdToFormulaF, testIdToFormulaM,
                 testIdToPosition, testIdToUpdated, testIdToUploaded);
+    }
+
+    public DBPresetsTransporter getPresetsFromDB(Context context) {
+        ArrayList<String> presetID = new ArrayList<>();
+        Map<String, String> presetIdToName = new HashMap<>();
+        Map<String, String> presetIdToUpdated = new HashMap<>();
+        Map<String, String> presetIdToUploaded = new HashMap<>();
+
+        DBHelper dbHelper = new DBHelper(context);
+        String[] columns = {DBContract.Presets.KEY_ID, DBContract.Presets.KEY_NAME,
+                DBContract.Presets.KEY_UPDATED, DBContract.Presets.KEY_UPLOADED};
+        Cursor cursor = dbHelper.getReadableDatabase().query(DBContract.Presets.TABLE_NAME, columns,
+                null, null, null, null, null);
+
+        String presetIDWorkable;
+        int presetIndex = cursor.getColumnIndex(DBContract.Presets.KEY_ID);
+        int nameIndex = cursor.getColumnIndex(DBContract.Presets.KEY_NAME);
+        int updatedIndex = cursor.getColumnIndex(DBContract.Presets.KEY_UPDATED);
+        int uploadedIndex = cursor.getColumnIndex(DBContract.Presets.KEY_UPLOADED);
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            presetIDWorkable = cursor.getString(presetIndex);
+            presetID.add(presetIDWorkable);
+            presetIdToName.put(presetIDWorkable, cursor.getString(nameIndex));
+            presetIdToUpdated.put(presetIDWorkable, cursor.getString(updatedIndex));
+            presetIdToUploaded.put(presetIDWorkable, cursor.getString(uploadedIndex));
+        }
+
+        cursor.close();
+        dbHelper.close();
+
+        return new DBPresetsTransporter(presetID, presetIdToName, presetIdToUpdated, presetIdToUploaded);
+    }
+
+    public DBPresetTestsTransporter getPresetTestsFromDB(Context context) {
+        ArrayList<String> testsID = new ArrayList<>();
+        Map<String, Set<String>> testsIdToPresetId = new HashMap<>();
+        Map<String, String> testsIdToUpdated = new HashMap<>();
+        Map<String, String> testsIdToUploaded = new HashMap<>();
+
+        DBHelper dbHelper = new DBHelper(context);
+        String[] columns = {DBContract.PresetTests.KEY_TEST_ID, DBContract.PresetTests.KEY_PRESET_ID,
+                DBContract.PresetTests.KEY_UPDATED, DBContract.PresetTests.KEY_UPLOADED};
+        Cursor cursor = dbHelper.getReadableDatabase().query(DBContract.PresetTests.TABLE_NAME, columns,
+                null, null, null, null, null);
+
+        String testsIDWorkable;
+        int testIndex = cursor.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID);
+        int presetIndex = cursor.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID);
+        int updatedIndex = cursor.getColumnIndex(DBContract.PresetTests.KEY_UPDATED);
+        int uploadedIndex = cursor.getColumnIndex(DBContract.PresetTests.KEY_UPLOADED);
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            testsIDWorkable = cursor.getString(testIndex);
+            testsID.add(testsIDWorkable);
+            if (testsIdToPresetId.keySet().contains(testsIDWorkable)) {
+                testsIdToPresetId.get(testsIDWorkable).add(cursor.getString(presetIndex));
+            } else {
+                testsIdToPresetId.put(testsIDWorkable, new HashSet<String>());
+            }
+            testsIdToUpdated.put(testsIDWorkable, cursor.getString(updatedIndex));
+            testsIdToUploaded.put(testsIDWorkable, cursor.getString(uploadedIndex));
+        }
+
+        dbHelper.close();
+        cursor.close();
+
+        return new DBPresetTestsTransporter(testsID, testsIdToPresetId, testsIdToUpdated, testsIdToUploaded);
     }
 }
