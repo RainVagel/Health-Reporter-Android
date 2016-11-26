@@ -1,4 +1,4 @@
-package rainvagel.healthreporter;
+package rainvagel.healthreporter.DBClasses;
 
 import android.media.Rating;
 import android.provider.BaseColumns;

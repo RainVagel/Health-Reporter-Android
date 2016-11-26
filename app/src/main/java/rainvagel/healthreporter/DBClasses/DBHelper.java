@@ -1,11 +1,10 @@
-package rainvagel.healthreporter;
+package rainvagel.healthreporter.DBClasses;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -291,15 +290,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+//      TODO
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         switch (newVersion) {
             case 2:
                 dropTables(db);
                 onCreate(db);
         }
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        Not needed for development. Maybe implement later
     }
 }

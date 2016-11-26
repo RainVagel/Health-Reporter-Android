@@ -19,35 +19,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
-import rainvagel.healthreporter.ClientClasses.ClientActivity;
+import rainvagel.healthreporter.DBClasses.DBClientsTransporter;
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBQueries;
+import rainvagel.healthreporter.DBClasses.DBTransporter;
 
 import static rainvagel.healthreporter.ClientClasses.ClientActivity.host;
 
 public class SearchResultsActivity extends AppCompatActivity {
     private static final String TAG = "SearchResultsActivity";
 
-    final  ArrayList<Integer> searchClientIDs = new ArrayList<>();
-    final  ArrayList<String> asd = new ArrayList<>();
-    final  ArrayList<Integer> searchGroupIDs = new ArrayList<>();
-    final Map<Integer, String> searchGroupNames = new HashMap<>();
-    final Map<String, Integer> finalClientId= new HashMap<String,Integer>();
+    ArrayList<String> searchClientIDs = new ArrayList<>();
+    ArrayList<String> asd = new ArrayList<>();
+    ArrayList<String> searchGroupIDs = new ArrayList<>();
+    Map<String, String> searchGroupNames = new HashMap<>();
+    Map<String, String> finalClientId= new HashMap<String,String>();
 
-    final Map<Integer, String> searchGroupNamesindex = new HashMap<>();
-    final Map<String,Integer> searchGroupNamesindexReversed = new HashMap<>();
-
-
-
-
-
-
-
-
+    Map<String, String> searchGroupNamesindex = new HashMap<>();
+    Map<String, String> searchGroupNamesindexReversed = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         Log.v("VAAAAAAAAAATA SEDA", String.valueOf(host.getCurrentTab()));
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
@@ -56,7 +51,6 @@ public class SearchResultsActivity extends AppCompatActivity {
         setSupportActionBar(my_toolbar);
 
         if (host.getCurrentTab() == 0) {
-
             String query = new String();
             Intent searchintent = getIntent();
             if (Intent.ACTION_SEARCH.equals(searchintent.getAction())) {
@@ -64,55 +58,34 @@ public class SearchResultsActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle(query);
             }
 
-
             ListView lv = (ListView) findViewById(R.id.main);
 
-            DBHelper mydb = new DBHelper(this);
-
-            String[] columns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME, DBContract.Clients.KEY_GROUP_ID};
-            Cursor cursor = mydb.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, columns, null, null, null, null, null);
-
-            int rowIndex = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
-            int firstNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
-            int lastNameIndex = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
-            int groupIndex = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
-
-
-            // Log.v("ClientActivity", String.valueOf(cursor.getCount()));
-
-
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                //Log.v("ClientActivity", "Made it here");
-                searchClientIDs.add(Integer.valueOf(cursor.getString(rowIndex)));
-                searchGroupIDs.add(Integer.valueOf(cursor.getString(groupIndex)));
-                asd.add(cursor.getString(firstNameIndex) + " " + cursor.getString(lastNameIndex));
-
-
-                finalClientId.put(cursor.getString(firstNameIndex) + " " + cursor.getString(lastNameIndex), Integer.valueOf(cursor.getString(rowIndex)));
-
+            DBQueries dbQueries = new DBQueries();
+            DBClientsTransporter dbClientsTransporter = dbQueries.getClientsFromDB(this);
+            searchClientIDs = dbClientsTransporter.getClientID();
+            searchGroupIDs.addAll(dbClientsTransporter.getClientIdToGroupId().values());
+            Log.v(TAG, "SeachGroupIDs: " + searchGroupIDs.toString());
+            for (String clientId : searchClientIDs) {
+                asd.add(dbClientsTransporter.getClientIdToFirstName().get(clientId) + " " +
+                dbClientsTransporter.getClientIdToLastName().get(clientId));
+                finalClientId.put(dbClientsTransporter.getClientIdToFirstName().get(clientId) + " " +
+                        dbClientsTransporter.getClientIdToLastName().get(clientId), clientId);
             }
 
-            cursor.close();
-
-            String[] columns1 = {DBContract.Groups.KEY_ID, DBContract.Groups.KEY_NAME};
-
-            cursor = mydb.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, columns1, null, null, null, null, null);
-            int idIndex = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
-            int nameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
-
-
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                //Log.v("ClientActivity", "Made it here");
-                int groupId = Integer.parseInt(cursor.getString(idIndex));
-                if (searchGroupIDs.contains(groupId))
-                    searchGroupNames.put(groupId, cursor.getString(nameIndex));
-
-
+            DBTransporter dbTransporter = dbQueries.getGroupsFromDB(this);
+            Map<String, String> groups = dbTransporter.getIdToName();
+            ArrayList<String> groupIDs = dbTransporter.getGroupID();
+            Log.v(TAG, "groups:" + groups.toString());
+            Log.v(TAG, "groupIDs: " + groupIDs.toString());
+            for (String id : groupIDs) {
+                Log.v(TAG, "GroupIDs kuulub see iD: " + id);
+                if (searchGroupIDs.contains(id)) {
+                    Log.v(TAG, "SearchGroupNamesi liitmise meetod");
+                    searchGroupNames.put(id, groups.get(id));
+                }
             }
+
             Log.v("groupids size", String.valueOf(searchGroupIDs.size()));
-
-            mydb.close();
-
 
             final ArrayList<String> SearchResults = new ArrayList<>();
             final ArrayList<String> SearchResultsGroups = new ArrayList<>();
@@ -121,7 +94,7 @@ public class SearchResultsActivity extends AppCompatActivity {
                 if (asd.get(i).toLowerCase().contains(query.toLowerCase())) {
                     SearchResults.add(asd.get(i));
                     Log.v("searchgroupsname", String.valueOf(searchGroupNames.size()));
-
+                    Log.v(TAG, "SearchResults: " + SearchResults.toString());
 
                     //GROUP NAMES DONT HAVE AS MANY ENTRIES AS ASD
                     SearchResultsGroups.add(searchGroupNames.get(searchGroupIDs.get(i)));
@@ -147,12 +120,12 @@ public class SearchResultsActivity extends AppCompatActivity {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    int clientId = searchClientIDs.get(position);
+                    String clientId = searchClientIDs.get(position);
 
                     Intent toCategories = new Intent(SearchResultsActivity.this, CategoriesActivity.class);
                     // we will pass on client's name,group and id in a string, all separated with a comma.
-                    String passedData = (finalClientId.get(SearchResults.get(position)) + "," + SearchResults.get(position) + "," + SearchResultsGroups.get(position));
-
+                    String passedData = (finalClientId.get(SearchResults.get(position)) + ","
+                            + SearchResults.get(position) + "," + SearchResultsGroups.get(position));
 
                     Log.v("client intet", passedData);
                     toCategories.putExtra("ClientId", passedData);// pass on the data
@@ -163,14 +136,6 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         }
         else {
-
-
-
-
-
-
-
-
             String query = new String();
             Intent searchintent = getIntent();
             if (Intent.ACTION_SEARCH.equals(searchintent.getAction())) {
@@ -178,37 +143,15 @@ public class SearchResultsActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle(query);
             }
 
-
             ListView lv = (ListView) findViewById(R.id.main);
 
-            DBHelper mydb = new DBHelper(this);
+            DBQueries dbQueries = new DBQueries();
+            DBTransporter dbTransporter = dbQueries.getGroupsFromDB(this);
 
-            String[] columns = {DBContract.Groups.KEY_ID, DBContract.Groups.KEY_NAME};
-            Cursor cursor = mydb.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, columns, null, null, null, null, null);
-
-            int rowIndex = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
-            int groupNameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
-
-
-
-            // Log.v("ClientActivity", String.valueOf(cursor.getCount()));
-
-
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                //Log.v("ClientActivity", "Made it here");
-                searchGroupIDs.add(Integer.valueOf(cursor.getString(rowIndex)));
-                searchGroupNamesindex.put(Integer.valueOf(cursor.getString(rowIndex)),cursor.getString(groupNameIndex));
-                searchGroupNamesindexReversed.put(cursor.getString(groupNameIndex),Integer.valueOf(cursor.getString(rowIndex)));
-                asd.add(cursor.getString(groupNameIndex));
-
-
-            }
-
-            cursor.close();
-
-
-            mydb.close();
-
+            searchGroupIDs = dbTransporter.getGroupID();
+            searchGroupNamesindex = dbTransporter.getIdToName();
+            searchGroupNamesindexReversed = dbTransporter.getNameToId();
+            asd = dbTransporter.getNames();
 
             final ArrayList<String> SearchResults = new ArrayList<>();
             final ArrayList<String> SearchResultsGroups = new ArrayList<>();
@@ -217,10 +160,7 @@ public class SearchResultsActivity extends AppCompatActivity {
                 if (asd.get(i).toLowerCase().contains(query.toLowerCase())) {
                     SearchResults.add(asd.get(i));
                     Log.v("searchgroupsname", String.valueOf(searchGroupNames.size()));
-
-
                     //GROUP NAMES DONT HAVE AS MANY ENTRIES AS ASD
-
                 }
             }
 
@@ -228,16 +168,13 @@ public class SearchResultsActivity extends AppCompatActivity {
                     this,
                     android.R.layout.simple_list_item_1,
                     SearchResults);
-
             registerForContextMenu(lv);
             ListView elv = (ListView) findViewById(R.id.main);
             elv.setAdapter(arrayAdapter);
 
-
             elv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                     Intent toClients = new Intent(SearchResultsActivity.this, GroupClientActivity.class);
                     String passedData = String.valueOf(searchGroupNamesindexReversed.get(SearchResults.get(position))+","+SearchResults.get(position));
                     toClients.putExtra("GroupID",passedData);
@@ -246,26 +183,6 @@ public class SearchResultsActivity extends AppCompatActivity {
             });
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         }
     }

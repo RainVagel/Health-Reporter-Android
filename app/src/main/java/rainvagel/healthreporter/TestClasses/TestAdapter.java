@@ -23,7 +23,7 @@ import rainvagel.healthreporter.R;
 public class TestAdapter extends ArrayAdapter<Test> {
     private static final String TAG = "TESTADAPTER";
     private final Context context;
-    private final Map<Integer,ArrayList<AppraisalTests>> appraisals_Tests;
+    private final Map<String,ArrayList<AppraisalTests>> appraisals_Tests;
     private final ArrayList<Test> tests;
     private static TextView test_name;
     private static TextView result;
@@ -31,7 +31,7 @@ public class TestAdapter extends ArrayAdapter<Test> {
 
 
 
-    public TestAdapter(Context context,  Map<Integer,ArrayList<AppraisalTests>> appraisals,ArrayList<Test> tests){
+    public TestAdapter(Context context,  Map<String,ArrayList<AppraisalTests>> appraisals,ArrayList<Test> tests){
         super(context, R.layout.activity_tests_list,tests);
         this.context = context;
         this.tests = tests;
@@ -127,7 +127,6 @@ public class TestAdapter extends ArrayAdapter<Test> {
                     editAppraisal.putExtra("appraisal_id", String.valueOf(appraisal_id));
                     context.startActivity(editAppraisal);
 
-
                 }
             });
             return rowView;
@@ -141,14 +140,5 @@ public class TestAdapter extends ArrayAdapter<Test> {
 
             return rowView;
         }
-
-
-
     }
-
-
-
-
-
-
 }

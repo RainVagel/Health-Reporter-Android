@@ -1,9 +1,7 @@
 package rainvagel.healthreporter.ClientClasses;
 
 import android.app.DialogFragment;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,8 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
-import rainvagel.healthreporter.DBContract;
-import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBQueries;
 import rainvagel.healthreporter.DatePickerFragment;
 import rainvagel.healthreporter.OnDataPass;
 import rainvagel.healthreporter.R;
@@ -91,36 +88,21 @@ public class InsertClientActivity extends AppCompatActivity implements OnDataPas
         String lastNameString = String.valueOf(lastName.getText());
         String emailString = String.valueOf(email.getText());
 
-//        In final product must use the generator
-
-//        String uniqueID = UUID.randomUUID().toString();
-        String uniqueID = "98006";
-
-        DBHelper dbHelper = new DBHelper(this);
-        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = simpleDateFormat.format(calendar.getTime());
         Log.v("InsertClientActivity", formattedDate);
-        ContentValues values = new ContentValues();
         Log.v("InsertClientActivity", getIntent().getStringExtra("GroupID"));
         String[] groupInfo = getIntent().getStringExtra("GroupID").split(",");
         String group = groupInfo[0];
         groupName = groupInfo[1];
-        values.put(DBContract.Clients.KEY_ID, uniqueID);
-        values.put(DBContract.Clients.KEY_GROUP_ID, group);
-        values.put(DBContract.Clients.KEY_FIRSTNAME, firstNameString);
-        values.put(DBContract.Clients.KEY_LASTNAME, lastNameString);
-        values.put(DBContract.Clients.KEY_EMAIL, emailString);
-        values.put(DBContract.Clients.KEY_GENDER, gender);
-        values.put(DBContract.Clients.KEY_BIRTHDATE, birthYear + "-" + birthMonth + "-" + birthDay);
-        values.put(DBContract.Clients.KEY_UPDATED, formattedDate);
-        values.put(DBContract.Clients.KEY_UPLOADED, "0000-00-00");
-        sqLiteDatabase.insert(DBContract.Clients.TABLE_NAME, null, values);
-        sqLiteDatabase.close();
+
+        DBQueries dbQueries = new DBQueries();
+        String uuid = dbQueries.insertClientToDB(this, group, firstNameString, lastNameString, emailString, gender,
+                birthYear, birthMonth, birthDay, formattedDate);
 
         Intent toCategories = new Intent(this, CategoriesActivity.class);
-        String passedData = (uniqueID + "," + firstNameString + " " + lastNameString + "," + groupName);
+        String passedData = (uuid + "," + firstNameString + " " + lastNameString + "," + groupName);
         toCategories.putExtra("ClientId", passedData);
         startActivity(toCategories);
     }

@@ -35,7 +35,5 @@ public class NewTestActivity extends AppCompatActivity {
                 //TODO
             }
         });
-
-
     }
 }

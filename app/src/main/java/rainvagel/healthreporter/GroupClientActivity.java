@@ -12,20 +12,24 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 import rainvagel.healthreporter.CategoryClasses.Category;
+import rainvagel.healthreporter.DBClasses.DBClientsTransporter;
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBQueries;
+import rainvagel.healthreporter.DBClasses.DBTransporter;
 
 public class GroupClientActivity extends AppCompatActivity {
 
     final ArrayList<Category> categories = new ArrayList<>();
-    final ArrayList<String> clientnames = new ArrayList<>();
-    final  ArrayList<Integer> clientIDs = new ArrayList<>();
+    ArrayList<String> clientnames = new ArrayList<>();
+    ArrayList<String> clientIDs = new ArrayList<>();
     Intent toCategories;
     static String[] intentData;
     Toolbar tb;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,27 +39,21 @@ public class GroupClientActivity extends AppCompatActivity {
        intentData = getIntent().getStringExtra("GroupID").split(",");
 
         tb = (Toolbar) findViewById(R.id.my_toolbar);
-        CharSequence title =  intentData[1];//Group name
+        String groupID = intentData[0];
+        String title = intentData[1];//Group name
 
         tb.setTitle(title);
 
-
-        DBHelper mydb = new DBHelper(GroupClientActivity.this);
-        String [] clientColumns = {DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME,DBContract.Clients.KEY_GROUP_ID,DBContract.Clients.KEY_ID};
-        Cursor res = mydb.getReadableDatabase().query(DBContract.Clients.TABLE_NAME,clientColumns,null,null,null,null,null);
-        int clientGroupID = res.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
-        int rowIndex = res.getColumnIndex(DBContract.Clients.KEY_ID);
-        int name = res.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
-        int famname = res.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
-
-
-        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
-
-            if(res.getString(clientGroupID).equals(intentData[0])){
-                Log.v("GROUPCLIENT",res.getString(name)+" "+res.getString(famname)+
-                        " "+res.getString(clientGroupID));
-                clientnames.add(res.getString(name)+ " "+ res.getString(famname));
-                clientIDs.add(Integer.valueOf(res.getString(rowIndex)));
+        DBQueries dbQueries = new DBQueries();
+        DBClientsTransporter dbClientsTransporter = dbQueries.getClientsFromDB(this);
+        ArrayList<String> clientId = dbClientsTransporter.getClientID();
+        Map<String,String> clientIdToFirstName = dbClientsTransporter.getClientIdToFirstName();
+        Map<String, String> clientIdToLastName = dbClientsTransporter.getClientIdToLastName();
+        Map<String, String> clientIdToGroupId = dbClientsTransporter.getClientIdToGroupId();
+        for (String id : clientId) {
+            if (clientIdToGroupId.get(id).equals(intentData[0])) {
+                clientnames.add(clientIdToFirstName.get(id) + " " + clientIdToLastName.get(id));
+                clientIDs.add(id);
             }
         }
 
@@ -66,13 +64,12 @@ public class GroupClientActivity extends AppCompatActivity {
                 clientnames
         );
 
-
         lv.setAdapter(arrayAdapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int clientId= clientIDs.get(position);
+                String clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(GroupClientActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
                 String passedData =(String.valueOf(clientId)+","+clientnames.get(position)+","+ intentData[1]);
@@ -80,15 +77,8 @@ public class GroupClientActivity extends AppCompatActivity {
                 toCategories.putExtra("ClientId", passedData);// pass on the data
 
                 startActivity(toCategories);
-
             }
         });
-
-
-
-
-
-
 
     }
 }

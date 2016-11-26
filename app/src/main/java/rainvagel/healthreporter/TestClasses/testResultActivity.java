@@ -2,7 +2,6 @@ package rainvagel.healthreporter.TestClasses;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +10,8 @@ import android.view.View;
 import android.widget.NumberPicker;
 
 import rainvagel.healthreporter.*;
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
 
 public class testResultActivity extends AppCompatActivity {
     private static final String TAG = "editTestResult";
@@ -30,12 +31,7 @@ public class testResultActivity extends AppCompatActivity {
         // intent always passes on the appraisal_id
         appraisal_id = fromTestAdapter.getStringExtra("appraisal_id");
         Log.v(TAG, "In test result acitivity");
-
-
-
     }
-
-
 
     public void updateTestResult(View v){
         int newResult = np.getValue();

@@ -4,13 +4,14 @@ import android.app.Instrumentation;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.intent.Intents;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
 
 import static junit.framework.Assert.assertEquals;
 

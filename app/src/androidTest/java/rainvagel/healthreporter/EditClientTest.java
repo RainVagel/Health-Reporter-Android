@@ -1,37 +1,17 @@
 package rainvagel.healthreporter;
 
-import android.app.Instrumentation;
-import android.content.Intent;
-import android.database.Cursor;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.widget.EditText;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import rainvagel.healthreporter.DBClasses.DBHelper;
 
-import rainvagel.healthreporter.ClientClasses.ClientActivity;
-import rainvagel.healthreporter.ClientClasses.EditClientActivity;
-import rainvagel.healthreporter.ClientClasses.InsertClientActivity;
-
-import static android.support.test.espresso.Espresso.closeSoftKeyboard;
-import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.doubleClick;
-import static android.support.test.espresso.action.ViewActions.longClick;
-import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.Matchers.startsWith;
 
 /**
  * Created by Cornelia on 07/11/2016.
