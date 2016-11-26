@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,14 +44,25 @@ public class AddTestActivity extends AppCompatActivity  {
     ArrayList<Test> allTests = new ArrayList<>();
     ArrayList<String> allTestIDs = new ArrayList<>();
     ArrayList<String> allSuitableTestIDs = new ArrayList<>();
-    Map<String, Test> preset = new HashMap<>();
-    Map<String, String> preset_names = new HashMap<>();
+    Map<String, ArrayList<Test>> preset = new HashMap<>();//PresetID -> Corresponding preset tests.
+    Map<String, String> preset_names = new HashMap<>();// PReset-ID -> Preset name
     ArrayList<String> presetTests_testid;
     ArrayList<String> presetTest_id;
     ArrayList<String> arrayPresetNames;
     public static ArrayList<Test> selectedTests = new ArrayList<>();
     ListView testListView;
     ListView presetListView;
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+       // Intent toTests = new Intent(this, TestActivity.class);
+        //toTests.putExtra("IntentData", TestActivity.fromCategoriesData);
+       // startActivity(toTests);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +104,15 @@ public class AddTestActivity extends AppCompatActivity  {
                 Log.v("alltestsbefore adapter",String.valueOf(allSuitableTests.size()));
                 AddTestAdapter ata = new AddTestAdapter(AddTestActivity.this, allSuitableTests);
                 testListView.setAdapter(ata);
+
+
+                Set<String> hs = new HashSet<String>();//remove all duplicates
+                hs.addAll(presetTest_id);
+                presetTest_id.clear();
+                presetTest_id.addAll(hs);
+
                 presetListView = (ListView) findViewById(R.id.preset_list);
-                AddPreSetAdapter apsa = new AddPreSetAdapter(AddTestActivity.this, preset,preset_names,arrayPresetNames);
+                AddPreSetAdapter apsa = new AddPreSetAdapter(AddTestActivity.this, preset,preset_names,presetTest_id);
                 presetListView.setAdapter(apsa);
 
             }
@@ -109,6 +128,13 @@ public class AddTestActivity extends AppCompatActivity  {
 
     protected void addTests(View v){
         Log.v("addtests",String.valueOf(selectedTests.size()));
+        //Remove duplicates
+        Set<Test> testid = new HashSet<>();
+        testid.addAll(selectedTests);
+        selectedTests.clear();
+        selectedTests.addAll(testid);
+        Log.v("addtest",String.valueOf(selectedTests.size()));
+
         //no we should add those tests to the client
         String appraiser_id = String.valueOf(133742069);
         DBHelper mydb = new DBHelper(this);
@@ -152,12 +178,6 @@ public class AddTestActivity extends AppCompatActivity  {
             values.put(DBContract.AppraisalTests.KEY_UPLOADED, updated);
             db.insert(DBContract.AppraisalTests.TABLE_NAME, null, values);
 
-        /*
-            ArrayList<AppraisalTests> at = TestActivity.testToAppraisal.get(test_id);
-            at.add(new AppraisalTests(uniqueID,test_id,String.valueOf(score_nr),notesdb,String.valueOf(trial1_nr),String.valueOf(trial2_nr),String.valueOf(trial3_nr),updated,updated));
-            TestActivity.testToAppraisal.put(test_id,at);
-            */
-
         }
 
         selectedTests = new ArrayList<>();
@@ -192,9 +212,17 @@ public class AddTestActivity extends AppCompatActivity  {
         Cursor res = mydb.getReadableDatabase().query(DBContract.PresetTests.TABLE_NAME,columns,null,null,null,null,null);
         for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
             if(allTestIDs.contains(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID)))){
-                preset.put(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)),
-                        allTests.get(allTestIDs.indexOf(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID)))));
-                //preset_names.put(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)), res.getString(res.getColumnIndex(DBContract.PresetTests.)))
+                if(preset.containsKey(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)))) {
+                    ArrayList<Test> temp = preset.get(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)));
+                    temp.add(allTests.get(allTestIDs.indexOf(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID)))));
+                    preset.put(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)), temp);
+                    //preset_names.put(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)), res.getString(res.getColumnIndex(DBContract.PresetTests.)))
+                }
+                else{
+                    ArrayList<Test> temp = new ArrayList<>();
+                    temp.add(allTests.get(allTestIDs.indexOf(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID)))));
+                    preset.put(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)),temp);
+                }
 
                 presetTests_testid.add(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_TEST_ID)));
                 presetTest_id.add(res.getString(res.getColumnIndex(DBContract.PresetTests.KEY_PRESET_ID)));

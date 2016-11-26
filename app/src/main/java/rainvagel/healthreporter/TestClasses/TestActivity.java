@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 import rainvagel.healthreporter.DBClasses.DBAppraisalTestsTransporter;
 import rainvagel.healthreporter.DBClasses.DBAppraisalsTransporter;
 import rainvagel.healthreporter.DBClasses.DBCategoriesTransporter;
@@ -26,12 +27,22 @@ import rainvagel.healthreporter.R;
 public class TestActivity extends AppCompatActivity {
     private static final String TAG = "TestActivity";
     Button createButton;
-    String[] fromCategoriesData;
+   public static String[] fromCategoriesData;
     ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
      ArrayList<Test> testArray = new ArrayList<>();
     ArrayList<String> correctTests= new ArrayList<>();
    public static Map<String, ArrayList<AppraisalTests>> testToAppraisal = new HashMap<>();//TODO VALUE SHOULD BE AN ARRAY LIST OF APPRAISTESTS
     public static Intent fromCategories;
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent toCategories = new Intent(this, CategoriesActivity.class);
+        toCategories.putExtra("ClientId", CategoriesActivity.fromClients.getStringExtra("ClientId"));
+        startActivity(toCategories);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
