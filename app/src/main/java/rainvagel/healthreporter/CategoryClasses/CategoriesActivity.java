@@ -1,6 +1,7 @@
 package rainvagel.healthreporter.CategoryClasses;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
@@ -76,16 +77,12 @@ public class CategoriesActivity extends Activity {
 
         new Thread(new Runnable() {
             public void run(){
-
+                Log.v("LAMPPP", String.valueOf(categories.size()));
                 getCategories();
             }}).start();
 
         ListView lv = (ListView) findViewById(R.id.listView);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                categorynames
-        );
+
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -104,10 +101,12 @@ public class CategoriesActivity extends Activity {
             }
         });
         Log.v(TAG+"siin",String.valueOf(categories.size()));
-
+        Log.v("LAMPPP", String.valueOf(categories.size()));
         CategoriesAdapter ca = new CategoriesAdapter(this, categories);
 
+        Log.v("LAMPPP", String.valueOf(categories.size()));
         lv.setAdapter(ca);
+        Log.v("LAMPPP", String.valueOf(categories.size()));
 
     }
 
@@ -207,7 +206,76 @@ public class CategoriesActivity extends Activity {
                     categorynames.add(categoryIdToName.get(ID));
                 }
             }
-        };
+        }
+
+        Log.v(TAG+"siin",String.valueOf(categories.size()));
+
+    }
+
+
+    public static String getCategoryScores(Category c, Context con){
+        String id = intentData[0];
+        String categoryId = c.getId();
+        int score = 0;
+
+        DBQueries dbQuery = new DBQueries();
+
+        DBClientsTransporter dbClients = dbQuery.getClientsFromDB(con);
+
+        // Gender of Client
+        String gender = dbClients.getClientIdToGender().get(id);
+
+        DBAppraisalsTransporter dbAppraisals = dbQuery.getAppraisalsFromDB(con);
+        Map<String, String> appraisalToClient = dbAppraisals.getAppraisalIdToClientId();
+        ArrayList<String> appraisalsTests = new ArrayList<>();//contains appraisalIDs for said client
+        //Get all client Appraisals
+        Log.v("klient", id);
+
+        for(String i : appraisalToClient.keySet()){
+           // Log.v("appraisaltoklient", appraisalToClient.get(i));
+            if(appraisalToClient.get(i).equals(i))
+                appraisalsTests.add(i);
+        }
+
+        DBAppraisalTestsTransporter appraisalTestsTransporter = dbQuery.getAppraisalTestsFromDB(con);
+        Map<String, String> appraisalidToTestScore = appraisalTestsTransporter.getAppraisalIdToTestScores();
+        Map<String, String> appraisalIdToTestId = appraisalTestsTransporter.getAppraisalIdToTestId();
+
+
+        DBTestsTransporter testsTransporter = dbQuery.getTestsFromDB(con);
+        Map<String, String> testToCategory = testsTransporter.getTestIdToCategoryId();
+        Map<String, String> testToWeight = testsTransporter.getTestIdToWeight();
+        ArrayList<String> categoryTests = new ArrayList<>();//contains testIDs that belong to Category c
+        //Get all testids that are in the category that is given as an argument
+        for(String i : testToCategory.keySet()){
+            Log.v("vordlus", String.valueOf(testToCategory.get(i).equals(categoryId)));
+            if(testToCategory.get(i).equals(categoryId)) {
+                categoryTests.add(i);
+                Log.v("pedekas", String.valueOf(categoryTests.size()));
+            }
+        }
+
+        double total_score = 0;
+        ArrayList<String> categoryAppraisals = new ArrayList<>();
+
+        Log.v("appraisalstest suurus", String.valueOf(appraisalsTests.size()));
+        Log.v("categoryid", categoryId);
+        for(String i :appraisalsTests) {
+
+            if(categoryTests.contains(appraisalIdToTestId.get(i))) {
+               total_score += Double.parseDouble(appraisalidToTestScore.get(i)) * Double.parseDouble(testToWeight.get(i));
+            }
+        }
+
+        //no we have only appraisals that belong to said category
+        // Using the score and weight we calculate the category score
+
+
+
+
+        Log.v(TAG,String.valueOf(total_score));
+
+        return String.valueOf(Math.round(total_score));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package rainvagel.healthreporter.CategoryClasses;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class CategoriesAdapter extends ArrayAdapter<Category> {
         super(context, R.layout.activity_categories_list,categories);
         this.context = context;
         this.categories=categories;
+
     }
 
 
@@ -34,11 +36,17 @@ public class CategoriesAdapter extends ArrayAdapter<Category> {
         View rowView = inflater.inflate(R.layout.activity_categories_list,parent,false);
         TextView tv = (TextView) rowView.findViewById(R.id.textView);
         TextView nv = (TextView) rowView.findViewById(R.id.number);
-        nv.setText("55");
+        Log.v("adapter", String.valueOf(categories.size()));
+        Log.v("adapterpos", String.valueOf(position));
+        nv.setText(CategoriesActivity.getCategoryScores(categories.get(position), context));
 
         tv.setText(categories.get(position).getName());
 
         return rowView;
 
     }
+
+
+
+
 }
