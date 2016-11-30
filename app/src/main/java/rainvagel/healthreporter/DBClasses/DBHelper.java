@@ -222,17 +222,49 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
 //        Ratings
-        
-
-//        Ratings
-//        ContentValues ratingValues = new ContentValues();
-//        ratingValues.put(DBContract.Ratings.KEY_TEST_ID, 7);
-//        ratingValues.put(DBContract.Ratings.KEY_LABEL_ID, 5);
-//        ratingValues.put(DBContract.Ratings.KEY_AGE, 25);
-//        ratingValues.put(DBContract.Ratings.KEY_NORM_F, 10);
-//        ratingValues.put(DBContract.Ratings.KEY_NORM_M, 20);
-//        ratingValues.put(DBContract.Ratings.KEY_UPDATED, "2014-05-10");
-//        ratingValues.put(DBContract.Ratings.KEY_UPLOADED, "2014-05-11");
+        List<Integer> ratingsAge = new ArrayList<>();
+        List<Integer> ratingsNormF = new ArrayList<>();
+        List<Integer> ratingsNormM = new ArrayList<>();
+        ratingsAge.add(0);
+        ratingsAge.add(10);
+        ratingsAge.add(20);
+        ratingsAge.add(30);
+        ratingsAge.add(40);
+        ratingsAge.add(50);
+        ratingsAge.add(60);
+        ratingsAge.add(70);
+        ratingsNormF.add(20);
+        ratingsNormF.add(30);
+        ratingsNormF.add(100);
+        ratingsNormF.add(10);
+        ratingsNormF.add(15);
+        ratingsNormF.add(25);
+        ratingsNormF.add(35);
+        ratingsNormF.add(70);
+        ratingsNormM.add(10);
+        ratingsNormM.add(25);
+        ratingsNormM.add(50);
+        ratingsNormM.add(75);
+        ratingsNormM.add(100);
+        ratingsNormM.add(30);
+        ratingsNormM.add(15);
+        ratingsNormM.add(88);
+        for (String uuid : testsUUID) {
+            ContentValues values = new ContentValues();
+            values.put(DBContract.Ratings.KEY_TEST_ID,
+                    uuid);
+            values.put(DBContract.Ratings.KEY_LABEL_ID,
+                    ratingLabelsUUID.get(random.nextInt(ratingLabelsUUID.size())));
+            values.put(DBContract.Ratings.KEY_AGE,
+                    ratingsAge.get(random.nextInt(ratingsAge.size())));
+            values.put(DBContract.Ratings.KEY_NORM_F,
+                    ratingsNormF.get(random.nextInt(ratingsNormF.size())));
+            values.put(DBContract.Ratings.KEY_NORM_M,
+                    ratingsNormM.get(random.nextInt(ratingsNormM.size())));
+            values.put(DBContract.Ratings.KEY_UPDATED, "2014-05-15");
+            values.put(DBContract.Ratings.KEY_UPLOADED, "2014-07-20");
+            db.insert(DBContract.Ratings.TABEL_NAME, null, values);
+        }
 
 //        Presets
         List<String> presetNames = new ArrayList<>();
@@ -295,10 +327,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        switch (newVersion) {
-            case 2:
-                dropTables(db);
-                onCreate(db);
-        }
+//        TODO
     }
 }
