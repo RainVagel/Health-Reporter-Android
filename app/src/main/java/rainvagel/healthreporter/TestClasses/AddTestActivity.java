@@ -14,7 +14,10 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -136,11 +139,10 @@ public class AddTestActivity extends AppCompatActivity  {
         Log.v("addtest",String.valueOf(selectedTests.size()));
 
         //no we should add those tests to the client
-        String appraiser_id = String.valueOf(133742069);
-        DBHelper mydb = new DBHelper(this);
-        SQLiteDatabase db = mydb.getWritableDatabase();
 
-        String updated = "2016-11-03";
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");//current date
+        String appraiser_id = String.valueOf(133742069);
+        String updated = df.format(new Date()).toString();
 
         String dateofappraisal = updated;
         int score_nr = 0;
@@ -151,46 +153,27 @@ public class AddTestActivity extends AppCompatActivity  {
         String clientid = CategoriesActivity.intentData[0];
 
         for(Test t : selectedTests) {
-            String uniqueID = UUID.randomUUID().toString();
-
             String test_id = t.getId();
 
-            String tablename = DBContract.Appraisals.TABLE_NAME;
-            ContentValues values = new ContentValues();
-            values.put(DBContract.Appraisals.KEY_ID, uniqueID);
-            values.put(DBContract.Appraisals.KEY_APPRAISER_ID, appraiser_id);
-            values.put(DBContract.Appraisals.KEY_CLIENT_ID, clientid);
-            values.put(DBContract.Appraisals.KEY_DATE, dateofappraisal);
-            values.put(DBContract.Appraisals.KEY_UPDATED, updated);
-            values.put(DBContract.Appraisals.KEY_UPLOADED, updated);
-
-            db.insert(tablename, null, values);
-
-            values = new ContentValues();
-            values.put(DBContract.AppraisalTests.KEY_APPRAISAL_ID, uniqueID);
-            values.put(DBContract.AppraisalTests.KEY_TEST_ID, test_id);
-            values.put(DBContract.AppraisalTests.KEY_SCORE, score_nr);
-            values.put(DBContract.AppraisalTests.KEY_NOTE, notesdb);
-            values.put(DBContract.AppraisalTests.KEY_TRIAL_1, trial1_nr);
-            values.put(DBContract.AppraisalTests.KEY_TRIAL_2, trial2_nr);
-            values.put(DBContract.AppraisalTests.KEY_TRIAL_3, trial3_nr);
-            values.put(DBContract.AppraisalTests.KEY_UPDATED, updated);
-            values.put(DBContract.AppraisalTests.KEY_UPLOADED, updated);
-            db.insert(DBContract.AppraisalTests.TABLE_NAME, null, values);
+            DBQueries dbQ = new DBQueries();
+            dbQ.insertAppraisalTestAndAppraisalToDB(this, appraiser_id, clientid,dateofappraisal,updated, updated, test_id,score_nr,notesdb,trial1_nr,trial2_nr,
+                    trial3_nr);
 
         }
+        setData();
 
-        selectedTests = new ArrayList<>();
-        testListView.setAdapter(new AddTestAdapter(this, allSuitableTests));
 
-        db.close();
-        mydb.close();
 
         //should return to categories?
         Intent toCategories = new Intent(this, CategoriesActivity.class);
         toCategories.putExtra("ClientId",CategoriesActivity.fromClients.getStringExtra("ClientId"));
 
         startActivity(toCategories);
+    }
+
+    protected void setData(){
+        selectedTests = new ArrayList<>();
+        testListView.setAdapter(new AddTestAdapter(this, allSuitableTests));
     }
 
     protected void getPresets(Category c){
@@ -206,8 +189,6 @@ public class AddTestActivity extends AppCompatActivity  {
         presetTests_testid = new ArrayList<>();
         presetTest_id = new ArrayList<>();
 
-//        Presete esitav tsükkel on vigane kuna ei võta arvesse asjaolu, et üks test võib olla mitmes presetis.
-//        Parandada ära ja kasutada selleks üleval olevaid ArrayList ja Mapi.
 
         Cursor res = mydb.getReadableDatabase().query(DBContract.PresetTests.TABLE_NAME,columns,null,null,null,null,null);
         for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){

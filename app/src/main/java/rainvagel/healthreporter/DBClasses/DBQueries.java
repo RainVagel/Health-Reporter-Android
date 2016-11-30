@@ -61,6 +61,57 @@ public class DBQueries {
         return uuid;
     }
 
+    public String insertAppraisalTestAndAppraisalToDB(Context context, String appraiser, String client, String dateofappraisal, String updated,
+                                                      String uploaded,String testid, int score, String note, int trial1,int trial2, int trial3){
+
+        DBHelper dbHelper  = new DBHelper(context);
+        SQLiteDatabase sql = dbHelper.getWritableDatabase();
+
+
+        String uuid = UUID.randomUUID().toString();
+
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Appraisals.KEY_ID, uuid);
+        values.put(DBContract.Appraisals.KEY_APPRAISER_ID, appraiser);
+        values.put(DBContract.Appraisals.KEY_CLIENT_ID, client);
+        values.put(DBContract.Appraisals.KEY_DATE, dateofappraisal);
+        values.put(DBContract.Appraisals.KEY_UPDATED, updated);
+        values.put(DBContract.Appraisals.KEY_UPLOADED, uploaded);
+
+        sql.insert(DBContract.Appraisals.TABLE_NAME, null, values);
+
+        values = new ContentValues();
+        values.put(DBContract.AppraisalTests.KEY_APPRAISAL_ID, uuid);
+        values.put(DBContract.AppraisalTests.KEY_TEST_ID, testid);
+        values.put(DBContract.AppraisalTests.KEY_SCORE, score);
+        values.put(DBContract.AppraisalTests.KEY_NOTE, note);
+        values.put(DBContract.AppraisalTests.KEY_TRIAL_1, trial1);
+        values.put(DBContract.AppraisalTests.KEY_TRIAL_2, trial2);
+        values.put(DBContract.AppraisalTests.KEY_TRIAL_3, trial3);
+        values.put(DBContract.AppraisalTests.KEY_UPDATED, updated);
+        values.put(DBContract.AppraisalTests.KEY_UPLOADED, uploaded);
+        sql.insert(DBContract.AppraisalTests.TABLE_NAME, null, values);
+
+        sql.close();
+        dbHelper.close();
+
+        return uuid;
+
+    }
+
+
+    public void updateAppraisalTestInDB(Context context, String appraisal_id,int new_score){
+        DBHelper db = new DBHelper(context);
+        SQLiteDatabase sql = db.getReadableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DBContract.AppraisalTests.KEY_SCORE, new_score);
+
+        String selection = DBContract.AppraisalTests.KEY_APPRAISAL_ID + " LIKE ?";
+        String[] selectionArgs = {appraisal_id};
+
+        int count = sql.update(DBContract.AppraisalTests.TABLE_NAME,cv,selection,selectionArgs);
+    }
+
     public void editClientInDB(Context context, String clientId, String firstName, String lastName,
                                String clientBirthDate, String email, String clientGender,
                                String clientGroupId, String clientUpdated) {

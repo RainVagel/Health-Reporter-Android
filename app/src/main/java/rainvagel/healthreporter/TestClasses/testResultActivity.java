@@ -13,6 +13,7 @@ import rainvagel.healthreporter.*;
 import rainvagel.healthreporter.DBClasses.DBContract;
 import rainvagel.healthreporter.DBClasses.DBHelper;
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
+import rainvagel.healthreporter.DBClasses.DBQueries;
 
 public class testResultActivity extends AppCompatActivity {
     private static final String TAG = "editTestResult";
@@ -51,20 +52,8 @@ public class testResultActivity extends AppCompatActivity {
     }
 
     public void updateTestResult(View v){
-        int newResult = np.getValue();
-        DBHelper mydb = new DBHelper(this);
-        String[] columns = {DBContract.AppraisalTests.KEY_APPRAISAL_ID, DBContract.AppraisalTests.KEY_SCORE};
-
-        SQLiteDatabase db = mydb.getReadableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(DBContract.AppraisalTests.KEY_SCORE,newResult);
-
-        String selection = DBContract.AppraisalTests.KEY_APPRAISAL_ID + " LIKE ?";
-        String[] selectionArgs = {String.valueOf(appraisal_id)};
-        // update the database where appraisal_id = ...
-        int count = db.update(DBContract.AppraisalTests.TABLE_NAME,values,selection,selectionArgs);
-
+        DBQueries dbq = new DBQueries();
+        dbq.updateAppraisalTestInDB(this, appraisal_id, np.getValue());
 
         // now the database should be updated and we should go back to testActivity;
         // in order to maintain functionality and to save the same state
