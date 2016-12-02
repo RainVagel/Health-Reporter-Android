@@ -23,6 +23,10 @@ public class InsertGroupToDBTest {
     private DBHelper database;
     private DBQueries queries;
 
+    private static final String GROUPNAME = "Testgrupp";
+    private static final String UPDATED = "2017-01-01";
+    private static final String UPLOADED = "0000-00-00";
+
     private String uuid;
 
     @Before
@@ -34,7 +38,7 @@ public class InsertGroupToDBTest {
 
     @Test
     public void addingGroup() {
-        queries.insertGroupToDB(instrumentation.getTargetContext(), "Testgrupp1", "2017-01-01");
+        queries.insertGroupToDB(instrumentation.getTargetContext(), GROUPNAME, UPDATED);
         String[] groupColumns = {DBContract.Groups.KEY_ID, DBContract.Groups.KEY_NAME, DBContract.Groups.KEY_UPDATED, DBContract.Groups.KEY_UPLOADED};
         Cursor cursor = database.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, groupColumns, null,null,null,null,null);
         int idIdx = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
@@ -42,10 +46,10 @@ public class InsertGroupToDBTest {
         int dateIdx = cursor.getColumnIndex(DBContract.Groups.KEY_UPDATED);
         int uploadIdx = cursor.getColumnIndex(DBContract.Groups.KEY_UPLOADED);
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            if (cursor.getString(nameIdx).equals("Testgrupp1")) {
+            if (cursor.getString(nameIdx).equals(GROUPNAME)) {
                 uuid = cursor.getString(idIdx);
-                assertEquals("2017-01-01", cursor.getString(dateIdx));
-                assertEquals("0000-00-00", cursor.getString(uploadIdx));
+                assertEquals(UPDATED, cursor.getString(dateIdx));
+                assertEquals(UPLOADED, cursor.getString(uploadIdx));
             }
         }
         cursor.close();
