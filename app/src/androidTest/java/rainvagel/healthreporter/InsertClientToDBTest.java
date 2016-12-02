@@ -23,7 +23,9 @@ public class InsertClientToDBTest {
     private DBHelper database;
     private DBQueries queries;
 
-    private static final String GROUP     = "University of Tartu";
+    private static final String GROUPNAME = "TestGroup1";
+    private static final String UPDATED0  = "2017-01-01";
+
     private static final String FIRSTNAME = "Test";
     private static final String LASTNAME  = "Client";
     private static final String EMAIL     = "testclient@gmail.com";
@@ -35,18 +37,31 @@ public class InsertClientToDBTest {
     private static final String UPLOADED  = "0000-00-00";
     private static final String BIRTHDAY  = YEAR + "-" + MONTH + "-" + DAY;
 
-    private String uuid;
+    private String groupUuid;
+    private String clientUuid;
 
     @Before
     public void setUp() {
         instrumentation = InstrumentationRegistry.getInstrumentation();
         database = new DBHelper(instrumentation.getTargetContext());
         queries = new DBQueries();
+
+        queries.insertGroupToDB(instrumentation.getTargetContext(), GROUPNAME, UPDATED0);
+        String[] groupColumns = {DBContract.Groups.KEY_ID, DBContract.Groups.KEY_NAME, DBContract.Groups.KEY_UPDATED, DBContract.Groups.KEY_UPLOADED};
+        Cursor cursor = database.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, groupColumns, null,null,null,null,null);
+        int idIdx = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
+        int nameIdx = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            if (cursor.getString(nameIdx).equals(GROUPNAME)) {
+                groupUuid = cursor.getString(idIdx);
+            }
+        }
+        cursor.close();
     }
 
     @Test
     public void insertingClient() {
-        queries.insertClientToDB(instrumentation.getTargetContext(), GROUP, FIRSTNAME,
+        queries.insertClientToDB(instrumentation.getTargetContext(), groupUuid, FIRSTNAME,
                 LASTNAME, EMAIL, GENDER, YEAR, MONTH, DAY, UPDATED);
 
         String[] clientColumns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_GROUP_ID, DBContract.Clients.KEY_FIRSTNAME,
@@ -65,9 +80,9 @@ public class InsertClientToDBTest {
         int uploadIdx = cursor.getColumnIndex(DBContract.Clients.KEY_UPLOADED);
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            if (cursor.getString(groupIdx).equals(GROUP)) {
+            if (cursor.getString(groupIdx).equals(groupUuid)) {
                 if (cursor.getString(firstNameIdx).equals(FIRSTNAME)) {
-                    uuid = cursor.getString(idIdx);
+                    clientUuid = cursor.getString(idIdx);
                     assertEquals(LASTNAME, cursor.getString(lastNameIdx));
                     assertEquals(EMAIL, cursor.getString(emailIdx));
                     assertEquals(GENDER, cursor.getInt(genderIdx));
@@ -82,7 +97,7 @@ public class InsertClientToDBTest {
 
     @After
     public void tearDown() {
-        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Clients.TABLE_NAME, DBContract.Clients.KEY_ID,uuid);
+        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Clients.TABLE_NAME, DBContract.Clients.KEY_ID, clientUuid);
         database.close();
     }
 }
