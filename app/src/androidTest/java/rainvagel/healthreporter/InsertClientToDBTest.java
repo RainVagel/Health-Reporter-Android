@@ -97,7 +97,7 @@ public class InsertClientToDBTest {
 
     @After
     public void tearDown() {
-        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Clients.TABLE_NAME, DBContract.Clients.KEY_ID, clientUuid);
+        //queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Clients.TABLE_NAME, DBContract.Clients.KEY_ID, clientUuid);
         database.close();
     }
 }
