@@ -24,8 +24,8 @@ public class InsertGroupToDBTest {
     private DBQueries queries;
 
     private static final String GROUPNAME = "Testgrupp";
-    private static final String UPDATED = "2017-01-01";
-    private static final String UPLOADED = "0000-00-00";
+    private static final String UPDATED   = "2017-01-01";
+    private static final String UPLOADED  = "0000-00-00";
 
     private String uuid;
 
@@ -57,7 +57,7 @@ public class InsertGroupToDBTest {
 
     @After
     public void tearDown() {
-        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Groups.TABLE_NAME, DBContract.Groups.KEY_ID, uuid);
+        //queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Groups.TABLE_NAME, DBContract.Groups.KEY_ID, uuid);
         database.close();
     }
 }

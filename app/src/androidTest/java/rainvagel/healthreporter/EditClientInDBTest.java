@@ -61,6 +61,7 @@ public class EditClientInDBTest {
         Cursor cursor = database.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, groupColumns, null,null,null,null,null);
         int idIdx = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
         int nameIdx = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
+
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             if (cursor.getString(nameIdx).equals(GROUPNAME)) {
                 groupUuid = cursor.getString(idIdx);
@@ -68,9 +69,7 @@ public class EditClientInDBTest {
         }
 
         queries.insertClientToDB(instrumentation.getTargetContext(), groupUuid, FIRSTNAME0, LASTNAME0, EMAIL0, GENDER0, YEAR0, MONTH0, DAY0, UPDATED0);
-
         String[] clientColumns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_FIRSTNAME};
-
         cursor = database.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, clientColumns, null,null,null,null,null);
         int idIdx1 = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
         int nameIdx1 = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);

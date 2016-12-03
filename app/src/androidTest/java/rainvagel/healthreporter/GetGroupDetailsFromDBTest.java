@@ -28,7 +28,6 @@ public class GetGroupDetailsFromDBTest {
 
     private static final String GROUPNAME = "Testgrupp2";
     private static final String UPDATED   = "2017-03-15";
-    private static final String UPLOADED  = "0000-00-00";
 
     private String groupUuid;
 

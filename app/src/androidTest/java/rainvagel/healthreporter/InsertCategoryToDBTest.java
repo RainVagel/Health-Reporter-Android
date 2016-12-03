@@ -66,7 +66,7 @@ public class InsertCategoryToDBTest {
 
     @After
     public void tearDown() {
-        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.TestCategories.TABLE_NAME, DBContract.TestCategories.KEY_ID, uuid);
+        //queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.TestCategories.TABLE_NAME, DBContract.TestCategories.KEY_ID, uuid);
         database.close();
 
     }
