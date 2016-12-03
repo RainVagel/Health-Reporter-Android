@@ -1,5 +1,6 @@
 package rainvagel.healthreporter.ClientClasses;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.database.Cursor;
@@ -33,6 +34,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import rainvagel.healthreporter.AppraiserActivity;
 import rainvagel.healthreporter.CategoryClasses.CategoriesActivity;
 import rainvagel.healthreporter.DBClasses.DBContract;
 import rainvagel.healthreporter.DBClasses.DBHelper;
@@ -57,6 +59,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
     Map<String, String> groups = new HashMap<>();
     Map<String, String> groupsreversed = new HashMap<>();
     ArrayList<String> groupNames = new ArrayList<>();
+    String appraiserID = null;
 
     Map<String, String> clientIdGroupId = new HashMap<>();
     Map<String, String>  namesGroupKeys = new HashMap<>();
@@ -90,6 +93,11 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         if(id == R.id.action_settings1){
             sortbylastname();
             return false;
+        }
+
+        if (id == R.id.settings_appraisers) {
+            Intent intent = new Intent(this, AppraiserActivity.class);
+            startActivityForResult(intent, 100);
         }
 
         return super.onOptionsItemSelected(item);
@@ -221,11 +229,23 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 String clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(ClientActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
-                String passedData = (namesClientKeys.get(names.get(position))+","+names.get(position)+","+ groups.get(namesGroupKeys.get(names.get(position))));
+                String passedData = (namesClientKeys.get(names.get(position))+","
+                        +names.get(position)+","+
+                        groups.get(namesGroupKeys.get(names.get(position))) + "," +
+                appraiserID);
                 toCategories.putExtra("ClientId", passedData);// pass on the data
                 startActivity(toCategories);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 100) {
+            if (resultCode == Activity.RESULT_OK) {
+                appraiserID = data.getStringExtra("appraiserID");
+            }
+        }
     }
 
     @Override

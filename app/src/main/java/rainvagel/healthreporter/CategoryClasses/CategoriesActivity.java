@@ -40,6 +40,7 @@ public class CategoriesActivity extends Activity {
     private ArrayList<Category> divider = new ArrayList<>();
     public static Map<String, Category> forAddTest = new HashMap<>();
     public static Intent fromClients;
+    public static String appraiserID;
     public static String[] intentData;
     Toolbar tb;
     int age;
@@ -64,6 +65,7 @@ public class CategoriesActivity extends Activity {
         tb = (Toolbar) findViewById(R.id.my_toolbar);
         CharSequence title =  intentData[1];//first name
         CharSequence subtitle = intentData[2];//group
+        appraiserID = intentData[3];
         tb.setTitle(title);
         tb.setSubtitle(subtitle);
 
@@ -98,8 +100,10 @@ public class CategoriesActivity extends Activity {
                 Log.v(TAG, category.getName());
                 //After retrieving the category object we send an intent to TestActivity which contains said category id and clientid
                 Intent intent = new Intent(CategoriesActivity.this, TestActivity.class);// class does not exist
-                intent.putExtra("IntentData", category.getId()+","+intentData[0]+","+intentData[1]+","+String.valueOf(age)+"," +intentData[2]);
-                Log.v(TAG, category.getId()+","+intentData[0]+","+intentData[1]+","+String.valueOf(age)+"," +intentData[2]);
+                intent.putExtra("IntentData", category.getId()+","+intentData[0]+","+intentData[1]+","+String.valueOf(age)+"," +intentData[2] +
+                "," + appraiserID);
+                Log.v(TAG, category.getId()+","+intentData[0]+","+intentData[1]+","+String.valueOf(age)+"," +intentData[2] + "," +
+                appraiserID);
                 startActivity(intent);
             }
         });

@@ -9,7 +9,12 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +35,7 @@ public class TestActivity extends AppCompatActivity {
    public static String[] fromCategoriesData;
     ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
      ArrayList<Test> testArray = new ArrayList<>();
+    public static String appraiserID = null;
     ArrayList<String> correctTests= new ArrayList<>();
    public static Map<String, ArrayList<AppraisalTests>> testToAppraisal = new HashMap<>();//TODO VALUE SHOULD BE AN ARRAY LIST OF APPRAISTESTS
     public static Intent fromCategories;
@@ -49,7 +55,9 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         fromCategories = getIntent();
-        String[] fromCategoriesData = getIntent().getStringExtra("IntentData").split(",");
+        fromCategoriesData = getIntent().getStringExtra("IntentData").split(",");
+        getAppraiserID();
+        Log.v(TAG, "appraiserID: " + appraiserID);
         //Intent from categories contains client id(index 0) and category id in sa string which has been split by ","
         Toolbar my_toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(my_toolbar);
@@ -71,8 +79,52 @@ public class TestActivity extends AppCompatActivity {
 
     }
 
+    private void getAppraiserID() {
+        if (fromCategoriesData[5].equals("null")) {
+            DBQueries dbQueries = new DBQueries();
+            DBAppraisalsTransporter dbAppraisalsTransporter = dbQueries.getAppraisalsFromDB(this);
+            DBAppraisalTestsTransporter dbAppraisalTestsTransporter = dbQueries.getAppraisalTestsFromDB(this);
+            DBTestsTransporter dbTestsTransporter = dbQueries.getTestsFromDB(this);
+
+            ArrayList<String> appraisalID = dbAppraisalsTransporter.getAppraisalID();
+            Map<String, String> appraisalIdToAppraiserId = dbAppraisalsTransporter.getAppraisalIdToAppraiserId();
+            Map<String, String> appraisalIdToClientId = dbAppraisalsTransporter.getAppraisalIdToClientId();
+            Map<String, String> appraisalsIdToAppraisalDate = dbAppraisalsTransporter.getAppraisalIdToAppraisalDate();
+
+
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String mostRecentAppraisalID = null;
+            Date mostRecent;
+            Date runnerDate;
+            try {
+                mostRecent = dateFormat.parse("1900-01-01");
+                for (String ID : appraisalID) {
+                    runnerDate = dateFormat.parse(appraisalsIdToAppraisalDate.get(ID));
+                    Log.v(TAG, "runnerDate: " + runnerDate);
+                    Log.v(TAG, "mostRecent: " + mostRecent);
+                    if (mostRecent.compareTo(runnerDate) < 0) {
+                        Log.v(TAG, "got to inner if");
+                        mostRecentAppraisalID = ID;
+                        mostRecent = runnerDate;
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            for (String ID: appraisalID) {
+                if (mostRecentAppraisalID.equals(ID)) {
+                    appraiserID = appraisalIdToAppraiserId.get(ID);
+                }
+            }
+
+        }
+        else {
+            appraiserID = fromCategoriesData[5];
+        }
+    }
+
     protected void getTests(){
-        String[] fromCategoriesData = getIntent().getStringExtra("IntentData").split(",");
+//        String[] fromCategoriesData = getIntent().getStringExtra("IntentData").split(",");
         // Using clientID we have to query the database to get all appraisal_tests that belong to said Client
         // Then using the categoryID we filter out unneccessary tests.
 
