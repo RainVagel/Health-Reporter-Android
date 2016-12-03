@@ -67,6 +67,7 @@ public class TestActivity extends AppCompatActivity {
 
         TestAdapter ta = new TestAdapter(this,testToAppraisal,testArray);
 
+
         listView.setAdapter(ta);
 
     }

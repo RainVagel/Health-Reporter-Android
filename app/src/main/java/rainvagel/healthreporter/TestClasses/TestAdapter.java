@@ -9,7 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.google.android.gms.vision.Frame;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -27,7 +33,8 @@ public class TestAdapter extends ArrayAdapter<Test> {
     private final ArrayList<Test> tests;
     private static TextView test_name;
     private static TextView result;
-
+    private static HorizontalScrollView hori;
+    private boolean visible = false;
 
 
 
@@ -38,14 +45,19 @@ public class TestAdapter extends ArrayAdapter<Test> {
         this.appraisals_Tests = appraisals;
     }
 
+    public void setButtonsVisible(boolean isVisible) {
+        visible = isVisible;
+    }
+
+
     @NonNull
     @Override
-    public View getView(final int position, final View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
+         final LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 
         if(tests.get(position) != null) {//if not divider
-            View rowView = inflater.inflate(R.layout.activity_tests_list,parent,false);
+            final View rowView = inflater.inflate(R.layout.activity_tests_list,parent,false);
             test_name = (TextView) rowView.findViewById(R.id.textView);
             result = (TextView) rowView.findViewById(R.id.result);
 
@@ -111,6 +123,23 @@ public class TestAdapter extends ArrayAdapter<Test> {
                 @Override
                 public void onClick(View v) {
                     Log.v(TAG, "clicked on test name");
+
+                    if(visible){
+                    rowView.findViewById(R.id.hsv).setVisibility(visible ? View.GONE : View.VISIBLE);
+                        rowView.findViewById(R.id.innerLay).setVisibility(visible ? View.GONE : View.VISIBLE);
+                        rowView.findViewById(R.id.nupp).setVisibility(visible ? View.GONE : View.VISIBLE);
+                        Log.v("PEAKS MINEMA N*H",String.valueOf(visible));
+
+                        setButtonsVisible(!visible);}
+
+                    else{
+
+                    rowView.findViewById(R.id.hsv).setVisibility(!visible ? View.VISIBLE: View.GONE);
+                        rowView.findViewById(R.id.innerLay).setVisibility(!visible ? View.VISIBLE: View.GONE);
+                        rowView.findViewById(R.id.nupp).setVisibility(!visible ? View.VISIBLE: View.GONE);
+                        Log.v("MUUTSIN NÄHTAVAKS",String.valueOf(visible));
+
+                        setButtonsVisible(!visible);}
                 }
             });
 
