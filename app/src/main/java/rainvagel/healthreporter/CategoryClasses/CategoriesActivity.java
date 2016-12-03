@@ -18,7 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import rainvagel.healthreporter.DBClasses.DBAppraisalTestsTransporter;
 import rainvagel.healthreporter.DBClasses.DBAppraisalsTransporter;
@@ -77,12 +79,11 @@ public class CategoriesActivity extends Activity {
 
         new Thread(new Runnable() {
             public void run(){
-                Log.v("LAMPPP", String.valueOf(categories.size()));
+
                 getCategories();
             }}).start();
 
         ListView lv = (ListView) findViewById(R.id.listView);
-
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -100,13 +101,10 @@ public class CategoriesActivity extends Activity {
                 startActivity(intent);
             }
         });
-        Log.v(TAG+"siin",String.valueOf(categories.size()));
-        Log.v("LAMPPP", String.valueOf(categories.size()));
+
         CategoriesAdapter ca = new CategoriesAdapter(this, categories);
 
-        Log.v("LAMPPP", String.valueOf(categories.size()));
         lv.setAdapter(ca);
-        Log.v("LAMPPP", String.valueOf(categories.size()));
 
     }
 
@@ -208,15 +206,14 @@ public class CategoriesActivity extends Activity {
             }
         }
 
-        Log.v(TAG+"siin",String.valueOf(categories.size()));
-
     }
 
 
-    public static String getCategoryScores(Category c, Context con){
+    public static int getCategoryScores(Category c, Context con){
         String id = intentData[0];
+
+        //kategooriaID
         String categoryId = c.getId();
-        int score = 0;
 
         DBQueries dbQuery = new DBQueries();
 
@@ -224,17 +221,20 @@ public class CategoriesActivity extends Activity {
 
         // Gender of Client
         String gender = dbClients.getClientIdToGender().get(id);
-
+        Log.v("sugu",gender);
         DBAppraisalsTransporter dbAppraisals = dbQuery.getAppraisalsFromDB(con);
         Map<String, String> appraisalToClient = dbAppraisals.getAppraisalIdToClientId();
-        ArrayList<String> appraisalsTests = new ArrayList<>();//contains appraisalIDs for said client
+        Map<String, String> appraisalToDate = dbAppraisals.getAppraisalIdToAppraisalDate();
+        Set<String> appraisalsIDs = new HashSet<>();//contains appraisalIDs for said client
         //Get all client Appraisals
         Log.v("klient", id);
 
-        for(String i : appraisalToClient.keySet()){
-           // Log.v("appraisaltoklient", appraisalToClient.get(i));
-            if(appraisalToClient.get(i).equals(i))
-                appraisalsTests.add(i);
+        for(Map.Entry<String, String> entry : appraisalToClient.entrySet()){
+            Log.v("kaskliendioma", String.valueOf(entry.getValue().equals(id)));
+            if(entry.getValue().equals(id))
+                appraisalsIDs.add(entry.getKey());
+
+
         }
 
         DBAppraisalTestsTransporter appraisalTestsTransporter = dbQuery.getAppraisalTestsFromDB(con);
@@ -242,40 +242,43 @@ public class CategoriesActivity extends Activity {
         Map<String, String> appraisalIdToTestId = appraisalTestsTransporter.getAppraisalIdToTestId();
 
 
+
         DBTestsTransporter testsTransporter = dbQuery.getTestsFromDB(con);
         Map<String, String> testToCategory = testsTransporter.getTestIdToCategoryId();
         Map<String, String> testToWeight = testsTransporter.getTestIdToWeight();
-        ArrayList<String> categoryTests = new ArrayList<>();//contains testIDs that belong to Category c
+        Set<String> categoryTests = new HashSet<>();//contains testIDs that belong to Category c
         //Get all testids that are in the category that is given as an argument
-        for(String i : testToCategory.keySet()){
-            Log.v("vordlus", String.valueOf(testToCategory.get(i).equals(categoryId)));
-            if(testToCategory.get(i).equals(categoryId)) {
-                categoryTests.add(i);
-                Log.v("pedekas", String.valueOf(categoryTests.size()));
+
+        for(Map.Entry<String, String> entry : appraisalIdToTestId.entrySet()) {
+            String appraisal = entry.getKey();
+            String test = entry.getValue();
+            if (appraisalsIDs.contains(appraisal)) {
+                if (testToCategory.get(test).equals(categoryId))
+                    categoryTests.add(test);
+                else
+                    appraisalsIDs.remove(appraisal);
             }
         }
 
         double total_score = 0;
-        ArrayList<String> categoryAppraisals = new ArrayList<>();
+        double max = 0;
 
-        Log.v("appraisalstest suurus", String.valueOf(appraisalsTests.size()));
-        Log.v("categoryid", categoryId);
-        for(String i :appraisalsTests) {
-
-            if(categoryTests.contains(appraisalIdToTestId.get(i))) {
-               total_score += Double.parseDouble(appraisalidToTestScore.get(i)) * Double.parseDouble(testToWeight.get(i));
+        //now we should have the necessary appraisalIDs and TestIDs to calculate the score
+        for(String i : appraisalsIDs){
+            try {
+                Log.v("skoor", appraisalidToTestScore.get(i));
+                Double score = Double.parseDouble(appraisalidToTestScore.get(i));
+                Double weight = Double.parseDouble(testToWeight.get(appraisalIdToTestId.get(i)));
+                total_score += score * weight;
+                max += score;
+            }
+            catch (Exception e){
+              Log.v("Exception","nonexistent");
             }
         }
 
-        //no we have only appraisals that belong to said category
-        // Using the score and weight we calculate the category score
-
-
-
-
-        Log.v(TAG,String.valueOf(total_score));
-
-        return String.valueOf(Math.round(total_score));
+        Long vastus = Math.round((total_score/max)*100);
+        return vastus.intValue();
     }
 
     @Override

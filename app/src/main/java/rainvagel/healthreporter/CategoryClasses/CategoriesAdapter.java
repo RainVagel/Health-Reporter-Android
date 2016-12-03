@@ -38,7 +38,18 @@ public class CategoriesAdapter extends ArrayAdapter<Category> {
         TextView nv = (TextView) rowView.findViewById(R.id.number);
         Log.v("adapter", String.valueOf(categories.size()));
         Log.v("adapterpos", String.valueOf(position));
-        nv.setText(CategoriesActivity.getCategoryScores(categories.get(position), context));
+        int category_score = CategoriesActivity.getCategoryScores(categories.get(position),context);
+        nv.setText(String.valueOf(category_score));
+        if(category_score <20)
+            nv.setBackgroundResource(R.drawable.bg_red);
+        else if(category_score <40)
+            nv.setBackgroundResource(R.drawable.bg_orange);
+        else if(category_score<60)
+            nv.setBackgroundResource(R.drawable.bg_yellow);
+        else if(category_score<80)
+            nv.setBackgroundResource(R.drawable.bg_green);
+        else
+            nv.setBackgroundResource(R.drawable.bg_blue);
 
         tv.setText(categories.get(position).getName());
 
