@@ -1,6 +1,7 @@
 package rainvagel.healthreporter.CategoryClasses;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
@@ -17,7 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import rainvagel.healthreporter.DBClasses.DBAppraisalTestsTransporter;
 import rainvagel.healthreporter.DBClasses.DBAppraisalsTransporter;
@@ -83,11 +86,6 @@ public class CategoriesActivity extends Activity {
             }}).start();
 
         ListView lv = (ListView) findViewById(R.id.listView);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                categorynames
-        );
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -107,7 +105,6 @@ public class CategoriesActivity extends Activity {
                 startActivity(intent);
             }
         });
-        Log.v(TAG+"siin",String.valueOf(categories.size()));
 
         CategoriesAdapter ca = new CategoriesAdapter(this, categories);
 
@@ -211,7 +208,81 @@ public class CategoriesActivity extends Activity {
                     categorynames.add(categoryIdToName.get(ID));
                 }
             }
-        };
+        }
+
+    }
+
+
+    public static int getCategoryScores(Category c, Context con){
+        String id = intentData[0];
+
+        //kategooriaID
+        String categoryId = c.getId();
+
+        DBQueries dbQuery = new DBQueries();
+
+        DBClientsTransporter dbClients = dbQuery.getClientsFromDB(con);
+
+        // Gender of Client
+        String gender = dbClients.getClientIdToGender().get(id);
+        Log.v("sugu",gender);
+        DBAppraisalsTransporter dbAppraisals = dbQuery.getAppraisalsFromDB(con);
+        Map<String, String> appraisalToClient = dbAppraisals.getAppraisalIdToClientId();
+        Map<String, String> appraisalToDate = dbAppraisals.getAppraisalIdToAppraisalDate();
+        Set<String> appraisalsIDs = new HashSet<>();//contains appraisalIDs for said client
+        //Get all client Appraisals
+        Log.v("klient", id);
+
+        for(Map.Entry<String, String> entry : appraisalToClient.entrySet()){
+            Log.v("kaskliendioma", String.valueOf(entry.getValue().equals(id)));
+            if(entry.getValue().equals(id))
+                appraisalsIDs.add(entry.getKey());
+
+
+        }
+
+        DBAppraisalTestsTransporter appraisalTestsTransporter = dbQuery.getAppraisalTestsFromDB(con);
+        Map<String, String> appraisalidToTestScore = appraisalTestsTransporter.getAppraisalIdToTestScores();
+        Map<String, String> appraisalIdToTestId = appraisalTestsTransporter.getAppraisalIdToTestId();
+
+
+
+        DBTestsTransporter testsTransporter = dbQuery.getTestsFromDB(con);
+        Map<String, String> testToCategory = testsTransporter.getTestIdToCategoryId();
+        Map<String, String> testToWeight = testsTransporter.getTestIdToWeight();
+        Set<String> categoryTests = new HashSet<>();//contains testIDs that belong to Category c
+        //Get all testids that are in the category that is given as an argument
+
+        for(Map.Entry<String, String> entry : appraisalIdToTestId.entrySet()) {
+            String appraisal = entry.getKey();
+            String test = entry.getValue();
+            if (appraisalsIDs.contains(appraisal)) {
+                if (testToCategory.get(test).equals(categoryId))
+                    categoryTests.add(test);
+                else
+                    appraisalsIDs.remove(appraisal);
+            }
+        }
+
+        double total_score = 0;
+        double max = 0;
+
+        //now we should have the necessary appraisalIDs and TestIDs to calculate the score
+        for(String i : appraisalsIDs){
+            try {
+                Log.v("skoor", appraisalidToTestScore.get(i));
+                Double score = Double.parseDouble(appraisalidToTestScore.get(i));
+                Double weight = Double.parseDouble(testToWeight.get(appraisalIdToTestId.get(i)));
+                total_score += score * weight;
+                max += score;
+            }
+            catch (Exception e){
+              Log.v("Exception","nonexistent");
+            }
+        }
+
+        Long vastus = Math.round((total_score/max)*100);
+        return vastus.intValue();
     }
 
     @Override

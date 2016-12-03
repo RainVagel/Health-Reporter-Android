@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="grey">#939393</color>
+    <color name="category_green">#00b159</color>
+    <color name="category_red">#ed4845</color>
+    <color name="category_orange">#e55e3d</color>
+    <color name="category_yellow">#d9dc16</color>
+    <color name="category_blue">#00aedb</color>
 </resources>
