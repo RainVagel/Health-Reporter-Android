@@ -11,8 +11,10 @@
         android:gravity="center_vertical"
         android:paddingStart="?android:attr/listPreferredItemPaddingStart"
         android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-       />
+        android:minHeight="?android:attr/listPreferredItemHeightSmall">
+
+</TextView>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,7 +32,36 @@
 
         />
 
+    <HorizontalScrollView
+        android:id="@+id/hsv"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_weight="0"
+        android:fillViewport="true"
+        android:measureAllChildren="false"
+        android:scrollbars="none"
+        android:visibility="gone"
+        android:layout_marginTop="50dp"
+        android:layout_alignParentStart="true"
+       >
+        <LinearLayout
+            android:id="@+id/innerLay"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:visibility="gone"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            >
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Jo"
+                android:visibility="gone"
+                android:id="@+id/nupp"/>
 
+
+        </LinearLayout>
+    </HorizontalScrollView>
 
 
 </RelativeLayout>
