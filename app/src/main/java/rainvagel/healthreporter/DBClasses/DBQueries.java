@@ -577,4 +577,35 @@ public class DBQueries {
 
         return new DBPresetTestsTransporter(testsID, testsIdToPresetId, testsIdToUpdated, testsIdToUploaded);
     }
+
+    public DBAppraiserTransporter getAppraisersFromDB(Context context) {
+        ArrayList<String> appraiserID = new ArrayList<>();
+        Map<String, String> appraiserIdToName = new HashMap<>();
+        Map<String, String> appraiserIdToUpdate = new HashMap<>();
+        Map<String, String> appraiserIdToUploaded = new HashMap<>();
+
+        DBHelper dbHelper = new DBHelper(context);
+        String[] columns = {DBContract.Appraisers.KEY_ID, DBContract.Appraisers.KEY_NAME,
+                DBContract.Appraisers.KEY_UPDATED, DBContract.Appraisers.KEY_UPLOADED};
+        Cursor cursor = dbHelper.getReadableDatabase().query(DBContract.Appraisers.TABLE_NAME, columns,
+                null, null, null, null, null);
+
+        String appraiserIDWorkable;
+        int appraiserIndex = cursor.getColumnIndex(DBContract.Appraisers.KEY_ID);
+        int nameIndex = cursor.getColumnIndex(DBContract.Appraisers.KEY_NAME);
+        int updatedIndex = cursor.getColumnIndex(DBContract.Appraisers.KEY_UPDATED);
+        int uploadedIndex = cursor.getColumnIndex(DBContract.Appraisers.KEY_UPLOADED);
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            appraiserIDWorkable = cursor.getString(appraiserIndex);
+            appraiserID.add(appraiserIDWorkable);
+            appraiserIdToName.put(appraiserIDWorkable, cursor.getString(nameIndex));
+            appraiserIdToUpdate.put(appraiserIDWorkable, cursor.getString(updatedIndex));
+            appraiserIdToUploaded.put(appraiserIDWorkable, cursor.getString(uploadedIndex));
+        }
+        dbHelper.close();
+        cursor.close();
+
+        return new DBAppraiserTransporter(appraiserID, appraiserIdToName, appraiserIdToUpdate, appraiserIdToUploaded);
+    }
 }
