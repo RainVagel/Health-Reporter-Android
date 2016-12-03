@@ -3,6 +3,7 @@ package rainvagel.healthreporter;
 import android.app.Instrumentation;
 import android.database.Cursor;
 import android.support.test.InstrumentationRegistry;
+import android.util.Log;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,11 +31,21 @@ public class GetGroupsFromDBTest {
     private DBQueries queries;
     private DBTransporter transporter;
 
+    private static final String GROUPNAME = "Testgrupp4";
+    private static final String UPDATED   = "2017-11-06";
+    private static final String GROUPNAME1 = "Testgrupp5";
+    private static final String GROUPNAME2 = "Testgrupp6";
+    private static final String UPDATED2   = "2016-12-29";
+
     @Before
     public void setUp() {
         instrumentation = InstrumentationRegistry.getInstrumentation();
         database = new DBHelper(instrumentation.getTargetContext());
         queries = new DBQueries();
+
+        queries.insertGroupToDB(instrumentation.getTargetContext(), GROUPNAME, UPDATED);
+        queries.insertGroupToDB(instrumentation.getTargetContext(), GROUPNAME1, UPDATED);
+        queries.insertGroupToDB(instrumentation.getTargetContext(), GROUPNAME2, UPDATED2);
 
         ArrayList<String> groupID = new ArrayList<>();
         Map<String, String> groups = new HashMap<>();
@@ -65,6 +76,17 @@ public class GetGroupsFromDBTest {
         assertEquals(transporter.getClientID(), newTransporter.getClientID());
         assertEquals(transporter.getGroupID(), newTransporter.getGroupID());
         assertEquals(transporter.getNames(), newTransporter.getNames());
+        for (int i = 0; i<transporter.getNames().size(); i++){
+            if (transporter.getNames().get(i).equals(GROUPNAME)) {
+                assertEquals(GROUPNAME, newTransporter.getNames().get(i));
+            }
+            else if (transporter.getNames().get(i).equals(GROUPNAME1)) {
+                assertEquals(GROUPNAME1, newTransporter.getNames().get(i));
+            }
+            else if (transporter.getNames().get(i).equals(GROUPNAME2)) {
+                assertEquals(GROUPNAME2, newTransporter.getNames().get(i));
+            }
+        }
         assertEquals(transporter.getIdToName(), newTransporter.getIdToName());
         assertEquals(transporter.getNameToId(), newTransporter.getNameToId());
         assertEquals(transporter.getIdToId(), newTransporter.getIdToId());
