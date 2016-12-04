@@ -130,7 +130,7 @@ public class DBQueries {
         contentValues.put(DBContract.Clients.KEY_GROUP_ID, clientGroupId);
         contentValues.put(DBContract.Clients.KEY_UPDATED, clientUpdated);
         sqLiteDatabase.update(DBContract.Clients.TABLE_NAME, contentValues,
-                DBContract.Clients.KEY_ID + "=" + clientId, null);
+                DBContract.Clients.KEY_ID + "=\"" + clientId + "\"", null);
         sqLiteDatabase.close();
         dbHelper.close();
     }
