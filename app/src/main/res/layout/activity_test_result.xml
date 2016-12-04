@@ -10,89 +10,138 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="rainvagel.healthreporter.TestClasses.testResultActivity">
 
-
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/score"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        >
     <EditText
         android:hint="@string/Score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
         android:id="@+id/numberPicker"
         />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/score1"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/score"
+        >
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/trial1"
-        android:layout_below="@+id/numberPicker"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:hint="@string/trial1"
         android:maxLength="10"
         />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/score2"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/score1"
+        >
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/trial2"
-        android:layout_below="@+id/trial1"
+        android:layout_below="@+id/score1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:hint="@string/trial2"
         android:maxLength="10"
         />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/score3"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/score2"
+        >
+
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/trial3"
-        android:layout_below="@+id/trial2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:hint="@string/trial3"
         android:maxLength="10"
         />
-    <EditText
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/score4"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/score3"
+        >
+
+    <EditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
-        android:layout_below="@+id/trial3"
+        android:hint="Notes"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="11dp"
         android:id="@+id/editText2" />
+    </android.support.design.widget.TextInputLayout>
 
-
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/score5"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/score4"
+        >
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/date"
-        android:layout_below="@+id/editText2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:hint="2016-12-04"
         android:maxLength="10"
        />
+    </android.support.design.widget.TextInputLayout>
+
 
     <Button
         android:text="@string/updateTestResult"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/date"
+        android:layout_below="@id/score5"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:onClick="updateTestResult"
-        android:id="@+id/button9" />
+        android:id="@+id/button9"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/buttons"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/newTestResult"
         android:layout_below="@id/button9"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:onClick="newTestResult"
         android:text="@string/newTest"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/buttons"
         />
 
 
