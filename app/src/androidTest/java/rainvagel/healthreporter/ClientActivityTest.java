@@ -52,7 +52,7 @@ import static org.hamcrest.Matchers.startsWith;
 @RunWith(AndroidJUnit4.class)
 public class ClientActivityTest {
 
-    private static final String SEARCH_NAME = "Mary Jane";
+    private static final String SEARCH_NAME = "Test Test";
     private DBHelper database;
 
     @Rule
@@ -97,17 +97,6 @@ public class ClientActivityTest {
     // for search
 
     // works when autocorrect is turned off
-    /*
-    @Test
-    public void testClientNotFound() {
-        onView(withId(R.id.menu_search)).perform(click());
-        onView(isAssignableFrom(EditText.class)).perform(typeText(SEARCH_NAME), pressImeActionButton());
-        onView(withId(R.id.activity_search_results)).check(matches(isDisplayed()));
-        //onData().inAdapterView(withId(R.id.main)).perform(click());
-        // maybe later should display some message like "no clients found"
-        matchToolbarTitle(SEARCH_NAME);
-    }
-    */
 
     public String getFirstClientsName() {
         String[] clientColumns = {DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME};
@@ -122,7 +111,7 @@ public class ClientActivityTest {
         return firstName + " " + lastName;
     }
 
-    /*
+
     @Test
     public void testClientFound() {
         String search = getFirstClientsName();
@@ -133,19 +122,6 @@ public class ClientActivityTest {
         onData(startsWith(search)).inAdapterView(withId(R.id.main)).check(matches(isDisplayed()));
         matchToolbarTitle(search);
     }
-    */
-    /*
-    @Test
-    public void testGroupNotFound() {
-        onView(withText("Groups")).perform(click());
-        onView(withId(R.id.menu_search)).perform(click());
-        onView(isAssignableFrom(EditText.class)).perform(typeText(SEARCH_NAME), pressImeActionButton());
-        onView(withId(R.id.activity_search_results)).check(matches(isDisplayed()));
-        //onData().inAdapterView(withId(R.id.main)).perform(click());
-        // maybe later should display some message like "no clients found"
-        matchToolbarTitle(SEARCH_NAME);
-    }
-    */
 
     public String getFirstGroupName() {
         String[] groupColumns = {DBContract.Groups.KEY_NAME};
