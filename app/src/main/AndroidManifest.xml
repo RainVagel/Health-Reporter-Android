@@ -54,7 +54,8 @@
         <activity android:name=".ClientClasses.EditClientActivity" />
         <activity android:name=".EditGroupActivity" />
         <activity android:name=".InsertGroupActivity2" />
-        <activity android:name=".AppraiserActivity"></activity>
+        <activity android:name=".AppraiserClasses.AppraiserActivity" />
+        <activity android:name=".AppraiserClasses.NewAppraiserActivity"></activity>
     </application>
 
 </manifest>
