@@ -4,6 +4,7 @@ import android.app.Instrumentation;
 import android.database.Cursor;
 import android.support.test.InstrumentationRegistry;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -105,6 +106,12 @@ public class GetTestsFromDBTest {
         assertEquals(transporter.getTestIdToPosition(), newTransporter.getTestIdToPosition());
         assertEquals(transporter.getTestIdToUpdated(), newTransporter.getTestIdToUpdated());
         assertEquals(transporter.getTestIdToUploaded(), newTransporter.getTestIdToUploaded());
+
+    }
+
+    @After
+    public void tearDown() {
+        database.close();
 
     }
 }

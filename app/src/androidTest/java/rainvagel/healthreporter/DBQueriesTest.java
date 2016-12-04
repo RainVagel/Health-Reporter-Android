@@ -4,6 +4,7 @@ import android.app.Instrumentation;
 import android.database.Cursor;
 import android.support.test.InstrumentationRegistry;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -245,5 +246,16 @@ public class DBQueriesTest {
         ArrayList<String> details = queries.getGroupDetailsFromDB(instrumentation.getTargetContext(), groupUuid0);
         assertEquals(GROUPNAME0, details.get(0));
         assertEquals(UPDATED, details.get(1));
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Groups.TABLE_NAME, DBContract.Groups.KEY_ID, groupUuid0);
+        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Groups.TABLE_NAME, DBContract.Groups.KEY_ID, groupUuid1);
+        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Clients.TABLE_NAME, DBContract.Clients.KEY_ID, clientUuid);
+        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Clients.TABLE_NAME, DBContract.Clients.KEY_ID, clientUuid2);
+        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.TestCategories.TABLE_NAME, DBContract.TestCategories.KEY_ID, catUuid);
+        database.close();
+
     }
 }
