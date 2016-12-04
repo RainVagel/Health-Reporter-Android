@@ -32,53 +32,7 @@ public class DBTest {
         database = new DBHelper(instrumentation.getTargetContext());
     }
 
-    @Test
-    public void checkGroupsTable() {
-        String[] groupColumns = {DBContract.Groups.KEY_ID, DBContract.Groups.KEY_NAME};
-        Cursor cursor = database.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, groupColumns, null,null,null,null,null);
-        int idIdx = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
-        int nameIdx = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
 
-        cursor.moveToFirst();
-        assertEquals(1, Integer.parseInt(cursor.getString(idIdx)));
-        assertEquals("University of Tartu", cursor.getString(nameIdx));
-        cursor.moveToNext();
-        cursor.moveToNext();
-        cursor.moveToNext();
-        assertEquals(4, Integer.parseInt(cursor.getString(idIdx)));
-        assertEquals("Konsum", cursor.getString(nameIdx));
-    }
-
-    @Test
-    public void checkClient() {
-        ContentValues values = new ContentValues();
-        values.put(DBContract.Clients.KEY_ID, 777);
-        values.put(DBContract.Clients.KEY_GROUP_ID, "Konsum");
-        values.put(DBContract.Clients.KEY_FIRSTNAME, "James");
-        values.put(DBContract.Clients.KEY_LASTNAME, "Bond");
-        values.put(DBContract.Clients.KEY_EMAIL, "james.bond@gmail.com");
-        values.put(DBContract.Clients.KEY_GENDER, 1);
-        values.put(DBContract.Clients.KEY_BIRTHDATE, "1952-10-20");
-        values.put(DBContract.Clients.KEY_UPDATED, "2016-11-06");
-        values.put(DBContract.Clients.KEY_UPLOADED, "2016-11-06");
-        database.getWritableDatabase().insert(DBContract.Clients.TABLE_NAME, null, values);
-        database.close();
-
-        String[] clientColumns = {DBContract.Clients.KEY_FIRSTNAME,
-                DBContract.Clients.KEY_LASTNAME, DBContract.Clients.KEY_EMAIL, DBContract.Clients.KEY_BIRTHDATE};
-
-        Cursor cursor = database.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, clientColumns, null,null,null,null,null);
-        int firstNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
-        int lastNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
-        int emailIdx = cursor.getColumnIndex(DBContract.Clients.KEY_EMAIL);
-        int birthdayIdx = cursor.getColumnIndex(DBContract.Clients.KEY_BIRTHDATE);
-
-        cursor.moveToLast();
-        assertEquals("James", cursor.getString(firstNameIdx));
-        assertEquals("Bond", cursor.getString(lastNameIdx));
-        assertEquals("james.bond@gmail.com", cursor.getString(emailIdx));
-        assertEquals("1952-10-20", cursor.getString(birthdayIdx));
-    }
 
     @Test
     public void checkAppraisers() {
@@ -118,25 +72,6 @@ public class DBTest {
         assertEquals(449, Integer.parseInt(cursor.getString(idIdx)));
         assertEquals("Something in here", cursor.getString(interpIdx));
     }
-
-    /*
-    @Test
-    public void checkTestCategories() {
-        String[] testCatColumns = {DBContract.TestCategories.KEY_PARENT_ID,
-                DBContract.TestCategories.KEY_NAME, DBContract.TestCategories.KEY_POSITION};
-
-        Cursor cursor = database.getReadableDatabase().query(DBContract.TestCategories.TABLE_NAME, testCatColumns, null,null,null,null,null);
-        int parentIdx = cursor.getColumnIndex(DBContract.TestCategories.KEY_PARENT_ID);
-        int nameIdx = cursor.getColumnIndex(DBContract.TestCategories.KEY_NAME);
-        int posIdx = cursor.getColumnIndex(DBContract.TestCategories.KEY_POSITION);
-
-        cursor.moveToFirst();
-        assertEquals("null", cursor.getString(parentIdx));
-        assertEquals("Insener", cursor.getString(nameIdx));
-        assertEquals(1, Integer.parseInt(cursor.getString(posIdx)));
-        cursor.close();
-    }
-    */
 
     @Test
     public void checkTests() {
