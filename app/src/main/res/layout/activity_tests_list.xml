@@ -35,7 +35,7 @@
     <HorizontalScrollView
         android:id="@+id/hsv"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:layout_weight="0"
         android:fillViewport="true"
         android:measureAllChildren="false"
@@ -47,18 +47,11 @@
         <LinearLayout
             android:id="@+id/innerLay"
             android:layout_width="wrap_content"
-            android:layout_height="100dp"
+            android:layout_height="match_parent"
             android:visibility="gone"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             >
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Jo"
-                android:visibility="gone"
-                android:id="@+id/nupp"/>
-
 
         </LinearLayout>
     </HorizontalScrollView>

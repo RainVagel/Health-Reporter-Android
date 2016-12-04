@@ -30,4 +30,15 @@
         android:onClick="updateTestResult"
         android:id="@+id/button9" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/newTestResult"
+        android:layout_below="@id/button9"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="126dp"
+        android:onClick="newTestResult"
+        android:text="@string/newTest"
+        />
+
 </RelativeLayout>
