@@ -11,22 +11,65 @@
     tools:context="rainvagel.healthreporter.TestClasses.testResultActivity">
 
 
-    <NumberPicker
+    <EditText
+        android:hint="@string/Score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="93dp"
         android:id="@+id/numberPicker"
         />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/date"
+        android:id="@+id/trial1"
         android:layout_below="@+id/numberPicker"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="15dp"
+        android:hint="@string/trial1"
+        android:maxLength="10"
+        />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/trial2"
+        android:layout_below="@+id/trial1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:hint="@string/trial2"
+        android:maxLength="10"
+        />
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/trial3"
+        android:layout_below="@+id/trial2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:hint="@string/trial3"
+        android:maxLength="10"
+        />
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:layout_below="@+id/trial3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="11dp"
+        android:id="@+id/editText2" />
+
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/date"
+        android:layout_below="@+id/editText2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
         android:hint="2016-12-04"
         android:maxLength="10"
        />
@@ -51,5 +94,7 @@
         android:onClick="newTestResult"
         android:text="@string/newTest"
         />
+
+
 
 </RelativeLayout>
