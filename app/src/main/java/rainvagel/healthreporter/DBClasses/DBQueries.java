@@ -501,7 +501,8 @@ public class DBQueries {
         int categoryIndex = cursor.getColumnIndex(DBContract.Tests.KEY_CATEGORY_ID);
         int nameIndex = cursor.getColumnIndex(DBContract.Tests.KEY_NAME);
         int descriptionIndex = cursor.getColumnIndex(DBContract.Tests.KEY_DESCRIPTION);
-        int unitsIndex = cursor.getColumnIndex(DBContract.Tests.KEY_DECIMALS);
+        int unitsIndex = cursor.getColumnIndex(DBContract.Tests.KEY_UNITS);
+        int decimalsIndex = cursor.getColumnIndex(DBContract.Tests.KEY_DECIMALS);
         int weightIndex = cursor.getColumnIndex(DBContract.Tests.KEY_WEIGHT);
         int formulaFIndex = cursor.getColumnIndex(DBContract.Tests.KEY_FORMULA_F);
         int formulaMIndex = cursor.getColumnIndex(DBContract.Tests.KEY_FORMULA_M);
@@ -516,6 +517,7 @@ public class DBQueries {
             testIdToName.put(testIDWorkable, cursor.getString(nameIndex));
             testIdToDescription.put(testIDWorkable, cursor.getString(descriptionIndex));
             testIdToUnits.put(testIDWorkable, cursor.getString(unitsIndex));
+            testIdToDecimals.put(testIDWorkable, cursor.getString(decimalsIndex));
             testIdToWeight.put(testIDWorkable, cursor.getString(weightIndex));
             testIdToFormulaF.put(testIDWorkable, cursor.getString(formulaFIndex));
             testIdToFormulaM.put(testIDWorkable, cursor.getString(formulaMIndex));
