@@ -4,6 +4,7 @@ import android.app.Instrumentation;
 import android.database.Cursor;
 import android.support.test.InstrumentationRegistry;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -116,6 +117,11 @@ public class GetClientToGroupFromDBTest {
         assertEquals(transporter.getIdToName(), newTransporter.getIdToName());
         assertEquals(transporter.getNameToId(), newTransporter.getNameToId());
         assertEquals(transporter.getIdToId(), newTransporter.getIdToId());
+    }
+
+    @After
+    public void tearDown() {
+        database.close();
 
     }
 }
