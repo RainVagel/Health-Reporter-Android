@@ -80,6 +80,8 @@ public class testResultActivity extends AppCompatActivity {
             Log.v(TAG, client);
             String appraiser = UUID.randomUUID().toString();//TODO
             Log.v(TAG + "lammas", appraiser);
+            if (TestActivity.appraiserID != null)
+                appraiser = TestActivity.appraiserID;
             dbq.insertAppraisalTestAndAppraisalToDB(this, appraiser, client, et.getText().toString(), "2016-11-09", "2016-11-09", test, np.getValue(), "----", 5, 5, 5);
             Log.v(TAG + "test", test);
             finish();

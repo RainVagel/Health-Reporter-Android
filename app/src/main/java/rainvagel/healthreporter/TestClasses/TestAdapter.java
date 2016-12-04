@@ -43,6 +43,7 @@ public class TestAdapter extends ArrayAdapter<Test> {
     private static TextView test_name;
     private static TextView result;
     private static HorizontalScrollView hori;
+    private static ArrayList<String> lastScoreAppraisals = new ArrayList<>();
     private boolean visible = false;
 
 
@@ -52,6 +53,7 @@ public class TestAdapter extends ArrayAdapter<Test> {
         this.context = context;
         this.tests = tests;
         this.appraisals_Tests = appraisals;
+        lastScoreAppraisals.clear();
     }
 
     public void setButtonsVisible(boolean isVisible) {
@@ -73,15 +75,14 @@ public class TestAdapter extends ArrayAdapter<Test> {
             result = (TextView) rowView.findViewById(R.id.result);
             DBQueries dbq = new DBQueries();
             Map<String, String> appraisalDates = dbq.getAppraisalsFromDB(context).getAppraisalIdToAppraisalDate();
-            Map<String, String> appraisal2Client = dbq.getAppraisalsFromDB(context).getAppraisalIdToClientId();
-            Map<String, String> client2name = dbq.getClientsFromDB(context).getClientIdToLastName();
+
             ArrayList<AppraisalTests> at = appraisals_Tests.get(tests.get(position).getId());
             int lastScore = -5000;
             AppraisalTests lastScoreAppraisal = null;
             int year = 1900;
             int day = -2;
             int month = 0;
-            Log.v("appraisals suurus", String.valueOf(at.size()));
+
             for(AppraisalTests a : at){
                 Log.v(TAG, a.getScore());
                 Log.v(TAG, a.getUpdated());
@@ -93,8 +94,7 @@ public class TestAdapter extends ArrayAdapter<Test> {
                     lastScoreAppraisal = a;
                 }
                 else{
-                    Log.v(TAG, "siin");
-
+                  
                     int a_year = Integer.parseInt(dates[0]);
                     int a_month = Integer.parseInt(dates[1]);
                     int a_day = Integer.parseInt(dates[2]);
@@ -132,8 +132,9 @@ public class TestAdapter extends ArrayAdapter<Test> {
                     }
 
                 }
-            }
 
+            }
+            lastScoreAppraisals.add(lastScoreAppraisal.getId());
             LinearLayout inner = (LinearLayout)rowView.findViewById(R.id.innerLay);
 
             for(AppraisalTests a : at){
@@ -150,7 +151,6 @@ public class TestAdapter extends ArrayAdapter<Test> {
                     tv2.setText(appraisalDates.get(a.getId()));
                     tv2.setTextSize(8);
                     tv2.setPadding(5, 0, 5, 10);
-
 
                     uus.addView(tv2);
                     inner.addView(uus);
@@ -172,23 +172,17 @@ public class TestAdapter extends ArrayAdapter<Test> {
             test_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.v(TAG, "clicked on test name");
+
 
                     if(visible){
                     rowView.findViewById(R.id.hsv).setVisibility(visible ? View.GONE : View.VISIBLE);
                         rowView.findViewById(R.id.innerLay).setVisibility(visible ? View.GONE : View.VISIBLE);
-                       // rowView.findViewById(R.id.nupp).setVisibility(visible ? View.GONE : View.VISIBLE);
-                        Log.v("PEAKS MINEMA N*H",String.valueOf(visible));
-
                         setButtonsVisible(!visible);}
 
                     else{
 
                     rowView.findViewById(R.id.hsv).setVisibility(!visible ? View.VISIBLE: View.GONE);
                         rowView.findViewById(R.id.innerLay).setVisibility(!visible ? View.VISIBLE: View.GONE);
-                       // rowView.findViewById(R.id.nupp).setVisibility(!visible ? View.VISIBLE: View.GONE);
-                        Log.v("MUUTSIN NÄHTAVAKS",String.valueOf(visible));
-
                         setButtonsVisible(!visible);}
                 }
             });
@@ -196,10 +190,8 @@ public class TestAdapter extends ArrayAdapter<Test> {
             result.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.v(TAG, "clicked on test result");
-                    // we have to edit appraisals Map and then set that to the testactivity one.
-
-                    String appraisal_id = appraisals_Tests.get(tests.get(position).getId()).get(0).getId() + "," + appraisals_Tests.get(tests.get(position).getId()).get(0).getTestid();
+                    lastScoreAppraisals.add(1,"asd");
+                    String appraisal_id = lastScoreAppraisals.get(position) + "," + appraisals_Tests.get(tests.get(position).getId()).get(0).getTestid();
 
                     // send the user to another activity to update the result
                     Intent editAppraisal = new Intent(context, testResultActivity.class);
@@ -213,10 +205,6 @@ public class TestAdapter extends ArrayAdapter<Test> {
         else{
 
             View rowView = inflater.inflate(R.layout.activity_tests_list_divider, parent ,false);
-           // test_name.setText("DIDIVDEEEEEEEEEEEEEEEEEEEER");
-
-            //result.setText("DIVIDEEEEEEEEEEEEEEEEEEEEEEER");
-
             return rowView;
         }
     }
