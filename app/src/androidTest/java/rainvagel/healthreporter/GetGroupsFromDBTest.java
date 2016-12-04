@@ -36,6 +36,10 @@ public class GetGroupsFromDBTest {
     private static final String GROUPNAME1 = "Testgrupp5";
     private static final String GROUPNAME2 = "Testgrupp6";
     private static final String UPDATED2   = "2016-12-29";
+    private String groupUuid;
+    private String groupUuid1;
+    private String groupUuid2;
+
 
     @Before
     public void setUp() {
@@ -59,6 +63,15 @@ public class GetGroupsFromDBTest {
         int nameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            if (cursor.getString(nameIndex).equals(GROUPNAME)) {
+                groupUuid = cursor.getString(idIndex);
+            }
+            if (cursor.getString(nameIndex).equals(GROUPNAME1)) {
+                groupUuid1 = cursor.getString(idIndex);
+            }
+            if (cursor.getString(nameIndex).equals(GROUPNAME2)) {
+                groupUuid2 = cursor.getString(idIndex);
+            }
             String groupId = cursor.getString(idIndex);
             groupID.add(groupId);
             groups.put(groupId, cursor.getString(nameIndex));
@@ -94,6 +107,9 @@ public class GetGroupsFromDBTest {
 
     @After
     public void tearDown() {
+        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Groups.TABLE_NAME, DBContract.Groups.KEY_ID, groupUuid);
+        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Groups.TABLE_NAME, DBContract.Groups.KEY_ID, groupUuid1);
+        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Groups.TABLE_NAME, DBContract.Groups.KEY_ID, groupUuid2);
         database.close();
     }
 }

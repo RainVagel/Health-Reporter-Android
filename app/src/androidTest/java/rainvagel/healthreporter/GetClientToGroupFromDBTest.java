@@ -44,6 +44,7 @@ public class GetClientToGroupFromDBTest {
     private static final String BIRTHDAY  = YEAR + "-" + MONTH + "-" + DAY;
 
     private String groupUuid;
+    private String clientUuid;
 
     @Before
     public void setUp() {
@@ -84,6 +85,9 @@ public class GetClientToGroupFromDBTest {
         final int groupIndex  = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
 
         for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
+            if (cursor.getString(firstNameIndex).equals(FIRSTNAME)) {
+                clientUuid = cursor.getString(rowIndex);
+            }
             //Log.v("ClientActivity", "Made it here");
             clientIDs.add(cursor.getString(rowIndex));
             groupIDs.add(cursor.getString(groupIndex));
@@ -121,7 +125,8 @@ public class GetClientToGroupFromDBTest {
 
     @After
     public void tearDown() {
+        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Groups.TABLE_NAME, DBContract.Groups.KEY_ID, groupUuid);
+        queries.deleteEntryFromDB(instrumentation.getTargetContext(), DBContract.Clients.TABLE_NAME, DBContract.Clients.KEY_ID, clientUuid);
         database.close();
-
     }
 }
