@@ -42,7 +42,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        Log.v("VAAAAAAAAAATA SEDA", String.valueOf(host.getCurrentTab()));
+        Log.v(TAG, String.valueOf(host.getCurrentTab()));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
@@ -80,12 +80,11 @@ public class SearchResultsActivity extends AppCompatActivity {
             for (String id : groupIDs) {
                 Log.v(TAG, "GroupIDs kuulub see iD: " + id);
                 if (searchGroupIDs.contains(id)) {
-                    Log.v(TAG, "SearchGroupNamesi liitmise meetod");
                     searchGroupNames.put(id, groups.get(id));
                 }
             }
 
-            Log.v("groupids size", String.valueOf(searchGroupIDs.size()));
+            Log.v(TAG, String.valueOf(searchGroupIDs.size()));
 
             final ArrayList<String> SearchResults = new ArrayList<>();
             final ArrayList<String> SearchResultsGroups = new ArrayList<>();
@@ -93,7 +92,7 @@ public class SearchResultsActivity extends AppCompatActivity {
             for (int i = 0; i < asd.size(); i++) {
                 if (asd.get(i).toLowerCase().contains(query.toLowerCase())) {
                     SearchResults.add(asd.get(i));
-                    Log.v("searchgroupsname", String.valueOf(searchGroupNames.size()));
+                    Log.v(TAG, String.valueOf(searchGroupNames.size()));
                     Log.v(TAG, "SearchResults: " + SearchResults.toString());
 
                     //GROUP NAMES DONT HAVE AS MANY ENTRIES AS ASD
@@ -125,9 +124,9 @@ public class SearchResultsActivity extends AppCompatActivity {
                     Intent toCategories = new Intent(SearchResultsActivity.this, CategoriesActivity.class);
                     // we will pass on client's name,group and id in a string, all separated with a comma.
                     String passedData = (finalClientId.get(SearchResults.get(position)) + ","
-                            + SearchResults.get(position) + "," + SearchResultsGroups.get(position));
+                            + SearchResults.get(position) + "," + SearchResultsGroups.get(position) + ",null");
 
-                    Log.v("client intet", passedData);
+                    Log.v(TAG, passedData);
                     toCategories.putExtra("ClientId", passedData);// pass on the data
 
                     startActivity(toCategories);
@@ -154,7 +153,6 @@ public class SearchResultsActivity extends AppCompatActivity {
             asd = dbTransporter.getNames();
 
             final ArrayList<String> SearchResults = new ArrayList<>();
-            final ArrayList<String> SearchResultsGroups = new ArrayList<>();
 
             for (int i = 0; i < asd.size(); i++) {
                 if (asd.get(i).toLowerCase().contains(query.toLowerCase())) {
