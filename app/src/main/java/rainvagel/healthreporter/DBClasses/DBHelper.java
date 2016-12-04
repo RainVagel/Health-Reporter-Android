@@ -187,7 +187,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     - 0 + 1) + 0));
             testValues.put(DBContract.Tests.KEY_NAME, name);
             testValues.put(DBContract.Tests.KEY_DESCRIPTION, "Something");
-            testValues.put(DBContract.Tests.KEY_UNITS, "Unitz");
+            testValues.put(DBContract.Tests.KEY_UNITS, "2");
             testValues.put(DBContract.Tests.KEY_DECIMALS, 2);
             testValues.put(DBContract.Tests.KEY_WEIGHT, (random.nextDouble()));
             testValues.put(DBContract.Tests.KEY_FORMULA_F, "2");
