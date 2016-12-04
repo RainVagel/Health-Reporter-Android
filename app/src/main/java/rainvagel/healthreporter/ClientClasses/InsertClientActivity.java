@@ -20,11 +20,8 @@ import rainvagel.healthreporter.DatePickerFragment;
 import rainvagel.healthreporter.OnDataPass;
 import rainvagel.healthreporter.R;
 
-public class InsertClientActivity extends AppCompatActivity implements OnDataPass {
+public class InsertClientActivity extends AppCompatActivity {
 
-    String birthDay;
-    String birthMonth;
-    String birthYear;
     int gender;
     EditText firstName;
     EditText lastName;
@@ -56,35 +53,18 @@ public class InsertClientActivity extends AppCompatActivity implements OnDataPas
         }
     }
 
-    @Override
-    public void onDataPass(String data) {
-        Log.v("InsertClientActivity", data);
-
-        String[] splittedData = data.split(",");
-        birthDay = String.valueOf(Integer.parseInt(splittedData[2]) + 1);
-        birthMonth = String.valueOf(Integer.parseInt(splittedData[1]) + 1);
-        birthYear = splittedData[0];
-
-        TextView textViewDay = (TextView) findViewById(R.id.textview_birth_day);
-        TextView textViewMonth = (TextView) findViewById(R.id.textview_birth_month);
-        TextView textViewYear = (TextView) findViewById(R.id.textview_birth_year);
-
-        textViewDay.setText(birthDay);
-        textViewMonth.setText(birthMonth);
-        textViewYear.setText(birthYear);
-
-    }
-
-    public void showDatePickerDialog(View view) {
-        DialogFragment dialogFragment = new DatePickerFragment();
-        dialogFragment.show(getFragmentManager(), "datePicker");
-    }
-
     public void onAddClientClicked(View view) {
         firstName = (EditText) findViewById(R.id.first_name);
         lastName = (EditText) findViewById(R.id.last_name);
         email = (EditText) findViewById(R.id.email_address);
 
+        EditText day = (EditText) findViewById(R.id.edittext_birth_day);
+        EditText month = (EditText) findViewById(R.id.edittext_birth_month);
+        EditText year = (EditText) findViewById(R.id.editText_birth_year);
+
+        String dayString = String.valueOf(day.getText());
+        String monthString = String.valueOf(month.getText());
+        String yearString = String.valueOf(year.getText());
         String firstNameString = String.valueOf(firstName.getText());
         String lastNameString = String.valueOf(lastName.getText());
         String emailString = String.valueOf(email.getText());
@@ -100,7 +80,7 @@ public class InsertClientActivity extends AppCompatActivity implements OnDataPas
 
         DBQueries dbQueries = new DBQueries();
         String uuid = dbQueries.insertClientToDB(this, group, firstNameString, lastNameString, emailString, gender,
-                birthYear, birthMonth, birthDay, formattedDate);
+                yearString, monthString, dayString, formattedDate);
 
         Intent toCategories = new Intent(this, CategoriesActivity.class);
         String passedData = (uuid + "," + firstNameString + " " + lastNameString + "," + groupName);
