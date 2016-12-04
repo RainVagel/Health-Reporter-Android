@@ -64,29 +64,43 @@
         android:id="@+id/email_address"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="john.smith@gmail.com"
+        android:hint="Email address"
         android:inputType="textEmailAddress"/>
     </android.support.design.widget.TextInputLayout>
-    <Button
-        android:id="@+id/birthdate_picker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Pick birthdate"
-        android:textColor="#FFFFFF"
-        android:background="@drawable/buttons"
-        android:onClick="showDatePickerDialog"/>
 
-    <TextView
-        android:id="@+id/textview_birth_day"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_year"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText_birth_year"
+            android:hint="Year of birth"/>
+
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_month"
         android:layout_height="wrap_content"
-        android:hint="07"/>
-    <TextView
-        android:id="@+id/textview_birth_month"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="05"/>
+        android:layout_width="match_parent">
+        <EditText
+            android:id="@+id/edittext_birth_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Month of birth"/>
+
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/edittext_birth_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Day of birth"/>
+
+    </android.support.design.widget.TextInputLayout>
     <TextView
         android:id="@+id/textview_birth_year"
         android:layout_width="wrap_content"

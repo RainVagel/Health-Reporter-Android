@@ -28,7 +28,7 @@ import rainvagel.healthreporter.EditGroupActivity;
 import rainvagel.healthreporter.OnDataPass;
 import rainvagel.healthreporter.R;
 
-public class EditClientActivity extends AppCompatActivity implements OnDataPass{
+public class EditClientActivity extends AppCompatActivity {
 
     String clientId;
     String clientFirstName;
@@ -67,6 +67,16 @@ public class EditClientActivity extends AppCompatActivity implements OnDataPass{
         textviewYear = (TextView) findViewById(R.id.textview_birth_year);
         textViewGroup = (TextView) findViewById(R.id.textview_group_name);
         gender = (RadioGroup) findViewById(R.id.radio_group_gender);
+
+        EditText day = (EditText) findViewById(R.id.edittext_birth_day);
+        EditText month = (EditText) findViewById(R.id.edittext_birth_month);
+        EditText year = (EditText) findViewById(R.id.editText_birth_year);
+
+        String dayString = String.valueOf(day.getText());
+        String monthString = String.valueOf(month.getText());
+        String yearString = String.valueOf(year.getText());
+
+        clientBirthDate = yearString + "-" + monthString + "-" + dayString;
 
         DBQueries dbQueries = new DBQueries();
         ArrayList<String> clientDetails = dbQueries.getClientDetailsFromDB(this, clientId);
@@ -118,13 +128,13 @@ public class EditClientActivity extends AppCompatActivity implements OnDataPass{
             case R.id.radio_female:
                 if (checked) {
 //                    Add female as new clients gender
-                    Log.v("InsertClientActivity", "Female checked");
+                    Log.v(TAG, "Female checked");
                     clientGender = "0";
                 } break;
             case R.id.radip_male:
                 if (checked) {
 //                    Add male as new clients gender
-                    Log.v("InsertClientActivity", "Male checked");
+                    Log.v(TAG, "Male checked");
                     clientGender = "1";
                 } break;
         }
@@ -150,30 +160,5 @@ public class EditClientActivity extends AppCompatActivity implements OnDataPass{
                 textViewGroup.setText(groupData[1]);
             }
         }
-    }
-
-    public void showDatePickerDialog(View view) {
-        DialogFragment dialogFragment = new DatePickerFragment();
-        dialogFragment.show(getFragmentManager(), "datePicker");
-    }
-
-    @Override
-    public void onDataPass(String data) {
-        Log.v(TAG, data);
-
-        String[] splittedData = data.split(",");
-        String birthDay = String.valueOf(Integer.parseInt(splittedData[2]) + 1);
-        String birthMonth = String.valueOf(Integer.parseInt(splittedData[1]) + 1);
-        String birthYear = splittedData[0];
-
-        TextView textViewDay = (TextView) findViewById(R.id.textview_birth_day);
-        TextView textViewMonth = (TextView) findViewById(R.id.textview_birth_month);
-        TextView textViewYear = (TextView) findViewById(R.id.textview_birth_year);
-
-        textViewDay.setText(birthDay);
-        textViewMonth.setText(birthMonth);
-        textViewYear.setText(birthYear);
-
-        clientBirthDate = birthYear + "-" + birthMonth + "-" + birthDay;
     }
 }
