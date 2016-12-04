@@ -72,7 +72,7 @@ public class GroupClientActivity extends AppCompatActivity {
                 String clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(GroupClientActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
-                String passedData =(String.valueOf(clientId)+","+clientnames.get(position)+","+ intentData[1]);
+                String passedData =(String.valueOf(clientId)+","+clientnames.get(position)+","+ intentData[1] + ",null");
                 Log.v("client intet", passedData);
                 toCategories.putExtra("ClientId", passedData);// pass on the data
 

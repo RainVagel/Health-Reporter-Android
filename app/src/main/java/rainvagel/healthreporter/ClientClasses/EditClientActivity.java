@@ -47,9 +47,6 @@ public class EditClientActivity extends AppCompatActivity {
     EditText firstName;
     EditText lastName;
     EditText email;
-    TextView textViewDay;
-    TextView textViewMonth;
-    TextView textviewYear;
     TextView textViewGroup;
     RadioGroup gender;
 
@@ -62,9 +59,6 @@ public class EditClientActivity extends AppCompatActivity {
         firstName = (EditText) findViewById(R.id.first_name);
         lastName = (EditText) findViewById(R.id.last_name);
         email = (EditText) findViewById(R.id.email_address);
-        textViewDay = (TextView) findViewById(R.id.textview_birth_day);
-        textViewMonth = (TextView) findViewById(R.id.textview_birth_month);
-        textviewYear = (TextView) findViewById(R.id.textview_birth_year);
         textViewGroup = (TextView) findViewById(R.id.textview_group_name);
         gender = (RadioGroup) findViewById(R.id.radio_group_gender);
 
@@ -102,9 +96,6 @@ public class EditClientActivity extends AppCompatActivity {
         firstName.setText(clientFirstName);
         lastName.setText(clientLastName);
         email.setText(clientEmail);
-        textViewDay.setText(date[2]);
-        textViewMonth.setText(date[1]);
-        textviewYear.setText(date[0]);
         textViewGroup.setText(groupName);
 
         Calendar calendar = Calendar.getInstance();

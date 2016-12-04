@@ -53,7 +53,6 @@ public class CategoriesActivity extends Activity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,7 +129,7 @@ public class CategoriesActivity extends Activity {
 
         String birthdate = clientIdToBirthDate.get(intentData[0]);
 
-        Log.v(TAG, "synnikuupaev: " + birthdate);
+        Log.v(TAG, "birthdate: " + birthdate);
         String[] dates = birthdate.split("-");
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -151,7 +150,7 @@ public class CategoriesActivity extends Activity {
             }
         }
 
-        Log.v("age",String.valueOf(age));
+        Log.v(TAG,"age: " + String.valueOf(age));
         CharSequence titleage = intentData[1] + ", " +String.valueOf(age);//correct toolbar title with age
         tb.setTitle(titleage);
 
@@ -209,14 +208,11 @@ public class CategoriesActivity extends Activity {
                 }
             }
         }
-
     }
-
 
     public static int getCategoryScores(Category c, Context con){
         String id = intentData[0];
 
-        //kategooriaID
         String categoryId = c.getId();
 
         DBQueries dbQuery = new DBQueries();
@@ -225,26 +221,23 @@ public class CategoriesActivity extends Activity {
 
         // Gender of Client
         String gender = dbClients.getClientIdToGender().get(id);
-        Log.v("sugu",gender);
+        Log.v(TAG,"gender: " + gender);
         DBAppraisalsTransporter dbAppraisals = dbQuery.getAppraisalsFromDB(con);
         Map<String, String> appraisalToClient = dbAppraisals.getAppraisalIdToClientId();
         Map<String, String> appraisalToDate = dbAppraisals.getAppraisalIdToAppraisalDate();
         Set<String> appraisalsIDs = new HashSet<>();//contains appraisalIDs for said client
         //Get all client Appraisals
-        Log.v("klient", id);
+        Log.v(TAG,"clientID: " + id);
 
         for(Map.Entry<String, String> entry : appraisalToClient.entrySet()){
-            Log.v("kaskliendioma", String.valueOf(entry.getValue().equals(id)));
+//            Log.v("isClients", String.valueOf(entry.getValue().equals(id)));
             if(entry.getValue().equals(id))
                 appraisalsIDs.add(entry.getKey());
-
-
         }
 
         DBAppraisalTestsTransporter appraisalTestsTransporter = dbQuery.getAppraisalTestsFromDB(con);
         Map<String, String> appraisalidToTestScore = appraisalTestsTransporter.getAppraisalIdToTestScores();
         Map<String, String> appraisalIdToTestId = appraisalTestsTransporter.getAppraisalIdToTestId();
-
 
 
         DBTestsTransporter testsTransporter = dbQuery.getTestsFromDB(con);
@@ -270,14 +263,14 @@ public class CategoriesActivity extends Activity {
         //now we should have the necessary appraisalIDs and TestIDs to calculate the score
         for(String i : appraisalsIDs){
             try {
-                Log.v("skoor", appraisalidToTestScore.get(i));
+                Log.v(TAG, appraisalidToTestScore.get(i));
                 Double score = Double.parseDouble(appraisalidToTestScore.get(i));
                 Double weight = Double.parseDouble(testToWeight.get(appraisalIdToTestId.get(i)));
                 total_score += score * weight;
                 max += score;
             }
             catch (Exception e){
-              Log.v("Exception","nonexistent");
+              Log.v(TAG,"nonexistent");
             }
         }
 

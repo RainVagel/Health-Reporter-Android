@@ -45,9 +45,7 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
 
     private String TAG = "ClientActivity";
 
-    private Boolean isFabOpen = false;
     private FloatingActionButton fab1;
-    private Animation openfab, closefab, initialrotate,finalrotate;
     ListView lv;
 
     ArrayList<String> clientIDs = new ArrayList<>();
@@ -143,13 +141,8 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         setSupportActionBar(my_toolbar);
         getSupportActionBar().setTitle(R.string.my_tb_title);
 
-        FrameLayout dimbackground = (FrameLayout) findViewById(R.id.main);
 
         fab1 = (FloatingActionButton) findViewById(R.id.fab1);
-        openfab = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.openfab);
-        closefab = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.closefab);
-        initialrotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.initialrotate);
-        finalrotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.finalrotate);
         fab1.setOnClickListener(this);
 
          host = (TabHost)findViewById(R.id.tabHost);
@@ -211,7 +204,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         elv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String groupID = groupIDs.get(position);
                 Intent toClients = new Intent(ClientActivity.this, GroupClientActivity.class);
                 String passedData = (groupsreversed.get(groupNames.get(position))+","+groupNames.get(position));
                 toClients.putExtra("GroupID",passedData);
@@ -223,7 +215,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String clientId= clientIDs.get(position);
                 Intent toCategories = new Intent(ClientActivity.this, CategoriesActivity.class);
                 // we will pass on client's name,group and id in a string, all separated with a comma.
                 String passedData = (namesClientKeys.get(names.get(position))+","
@@ -266,7 +257,6 @@ public class ClientActivity extends AppCompatActivity implements View.OnClickLis
                 startActivity(toClientEdit);
                 break;
             case R.id.cnt_mnu_delete:
-                clientId = clientIDs.get(info.position);
 
                 Log.v(TAG, "Made to context menu delete action");
                 clientId = namesClientKeys.get(names.get(info.position));

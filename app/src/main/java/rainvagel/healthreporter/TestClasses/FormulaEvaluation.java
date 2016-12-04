@@ -5,7 +5,11 @@ import android.content.Context;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 import rainvagel.healthreporter.DBClasses.DBAppraisalTestsTransporter;
 import rainvagel.healthreporter.DBClasses.DBAppraisalsTransporter;
@@ -18,6 +22,70 @@ import rainvagel.healthreporter.DBClasses.DBTestsTransporter;
  */
 
 public class FormulaEvaluation {
+
+    private static final int leftAssoc = 0;
+    private static final int rightAssoc = 1;
+    private static final Map<String,int[]> operators = new HashMap<>();
+    static {
+        operators.put("+", new int[] {0, leftAssoc});
+        operators.put("-", new int[] {0, leftAssoc});
+        operators.put("*", new int[] {5, leftAssoc});
+        operators.put("/", new int[] {5, leftAssoc});
+        operators.put("^", new int[] {10, rightAssoc});
+    }
+
+    private static boolean isOperator(String token) {
+        return operators.containsKey(token);
+    }
+
+    private static boolean isAssociative(String token, int type) {
+        if (!isOperator(token)) {
+            throw new IllegalArgumentException("Invalid token: " + token);
+        }
+        if (operators.get(token)[1] == type) {
+            return true;
+        } return false;
+    }
+
+    private static final int comparePrecedence(String token1, String token2) {
+        if (!isOperator(token1) || !isOperator(token2)) {
+            throw new IllegalArgumentException("Invalid tokens: " + token1 + " " +
+            token2);
+        }
+        return operators.get(token1)[0] - operators.get(token2)[0];
+    }
+
+    public static String[] infixToRPN(String[] inputTokens) {
+        ArrayList<String> out = new ArrayList<>();
+        Stack<String> stack = new Stack<>();
+        for (String token : inputTokens) {
+            if (isOperator(token)) {
+                while (!stack.empty() && isOperator(stack.peek())) {
+                    if ((isAssociative(token, leftAssoc) && comparePrecedence(
+                            token, stack.peek()) < 0 )) {
+                        out.add(stack.pop());
+                        continue;
+                    }
+                    break;
+                }
+                stack.push(token);
+            } else if (token.equals("(")) {
+                stack.push(token);
+            } else if (token.equals(")")) {
+                while (!stack.empty() && !stack.peek().equals("(")) {
+                    out.add(stack.pop());
+                }
+                stack.pop();
+            } else {
+                out.add(token);
+            }
+        }
+        while (!stack.empty()) {
+            out.add(stack.pop());
+        }
+        String[] output = new String[out.size()];
+        return out.toArray(output);
+    }
 
     public String evaluate(Context context, String appraisalID, String testID) {
 
@@ -39,7 +107,7 @@ public class FormulaEvaluation {
         DBClientsTransporter dbClientsTransporter = dbQueries.getClientsFromDB(context);
         String gender = dbClientsTransporter.getClientIdToGender().get(clientID);
 
-        double numericValue = 0.0;
+        double numericValue;
 
         if (gender.equals("0")) {
             numericValue = stringToNumber(trial1, trial2, trial3, formulaF);
@@ -57,7 +125,8 @@ public class FormulaEvaluation {
         double trial3Numeric = Double.parseDouble(trial3);
         Deque<Double> stack = new ArrayDeque<>();
         String[] tokenised = formula.split(" ");
-        for (String token : tokenised) {
+        String[] RPN = infixToRPN(tokenised);
+        for (String token : RPN) {
             switch (token) {
                 case "trial1":
                     stack.push(trial1Numeric);
@@ -99,5 +168,4 @@ public class FormulaEvaluation {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
-
 }
