@@ -6,7 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -130,6 +133,23 @@ public class DBQueries {
                 DBContract.Clients.KEY_ID + "=" + clientId, null);
         sqLiteDatabase.close();
         dbHelper.close();
+    }
+
+    public String insertAppraiserToDB(Context context, String firstName, String lastName) {
+        DBHelper dbHelper = new DBHelper(context);
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date now = new Date();
+        String uuid = UUID.randomUUID().toString();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBContract.Appraisers.KEY_ID, uuid);
+        contentValues.put(DBContract.Appraisers.KEY_NAME, firstName + " " + lastName);
+        contentValues.put(DBContract.Appraisers.KEY_UPDATED, simpleDateFormat.format(now));
+        contentValues.put(DBContract.Appraisers.KEY_UPLOADED, "null");
+        database.insert(DBContract.Appraisers.TABLE_NAME, null, contentValues);
+        database.close();
+        dbHelper.close();
+        return uuid;
     }
 
     public void insertCategoryToDB(Context context, String parentID, String name, int position,
