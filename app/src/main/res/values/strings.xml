@@ -10,5 +10,6 @@
 
     <string name="title_activity_edit_group">EditGroupActivity</string>
     <string name="Add_Tests">Add Test</string>
+    <string name="newTest">New Test Result</string>
 
 </resources>

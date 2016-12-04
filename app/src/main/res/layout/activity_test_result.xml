@@ -20,14 +20,36 @@
         android:id="@+id/numberPicker"
         />
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/date"
+        android:layout_below="@+id/numberPicker"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:hint="2016-12-04"
+        android:maxLength="10"
+       />
+
     <Button
         android:text="@string/updateTestResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/numberPicker"
+        android:layout_below="@id/date"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="126dp"
+        android:layout_marginTop="50dp"
         android:onClick="updateTestResult"
         android:id="@+id/button9" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/newTestResult"
+        android:layout_below="@id/button9"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:onClick="newTestResult"
+        android:text="@string/newTest"
+        />
 
 </RelativeLayout>

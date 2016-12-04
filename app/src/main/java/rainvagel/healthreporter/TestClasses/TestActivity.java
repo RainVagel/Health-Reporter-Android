@@ -122,9 +122,16 @@ public class TestActivity extends AppCompatActivity {
         else {
             appraiserID = fromCategoriesData[5];
         }
+
+
     }
 
     protected void getTests(){
+        appraisalTests.clear();
+        correctTests.clear();
+        testArray.clear();
+        testToAppraisal.clear();
+        Log.v("kaivitasin","kaivitasin");
 //        String[] fromCategoriesData = getIntent().getStringExtra("IntentData").split(",");
         // Using clientID we have to query the database to get all appraisal_tests that belong to said Client
         // Then using the categoryID we filter out unneccessary tests.
@@ -164,7 +171,10 @@ public class TestActivity extends AppCompatActivity {
                         appraisalTestsIdToTrial1.get(ID), appraisalTestsIdToTrial2.get(ID),
                         appraisalTestsIdToTrial3.get(ID), appraisalTestsIdToUpdated.get(ID),
                         appraisalTestsIdToUploaded.get(ID)));
+                if (ID.equals("3741c02b-84af-420c-bfa9-176c53d4db0a"))
+                    Log.v("andme",String.valueOf(testIDs.contains(appraisalTestsIdToTestId.get("3741c02b-84af-420c-bfa9-176c53d4db0a"))));
             }
+
         }
         //add all TESTIDs to an array to later  crosscheck with categories
         // and create appraisalTest objects
@@ -191,10 +201,14 @@ public class TestActivity extends AppCompatActivity {
                             testsIdToWeight.get(ID), testsIdToFormulaF.get(ID), testsIdToFormulaM.get(ID),
                             testsIdToPosition.get(ID), testsIdToUpdated.get(ID), testsIdToUploaded.get(ID));
                     correctTests.add(testIDs.get(testIDs.indexOf(ID)));
+
                     testArray.add(test);
                 }
             }
         }
+
+
+        Log.v("andmes",String.valueOf(correctTests.contains(appraisalTestsIdToTestId.get("3741c02b-84af-420c-bfa9-176c53d4db0a"))));
 
         DBCategoriesTransporter dbCategoriesTransporter = dbQueries.getCategoriesFromDB(this);
         ArrayList<String> categoriesID = dbCategoriesTransporter.getCategoriesID();
@@ -209,24 +223,34 @@ public class TestActivity extends AppCompatActivity {
         //retrieve dividers
 
         //add all appraisal for said category in to a map with the key being appraisals testID
+        Log.v("kason",testToAppraisal.toString());
         for(String i : correctTests){
             Log.v(TAG, "OLEN SIIN");
             Log.v(TAG, i);
             Log.v(TAG, String.valueOf(testArray.size()));
+            Log.v("ATSSS",String.valueOf(correctTests.size()) +" "+ String.valueOf(testIDs.size()));
+            for (int j = 0;j<testIDs.size(); j++) {
+                if (testIDs.get(j).equals(i)) {
 
-            if(testToAppraisal.containsKey(i)){//if the map already has said key
-                testToAppraisal.put(i, testToAppraisal.get(i)).add(appraisalTests.get(testIDs.indexOf(i)));
-            }
-            else{
-                ArrayList<AppraisalTests> appraisals = new ArrayList<>();
-                appraisals.add(appraisalTests.get(testIDs.indexOf(i)));
-                testToAppraisal.put(i,appraisals);
-            }
 
-            if(divider.contains(i)){// if current test has a divider
-                testArray.add(correctTests.indexOf(i),null);
+                    if (testToAppraisal.containsKey(i)) {//if the map already has said key
+                        testToAppraisal.put(i, testToAppraisal.get(i)).add(appraisalTests.get(j));
+                        Log.v("array suurus", String.valueOf(testToAppraisal.get(i).size()));
+                    } else {
+                        ArrayList<AppraisalTests> appraisals = new ArrayList<>();
+                        appraisals.add(appraisalTests.get(j));
+                        testToAppraisal.put(i, appraisals);
+                        Log.v("array suurus", String.valueOf(testToAppraisal.get(i).size()));
+                    }
+                    Log.v("array suurus", String.valueOf(testToAppraisal.get(i).size()));
+                    if (divider.contains(i)) {// if current test has a divider
+                        testArray.add(correctTests.indexOf(i), null);
+                    }
+                }
             }
         }
+
+
 
         //FOR TESTING PURPOSES BECAUSE NO DIVIDERS IN DATABASE AT THE MOMENT!!!!!!!!!!!!!!
         // REMOVE IF DATABASE HAS BEEN UPDATED
