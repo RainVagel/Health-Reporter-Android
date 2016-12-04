@@ -298,7 +298,7 @@ public class DBQueries {
     public void deleteEntryFromDB(Context context, String table, String field, String id) {
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
-        sqLiteDatabase.delete(table, field + "=" + id, null);
+        sqLiteDatabase.delete(table, field + "=\"" + id + "\"", null);
         sqLiteDatabase.close();
         dbHelper.close();
     }
