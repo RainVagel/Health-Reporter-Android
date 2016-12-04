@@ -11,5 +11,9 @@
     <string name="title_activity_edit_group">EditGroupActivity</string>
     <string name="Add_Tests">Add Test</string>
     <string name="newTest">New Test Result</string>
+    <string name="Score">Appraisal Score</string>
+    <string name="trial1">Trial 1</string>
+    <string name="trial2">Trial 2</string>
+    <string name="trial3">Trial 3</string>
 
 </resources>

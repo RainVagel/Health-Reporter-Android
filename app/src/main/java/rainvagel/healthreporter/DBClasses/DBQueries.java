@@ -103,11 +103,15 @@ public class DBQueries {
     }
 
 
-    public void updateAppraisalTestInDB(Context context, String appraisal_id,int new_score){
+    public void updateAppraisalTestInDB(Context context, String appraisal_id,int new_score, int trial1, int trial2, int trial3, String notes){
         DBHelper db = new DBHelper(context);
         SQLiteDatabase sql = db.getReadableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(DBContract.AppraisalTests.KEY_SCORE, new_score);
+        cv.put(DBContract.AppraisalTests.KEY_TRIAL_1,trial1);
+        cv.put(DBContract.AppraisalTests.KEY_TRIAL_2,trial2);
+        cv.put(DBContract.AppraisalTests.KEY_TRIAL_3,trial3);
+        cv.put(DBContract.AppraisalTests.KEY_NOTE,notes);
 
         String selection = DBContract.AppraisalTests.KEY_APPRAISAL_ID + " LIKE ?";
         String[] selectionArgs = {appraisal_id};

@@ -190,7 +190,7 @@ public class TestAdapter extends ArrayAdapter<Test> {
             result.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    lastScoreAppraisals.add(1,"asd");
+                    lastScoreAppraisals.add(1,"asd");//cause divider is alwas element nr1
                     String appraisal_id = lastScoreAppraisals.get(position) + "," + appraisals_Tests.get(tests.get(position).getId()).get(0).getTestid();
 
                     // send the user to another activity to update the result
