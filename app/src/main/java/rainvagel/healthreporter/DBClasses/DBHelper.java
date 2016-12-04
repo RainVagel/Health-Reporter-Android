@@ -189,7 +189,7 @@ public class DBHelper extends SQLiteOpenHelper {
             testValues.put(DBContract.Tests.KEY_DESCRIPTION, "Something");
             testValues.put(DBContract.Tests.KEY_UNITS, "Unitz");
             testValues.put(DBContract.Tests.KEY_DECIMALS, 2);
-            testValues.put(DBContract.Tests.KEY_WEIGHT, (random.nextDouble())+ 0.1);
+            testValues.put(DBContract.Tests.KEY_WEIGHT, (random.nextDouble()));
             testValues.put(DBContract.Tests.KEY_FORMULA_F, "2");
             testValues.put(DBContract.Tests.KEY_FORMULA_M, "3");
             testValues.put(DBContract.Tests.KEY_POSITION, 0);
