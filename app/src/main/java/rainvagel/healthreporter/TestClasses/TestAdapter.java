@@ -26,6 +26,7 @@ import com.google.android.gms.vision.Frame;
 import java.util.ArrayList;
 import java.util.Map;
 
+import rainvagel.healthreporter.DBClasses.DBQueries;
 import rainvagel.healthreporter.R;
 
 import static android.widget.LinearLayout.VERTICAL;
@@ -70,19 +71,22 @@ public class TestAdapter extends ArrayAdapter<Test> {
 
             test_name = (TextView) rowView.findViewById(R.id.textView);
             result = (TextView) rowView.findViewById(R.id.result);
-
-
+            DBQueries dbq = new DBQueries();
+            Map<String, String> appraisalDates = dbq.getAppraisalsFromDB(context).getAppraisalIdToAppraisalDate();
+            Map<String, String> appraisal2Client = dbq.getAppraisalsFromDB(context).getAppraisalIdToClientId();
+            Map<String, String> client2name = dbq.getClientsFromDB(context).getClientIdToLastName();
             ArrayList<AppraisalTests> at = appraisals_Tests.get(tests.get(position).getId());
             int lastScore = -5000;
             AppraisalTests lastScoreAppraisal = null;
             int year = 1900;
             int day = -2;
             int month = 0;
-
+            Log.v("appraisals suurus", String.valueOf(at.size()));
             for(AppraisalTests a : at){
                 Log.v(TAG, a.getScore());
                 Log.v(TAG, a.getUpdated());
-                String[] dates = a.getUpdated().split("-");
+                String appraisal_id = a.getId();
+                String[] dates = appraisalDates.get(appraisal_id).split("-");
                 int a_score =  Integer.parseInt(a.getScore());
                 if(at.indexOf(a) == 0){
                     lastScore = Integer.parseInt(a.getScore());
@@ -133,19 +137,17 @@ public class TestAdapter extends ArrayAdapter<Test> {
             LinearLayout inner = (LinearLayout)rowView.findViewById(R.id.innerLay);
 
             for(AppraisalTests a : at){
-                Log.v("idvordlus",a.getId());
-                Log.v("idvordluslast",lastScoreAppraisal.getId());
-                if(!a.getId().equals(lastScoreAppraisal.getId())) {
+
+                if(at.indexOf(lastScoreAppraisal) != at.indexOf(a)) {
                     LinearLayout uus = new LinearLayout(context);
                     uus.setOrientation(VERTICAL);
                     TextView tv1 = new TextView(context);
 
                     tv1.setPadding(5, 0, 5, 10);
-                    //tv1.setHeight(inner.getHeight());
                     tv1.setText(a.score);
                     uus.addView(tv1);
                     TextView tv2 = new TextView(context);
-                    tv2.setText(a.getUpdated());
+                    tv2.setText(appraisalDates.get(a.getId()));
                     tv2.setTextSize(8);
                     tv2.setPadding(5, 0, 5, 10);
 
@@ -162,7 +164,7 @@ public class TestAdapter extends ArrayAdapter<Test> {
                 }
 
             }
-            Log.v("lastscore", String.valueOf(lastScore));
+
             result.setText(String.valueOf(lastScore));//displaay the last one updated aka the last test taken
 
             test_name.setText(tests.get(position).getName());
