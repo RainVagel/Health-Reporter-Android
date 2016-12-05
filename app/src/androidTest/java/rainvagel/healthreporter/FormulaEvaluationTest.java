@@ -50,11 +50,11 @@ public class FormulaEvaluationTest {
     private static final String DATE        = "2016-12-05";
     private static final String UPDATED     = "2016-12-31";
     private static final String UPLOADED    = "2017-01-01";
-    private static final String formula     = "( trial1 * trial2 ) / trial3";
-    private static final String expectedResult = "13.34";
+    private static final String expectedResultF = "10.34";
+    private static final String expectedResultM = "129.0";
 
     private String result;
-
+    private String gender;
 
 
     @Before
@@ -75,11 +75,13 @@ public class FormulaEvaluationTest {
             }
         }
 
-        String[] clientColumns = {DBContract.Clients.KEY_ID};
+        String[] clientColumns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_GENDER};
         cursor = database.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, clientColumns, null,null,null,null,null);
         int idIdx1 = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
+        int genIdx = cursor.getColumnIndex(DBContract.Clients.KEY_GENDER);
         cursor.moveToFirst();
         clientUuid = cursor.getString(idIdx1);
+        gender = cursor.getString(genIdx);
 
         String[] testColumns = {DBContract.Tests.KEY_ID, DBContract.Tests.KEY_DECIMALS, DBContract.Tests.KEY_UNITS};
         cursor = database.getReadableDatabase().query(DBContract.Tests.TABLE_NAME, testColumns, null,null,null,null,null);
@@ -111,7 +113,12 @@ public class FormulaEvaluationTest {
     @Test
     public void evaluate() throws Exception {
         result = formulaEvaluation.evaluate(instrumentation.getTargetContext(), appraisalID, testID);
-        assertEquals(expectedResult + units, result);
+        if (gender.equals("0")) {
+            assertEquals(expectedResultF + units, result);
+        }
+        else {
+            assertEquals(expectedResultM + units, result);
+        }
 
     }
 
