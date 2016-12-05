@@ -114,10 +114,10 @@ public class FormulaEvaluationTest {
     public void evaluate() throws Exception {
         result = formulaEvaluation.evaluate(instrumentation.getTargetContext(), appraisalID, testID);
         if (gender.equals("0")) {
-            assertEquals(expectedResultF + units, result);
+            assertEquals(expectedResultF, result);
         }
         else {
-            assertEquals(expectedResultM + units, result);
+            assertEquals(expectedResultM, result);
         }
 
     }
