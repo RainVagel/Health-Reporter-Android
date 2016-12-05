@@ -5,78 +5,119 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
-import android.widget.EditText;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 
 import rainvagel.healthreporter.ClientClasses.ClientActivity;
-import rainvagel.healthreporter.ClientClasses.EditClientActivity;
-import rainvagel.healthreporter.ClientClasses.InsertClientActivity;
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBQueries;
 
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.doubleClick;
 import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.Matchers.startsWith;
 
 /**
- * Created by Cornelia on 07/11/2016.
+ * Created by Cornelia on 04/12/2016.
  */
-@RunWith(AndroidJUnit4.class)
+
 public class EditClientTest {
 
+    private Instrumentation instrumentation;
     private DBHelper database;
+    private DBQueries queries;
 
-    /*
+    private String clientUuid;
+    private String groupUuid;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String gender;
+    private String year;
+    private String month;
+    private String day;
+    private String birthday;
+    private String updated;
+    private String uploaded;
+
+    private String vildeUuid;
+
+    private static final String FIRSTNAME = "FirstName";
+    private static final String LASTNAME  = "LastName";
+    private static final String EMAIL     = "firstlast@gmail.com";
+    private static final int    GENDER    = 0;    //0 - female, 1 - male
+    private static final String YEAR      = "1940";
+    private static final String MONTH     = "01";
+    private static final String DAY       = "01";
+    private static final String UPDATED   = "2016-12-04";
+    private static final String UPLOADED  = "0000-00-00";
+    private static final String BIRTHDAY  = YEAR + "-" + MONTH + "-" + DAY;
+
     @Rule
-    public ActivityTestRule<ClientActivity> clientActivityRule =
+    public ActivityTestRule<ClientActivity> clientActivityActivityTestRule =
             new ActivityTestRule<>(ClientActivity.class);
 
-    */
-
     @Before
-    public void setUp() {
-        /*
-        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+    public void setUp() throws Exception {
+        instrumentation = InstrumentationRegistry.getInstrumentation();
         database = new DBHelper(instrumentation.getTargetContext());
+        queries = new DBQueries();
 
-        String[] clientColumns = {DBContract.Clients.KEY_FIRSTNAME, DBContract.Clients.KEY_LASTNAME};
+        String[] clientColumns = {DBContract.Clients.KEY_ID};
         Cursor cursor = database.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, clientColumns, null,null,null,null,null);
-        int firstNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
-        int lastNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
+        int idIdx = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
 
         cursor.moveToFirst();
-        String name = cursor.getString(firstNameIdx);
-        String lastName = cursor.getString(lastNameIdx);
+        clientUuid = cursor.getString(idIdx);
+        ArrayList<String> details = queries.getClientDetailsFromDB(instrumentation.getTargetContext(), clientUuid);
 
-        onData(startsWith(name + " " + lastName)).inAdapterView(withId(R.id.listViewClients)).perform(longClick());
+        firstName  = details.get(0);
+        lastName   = details.get(1);
+        birthday   = details.get(2);
+        gender     = details.get(3);
+        groupUuid  = details.get(4);
+        email      = details.get(5);
+        updated    = details.get(6);
+
+        String[] groupColumns = {DBContract.Groups.KEY_ID, DBContract.Groups.KEY_NAME};
+        cursor = database.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, groupColumns, null,null,null,null,null);
+        int idIdx1 = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
+        int nameIdx = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            if (cursor.getString(nameIdx).equals("Vilde")) {
+                vildeUuid = cursor.getString(idIdx1);
+            }
+        }
+
+        cursor.close();
+
+        Thread.sleep(3000);
+        onData(startsWith(firstName + " " + lastName)).inAdapterView(withId(R.id.listViewClients)).perform(longClick());
         onView(withText("Edit")).perform(click());
-        */
     }
 
-    /*
     @Test
-    public void testEditingClient() {
-        onView(withId(R.id.first_name)).perform(replaceText("Sander"));
-        onView(withId(R.id.last_name)).perform(replaceText("Oigus"));
-        onView(withId(R.id.email_address)).perform(replaceText("Sander.Oigus@gmail.com"));
+    public void editClient() {
+        onView(withId(R.id.first_name)).perform(replaceText(FIRSTNAME));
+        onView(withId(R.id.last_name)).perform(replaceText(LASTNAME));
+        onView(withId(R.id.radio_female)).perform(click());
+        onView(withId(R.id.email_address)).perform(replaceText(EMAIL));
         closeSoftKeyboard();
-        onView(withId(R.id.birthdate_picker)).perform(click());
-        onView(withText("OK")).perform(click());
+        onView(withId(R.id.birth_year)).perform(replaceText(YEAR));
+        onView(withId(R.id.birth_month)).perform(replaceText(MONTH));
+        onView(withId(R.id.birth_day)).perform(replaceText(DAY));
         onView(withId(R.id.button_select_group)).perform(click());
         onView(withText("Vilde")).perform(click());
         onView(withId(R.id.button_add_client)).perform(click());
@@ -85,93 +126,33 @@ public class EditClientTest {
                 DBContract.Clients.KEY_LASTNAME, DBContract.Clients.KEY_EMAIL, DBContract.Clients.KEY_GENDER,
                 DBContract.Clients.KEY_BIRTHDATE, DBContract.Clients.KEY_UPDATED, DBContract.Clients.KEY_UPLOADED};
         Cursor cursor = database.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, clientColumns, null,null,null,null,null);
-
         int idIdx = cursor.getColumnIndex(DBContract.Clients.KEY_ID);
         int groupIdx = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
         int firstNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_FIRSTNAME);
         int lastNameIdx = cursor.getColumnIndex(DBContract.Clients.KEY_LASTNAME);
         int emailIdx = cursor.getColumnIndex(DBContract.Clients.KEY_EMAIL);
-        int genIdx = cursor.getColumnIndex(DBContract.Clients.KEY_GENDER);
-        int birtdayIdx = cursor.getColumnIndex(DBContract.Clients.KEY_BIRTHDATE);
-        int updateIdx = cursor.getColumnIndex(DBContract.Clients.KEY_UPDATED);
-
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = simpleDateFormat.format(calendar.getTime());
-
-        cursor.moveToFirst();
-        assertEquals("Sander", cursor.getString(firstNameIdx));
-        assertEquals("Oigus", cursor.getString(lastNameIdx));
-        assertEquals("Sander.Oigus@gmail.com", cursor.getString(emailIdx));
-        assertEquals(3, cursor.getInt(groupIdx));
-        assertEquals(1, cursor.getInt(genIdx));
-        assertEquals(formattedDate, cursor.getString(birtdayIdx));
-        assertEquals(formattedDate, cursor.getString(updateIdx));
-    }
-
-    @Test
-    public void checkIf_correctDateIsDisplayed() {
-        String[] clientColumn = {DBContract.Clients.KEY_BIRTHDATE};
-        Cursor cursor = database.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, clientColumn, null,null,null,null,null);
+        int genderIdx = cursor.getColumnIndex(DBContract.Clients.KEY_GENDER);
         int birthdayIdx = cursor.getColumnIndex(DBContract.Clients.KEY_BIRTHDATE);
-        cursor.moveToFirst();
-        String birthday = cursor.getString(birthdayIdx);
-        database.close();
+        int updateIdx = cursor.getColumnIndex(DBContract.Clients.KEY_UPDATED);
+        int uploadIdx = cursor.getColumnIndex(DBContract.Clients.KEY_UPLOADED);
 
-        String year = birthday.substring(0,4);
-        String month = birthday.substring(5,7);
-        String day = birthday.substring(8, birthday.length());
-
-        onView(withId(R.id.textview_birth_day)).check(matches(withText(day)));
-        onView(withId(R.id.textview_birth_month)).check(matches(withText(month)));
-        onView(withId(R.id.textview_birth_year)).check(matches(withText(year)));
-    }
-
-
-    @Test
-    public void checkIf_correctDateIsDisplayed_afterPickingNewDate() {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = simpleDateFormat.format(calendar.getTime());
-
-        String year1 = formattedDate.substring(0,4);
-        String month1 = formattedDate.substring(5,7);
-        String day1 = formattedDate.substring(8, formattedDate.length());
-
-        onView(withId(R.id.birthdate_picker)).perform(click());
-        onView(withText("OK")).perform(click());
-        onView(withId(R.id.textview_birth_day)).check(matches(withText(day1)));
-        onView(withId(R.id.textview_birth_month)).check(matches(withText(month1)));
-        onView(withId(R.id.textview_birth_year)).check(matches(withText(year1)));
-    }
-    */
-
-
-    @Test
-    public void checkIf_correctGroupIsDisplayed() {
-        /*
-        String[] clientColumn = {DBContract.Clients.KEY_GROUP_ID};
-        Cursor cursor = database.getReadableDatabase().query(DBContract.Clients.TABLE_NAME, clientColumn, null, null, null, null, null);
-        int groupIdx = cursor.getColumnIndex(DBContract.Clients.KEY_GROUP_ID);
-        cursor.moveToFirst();
-        String clientGroupId = cursor.getString(groupIdx);
-        cursor.close();
-
-        String[] groupColumns = {DBContract.Groups.KEY_ID, DBContract.Groups.KEY_NAME};
-        cursor = database.getReadableDatabase().query(DBContract.Groups.TABLE_NAME, groupColumns, null, null, null, null, null);
-        groupIdx = cursor.getColumnIndex(DBContract.Groups.KEY_ID);
-        int groupNameIndex = cursor.getColumnIndex(DBContract.Groups.KEY_NAME);
-
-        String groupName = "";
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            if (clientGroupId.equals(cursor.getString(groupIdx))) {
-                groupName = cursor.getString(groupNameIndex);
+            if (cursor.getString(idIdx).equals(clientUuid)) {
+                assertEquals(vildeUuid, cursor.getString(groupIdx));
+                assertEquals(FIRSTNAME, cursor.getString(firstNameIdx));
+                assertEquals(LASTNAME, cursor.getString(lastNameIdx));
+                assertEquals(EMAIL, cursor.getString(emailIdx));
+                assertEquals(GENDER, cursor.getInt(genderIdx));
+                assertEquals(BIRTHDAY, cursor.getString(birthdayIdx));
             }
         }
         cursor.close();
-
-        onView(withId(R.id.textview_group_name)).check(matches(withText(groupName)));
-        */
     }
 
+    @After
+    public void tearDown() {
+        //queries.editClientInDB(instrumentation.getTargetContext(), clientUuid, firstName, lastName, email, gender, birthday, updated, uploaded);
+        database.close();
+
+    }
 }

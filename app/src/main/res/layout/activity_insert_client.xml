@@ -7,21 +7,38 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
+    android:paddingTop="60dp"
+    android:gravity="center_horizontal"
+   android:orientation="vertical"
+
     tools:context="rainvagel.healthreporter.ClientClasses.InsertClientActivity">
+
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_firstname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <EditText
         android:id="@+id/first_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="John"
+        android:hint="First name"
         android:inputType="textCapWords"/>
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_lastname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <EditText
         android:id="@+id/last_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="Smith"
-        android:inputType="text"/>
+        android:hint="Last name"
+        android:inputType="textCapWords"/>
+    </android.support.design.widget.TextInputLayout>
+
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -39,38 +56,63 @@
             android:text="M"
             android:onClick="onRadioButtonClicked"/>
     </RadioGroup>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <EditText
         android:id="@+id/email_address"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="john.smith@gmail.com"
+        android:hint="Email address"
         android:inputType="textEmailAddress"/>
-    <Button
-        android:id="@+id/birthdate_picker"
-        android:layout_width="wrap_content"
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_year"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText_birth_year"
+            android:hint="Year of birth"
+            android:inputType="number"/>
+
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_month"
         android:layout_height="wrap_content"
-        android:text="Pick birthdate"
-        android:onClick="showDatePickerDialog"/>
-    <TextView
-        android:id="@+id/textview_birth_day"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="07"/>
-    <TextView
-        android:id="@+id/textview_birth_month"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="05"/>
-    <TextView
-        android:id="@+id/textview_birth_year"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="1995"/>
+        android:layout_width="match_parent">
+        <EditText
+            android:id="@+id/edittext_birth_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Month of birth"
+            android:inputType="number"/>
+
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/edittext_birth_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Day of birth"
+            android:inputType="number"/>
+
+    </android.support.design.widget.TextInputLayout>
     <Button
         android:id="@+id/button_add_client"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:text="Add client"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/buttons"
         android:onClick="onAddClientClicked"/>
+
 
 </LinearLayout>

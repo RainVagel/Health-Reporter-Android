@@ -1,6 +1,7 @@
 package rainvagel.healthreporter.CategoryClasses;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
@@ -17,12 +18,21 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import rainvagel.healthreporter.DBClasses.DBAppraisalTestsTransporter;
+import rainvagel.healthreporter.DBClasses.DBAppraisalsTransporter;
+import rainvagel.healthreporter.DBClasses.DBCategoriesTransporter;
+import rainvagel.healthreporter.DBClasses.DBClientsTransporter;
+import rainvagel.healthreporter.DBClasses.DBQueries;
+import rainvagel.healthreporter.DBClasses.DBTestsTransporter;
+import rainvagel.healthreporter.DBClasses.DBTransporter;
 import rainvagel.healthreporter.TestClasses.AddTestActivity;
 import rainvagel.healthreporter.ClientClasses.ClientActivity;
-import rainvagel.healthreporter.DBContract;
-import rainvagel.healthreporter.DBHelper;
+import rainvagel.healthreporter.DBClasses.DBContract;
+import rainvagel.healthreporter.DBClasses.DBHelper;
 import rainvagel.healthreporter.R;
 import rainvagel.healthreporter.TestClasses.TestActivity;
 
@@ -33,6 +43,7 @@ public class CategoriesActivity extends Activity {
     private ArrayList<Category> divider = new ArrayList<>();
     public static Map<String, Category> forAddTest = new HashMap<>();
     public static Intent fromClients;
+    public static String appraiserID;
     public static String[] intentData;
     Toolbar tb;
     int age;
@@ -41,7 +52,6 @@ public class CategoriesActivity extends Activity {
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +67,7 @@ public class CategoriesActivity extends Activity {
         tb = (Toolbar) findViewById(R.id.my_toolbar);
         CharSequence title =  intentData[1];//first name
         CharSequence subtitle = intentData[2];//group
+        appraiserID = intentData[3];
         tb.setTitle(title);
         tb.setSubtitle(subtitle);
 
@@ -67,26 +78,13 @@ public class CategoriesActivity extends Activity {
             }
         });
 
-
-
         new Thread(new Runnable() {
             public void run(){
 
                 getCategories();
             }}).start();
 
-
-
         ListView lv = (ListView) findViewById(R.id.listView);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                categorynames
-        );
-
-
-
-
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -99,16 +97,13 @@ public class CategoriesActivity extends Activity {
                 Log.v(TAG, category.getName());
                 //After retrieving the category object we send an intent to TestActivity which contains said category id and clientid
                 Intent intent = new Intent(CategoriesActivity.this, TestActivity.class);// class does not exist
-                intent.putExtra("IntentData", category.getId()+","+intentData[0]+","+intentData[1]+","+String.valueOf(age)+"," +intentData[2]);
-                Log.v(TAG, category.getId()+","+intentData[0]+","+intentData[1]+","+String.valueOf(age)+"," +intentData[2]);
+                intent.putExtra("IntentData", category.getId()+","+intentData[0]+","+intentData[1]+","+String.valueOf(age)+"," +intentData[2] +
+                "," + appraiserID);
+                Log.v(TAG, category.getId()+","+intentData[0]+","+intentData[1]+","+String.valueOf(age)+"," +intentData[2] + "," +
+                appraiserID);
                 startActivity(intent);
-
-
-
-
             }
         });
-        Log.v(TAG+"siin",String.valueOf(categories.size()));
 
         CategoriesAdapter ca = new CategoriesAdapter(this, categories);
 
@@ -122,29 +117,19 @@ public class CategoriesActivity extends Activity {
         startActivity(intent);
     }
 
-
-
     public void getCategories(){
 
-
-        DBHelper mydb = new DBHelper(CategoriesActivity.this);
         //retrieve the KEY_IDS OF APPRAISALS WHICH WE WILL USE TO GO TO THE APPRAISAL_TESTS TABLE
 
         //QUERY FILTERS
 
+        DBQueries dbQueries = new DBQueries();
+        DBClientsTransporter dbClientsTransporter = dbQueries.getClientsFromDB(this);
+        Map<String, String> clientIdToBirthDate = dbClientsTransporter.getClientIdToBirthDate();
 
-        String[] clientColumns = {DBContract.Clients.KEY_ID, DBContract.Clients.KEY_BIRTHDATE};
-        Cursor res = mydb.getReadableDatabase().query(DBContract.Clients.TABLE_NAME,clientColumns,null,null,null,null,null);
-        int clientidIndex = res.getColumnIndex(DBContract.Clients.KEY_ID);
-        int birthdateIndex = res.getColumnIndex(DBContract.Clients.KEY_BIRTHDATE);
+        String birthdate = clientIdToBirthDate.get(intentData[0]);
 
-        String birthdate = "";
-        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
-            if(res.getString(clientidIndex).equals(intentData[0])){
-                birthdate = res.getString(birthdateIndex);
-            }
-        }
-        Log.v(TAG, "synnikuupaev: " + birthdate);
+        Log.v(TAG, "birthdate: " + birthdate);
         String[] dates = birthdate.split("-");
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -163,88 +148,134 @@ public class CategoriesActivity extends Activity {
             else{
                 age -=1;
             }
-
         }
-        Log.v("age",String.valueOf(age));
+
+        Log.v(TAG,"age: " + String.valueOf(age));
         CharSequence titleage = intentData[1] + ", " +String.valueOf(age);//correct toolbar title with age
         tb.setTitle(titleage);
 
+        DBAppraisalsTransporter dbAppraisalsTransporter = dbQueries.getAppraisalsFromDB(this);
+        ArrayList<String> appraisalsID = dbAppraisalsTransporter.getAppraisalID();
+        Map<String, String> appraisalIdToClientId = dbAppraisalsTransporter.getAppraisalIdToClientId();
 
-        String[] appraisalColumns = {DBContract.Appraisals.KEY_ID,DBContract.Appraisals.KEY_CLIENT_ID};
-        res = mydb.getReadableDatabase().query(DBContract.Appraisals.TABLE_NAME, appraisalColumns,null,null, null, null, null);
-
-        int idIndex = res.getColumnIndex(DBContract.Appraisals.KEY_ID);
-        int client_Id = res.getColumnIndex(DBContract.Appraisals.KEY_CLIENT_ID);
         ArrayList<String> correspondingIDs = new ArrayList<String>();
 
-
-        for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
-            if(res.getString(client_Id).equals(intentData[0])){
-                correspondingIDs.add(res.getString(idIndex));
-                Log.v(TAG, "Appraisal table");
+        for (String ID : appraisalsID) {
+            if (appraisalIdToClientId.get(ID).equals(intentData[0])) {
+                correspondingIDs.add(ID);
             }
         }
-        String[] columns = {DBContract.AppraisalTests.KEY_APPRAISAL_ID,DBContract.AppraisalTests.KEY_TEST_ID};
-        res = mydb.getReadableDatabase().query(DBContract.AppraisalTests.TABLE_NAME,columns, null,null,null,null,null);
 
-        int appraisalIndex = res.getColumnIndex(DBContract.AppraisalTests.KEY_APPRAISAL_ID);
-        int testID = res.getColumnIndex(DBContract.AppraisalTests.KEY_TEST_ID);
+        DBAppraisalTestsTransporter dbAppraisalTestsTransporter = dbQueries.getAppraisalTestsFromDB(this);
+        ArrayList<String> appraisalIDs = dbAppraisalTestsTransporter.getAppraisalID();
+        Map<String, String> appraisalIdToTestId = dbAppraisalTestsTransporter.getAppraisalIdToTestId();
 
         ArrayList<String> testIDs = new ArrayList<>();
 
-        for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
-            if(correspondingIDs.contains(res.getString(appraisalIndex))){
-                testIDs.add(res.getString(testID));
-                Log.v(TAG, "appraisalTests");
+        for (String ID : appraisalIDs) {
+            if (correspondingIDs.contains(ID)) {
+                testIDs.add(appraisalIdToTestId.get(ID));
             }
         }
-        columns = new String[] {DBContract.Tests.KEY_ID, DBContract.Tests.KEY_CATEGORY_ID};
 
-
-        res = mydb.getReadableDatabase().query(DBContract.Tests.TABLE_NAME,columns,null,null,null,null,null );
-
-        int testidIndex = res.getColumnIndex(DBContract.Tests.KEY_ID);
-        int categoryIndex = res.getColumnIndex(DBContract.Tests.KEY_CATEGORY_ID);
-
+        DBTestsTransporter dbTestsTransporter = dbQueries.getTestsFromDB(this);
+        ArrayList<String> testID = dbTestsTransporter.getTestID();
+        Map<String, String> testIdToCategoryId = dbTestsTransporter.getTestIdToCategoryId();
         ArrayList<String> categoriesID = new ArrayList<>();
-        for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
-            if(testIDs.contains(res.getString(testidIndex))){
-                Log.v(TAG,"Tests table");
-                categoriesID.add(res.getString(categoryIndex));
+
+        for (String ID : testID) {
+            if (testIDs.contains(ID)) {
+                categoriesID.add(testIdToCategoryId.get(ID));
             }
         }
 
-        columns =new String[] {DBContract.TestCategories.KEY_ID, DBContract.TestCategories.KEY_PARENT_ID, DBContract.TestCategories.KEY_NAME, DBContract.TestCategories.KEY_POSITION, DBContract.TestCategories.KEY_UPDATED, DBContract.TestCategories.KEY_UPLOADED};
-        res = mydb.getReadableDatabase().query(DBContract.TestCategories.TABLE_NAME, columns, null,null,null,null,null);
+        DBCategoriesTransporter dbCategoriesTransporter = dbQueries.getCategoriesFromDB(this);
+        ArrayList<String> categoryID = dbCategoriesTransporter.getCategoriesID();
+        Map<String, String> categoryIdToParentId = dbCategoriesTransporter.getCategoriesIdToParentId();
+        Map<String, String> categoryIdToName = dbCategoriesTransporter.getCategoriesIdToName();
+        Map<String, String> categoryIdToPosition = dbCategoriesTransporter.getCategoriesIdToPosition();
+        Map<String, String> categoryIdToUpdated = dbCategoriesTransporter.getCategoriesIdToUpdated();
+        Map<String, String> categoryIdToUploaded = dbCategoriesTransporter.getCategoriesIdToUploaded();
 
-        int idRow = res.getColumnIndex(DBContract.TestCategories.KEY_ID);
-        int parentidRow = res.getColumnIndex(DBContract.TestCategories.KEY_PARENT_ID);
-        int nameRow = res.getColumnIndex(DBContract.TestCategories.KEY_NAME);
-        int posRow = res.getColumnIndex(DBContract.TestCategories.KEY_POSITION);
-        int updatedRow = res.getColumnIndex(DBContract.TestCategories.KEY_UPDATED);
-        int uploadedRow = res.getColumnIndex(DBContract.TestCategories.KEY_UPLOADED);
-
-        for(res.moveToFirst();!res.isAfterLast();res.moveToNext()){
-            // If parentid == null then real category
-            // if parentid != null then a divider
-            if(res.getString(parentidRow).equals("null")) {
-                String name = res.getString(nameRow);
-                Category cat = new Category(res.getString(idRow), res.getString(parentidRow), name
-                        , res.getString(posRow), res.getString(updatedRow), res.getString(uploadedRow));
-                forAddTest.put(name, cat);
-                if(categoriesID.contains(res.getString(idRow))) {
-                    Log.v(TAG,"categories table");
-                    categories.add(cat);
-                    categorynames.add(name);
-
+        for (String ID : categoryID) {
+            if (categoryIdToParentId.get(ID).equals("null")) {
+                Category category = new Category(ID, categoryIdToParentId.get(ID), categoryIdToName.get(ID),
+                        categoryIdToPosition.get(ID), categoryIdToUpdated.get(ID), categoryIdToUploaded.get(ID));
+                forAddTest.put(categoryIdToName.get(ID), category);
+                if (categoriesID.contains(ID)) {
+                    categories.add(category);
+                    categorynames.add(categoryIdToName.get(ID));
                 }
             }
-
-
         }
-        Log.v(TAG, String.valueOf(forAddTest.size()));
-        res.close();
-        mydb.close();
+    }
+
+    public static int getCategoryScores(Category c, Context con){
+        String id = intentData[0];
+
+        String categoryId = c.getId();
+
+        DBQueries dbQuery = new DBQueries();
+
+        DBClientsTransporter dbClients = dbQuery.getClientsFromDB(con);
+
+        // Gender of Client
+        String gender = dbClients.getClientIdToGender().get(id);
+        Log.v(TAG,"gender: " + gender);
+        DBAppraisalsTransporter dbAppraisals = dbQuery.getAppraisalsFromDB(con);
+        Map<String, String> appraisalToClient = dbAppraisals.getAppraisalIdToClientId();
+        Map<String, String> appraisalToDate = dbAppraisals.getAppraisalIdToAppraisalDate();
+        Set<String> appraisalsIDs = new HashSet<>();//contains appraisalIDs for said client
+        //Get all client Appraisals
+        Log.v(TAG,"clientID: " + id);
+
+        for(Map.Entry<String, String> entry : appraisalToClient.entrySet()){
+//            Log.v("isClients", String.valueOf(entry.getValue().equals(id)));
+            if(entry.getValue().equals(id))
+                appraisalsIDs.add(entry.getKey());
+        }
+
+        DBAppraisalTestsTransporter appraisalTestsTransporter = dbQuery.getAppraisalTestsFromDB(con);
+        Map<String, String> appraisalidToTestScore = appraisalTestsTransporter.getAppraisalIdToTestScores();
+        Map<String, String> appraisalIdToTestId = appraisalTestsTransporter.getAppraisalIdToTestId();
+
+
+        DBTestsTransporter testsTransporter = dbQuery.getTestsFromDB(con);
+        Map<String, String> testToCategory = testsTransporter.getTestIdToCategoryId();
+        Map<String, String> testToWeight = testsTransporter.getTestIdToWeight();
+        Set<String> categoryTests = new HashSet<>();//contains testIDs that belong to Category c
+        //Get all testids that are in the category that is given as an argument
+
+        for(Map.Entry<String, String> entry : appraisalIdToTestId.entrySet()) {
+            String appraisal = entry.getKey();
+            String test = entry.getValue();
+            if (appraisalsIDs.contains(appraisal)) {
+                if (testToCategory.get(test).equals(categoryId))
+                    categoryTests.add(test);
+                else
+                    appraisalsIDs.remove(appraisal);
+            }
+        }
+
+        double total_score = 0;
+        double max = 0;
+
+        //now we should have the necessary appraisalIDs and TestIDs to calculate the score
+        for(String i : appraisalsIDs){
+            try {
+                Log.v(TAG, appraisalidToTestScore.get(i));
+                Double score = Double.parseDouble(appraisalidToTestScore.get(i));
+                Double weight = Double.parseDouble(testToWeight.get(appraisalIdToTestId.get(i)));
+                total_score += score * weight;
+                max += score;
+            }
+            catch (Exception e){
+              Log.v(TAG,"nonexistent");
+            }
+        }
+
+        Long vastus = Math.round((total_score/max)*100);
+        return vastus.intValue();
     }
 
     @Override
