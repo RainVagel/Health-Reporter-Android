@@ -62,16 +62,6 @@ public class EditClientActivity extends AppCompatActivity {
         textViewGroup = (TextView) findViewById(R.id.textview_group_name);
         gender = (RadioGroup) findViewById(R.id.radio_group_gender);
 
-        EditText day = (EditText) findViewById(R.id.edittext_birth_day);
-        EditText month = (EditText) findViewById(R.id.edittext_birth_month);
-        EditText year = (EditText) findViewById(R.id.editText_birth_year);
-
-        String dayString = String.valueOf(day.getText());
-        String monthString = String.valueOf(month.getText());
-        String yearString = String.valueOf(year.getText());
-
-        clientBirthDate = yearString + "-" + monthString + "-" + dayString;
-
         DBQueries dbQueries = new DBQueries();
         ArrayList<String> clientDetails = dbQueries.getClientDetailsFromDB(this, clientId);
         clientFirstName = clientDetails.get(0);
@@ -90,8 +80,6 @@ public class EditClientActivity extends AppCompatActivity {
         groups = dbTransporter.getIdToName();
         groupsReversed = dbTransporter.getNameToId();
         groupIDs = dbTransporter.getGroupID();
-
-        String[] date = clientBirthDate.split("-");
 
         firstName.setText(clientFirstName);
         lastName.setText(clientLastName);
@@ -132,6 +120,14 @@ public class EditClientActivity extends AppCompatActivity {
     }
 
     public void onEditClientClicked(View view) {
+        EditText day = (EditText) findViewById(R.id.edittext_birth_day);
+        EditText month = (EditText) findViewById(R.id.edittext_birth_month);
+        EditText year = (EditText) findViewById(R.id.editText_birth_year);
+
+        String dayString = String.valueOf(day.getText());
+        String monthString = String.valueOf(month.getText());
+        String yearString = String.valueOf(year.getText());
+        clientBirthDate = yearString + "-" + monthString + "-" + dayString;
         DBQueries dbQueries = new DBQueries();
         dbQueries.editClientInDB(this, clientId, firstName.getText().toString(),
                 lastName.getText().toString(), clientBirthDate, email.getText().toString(),
