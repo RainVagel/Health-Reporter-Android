@@ -103,6 +103,7 @@ public class EditClientTest {
 
         cursor.close();
 
+        Thread.sleep(3000);
         onData(startsWith(firstName + " " + lastName)).inAdapterView(withId(R.id.listViewClients)).perform(longClick());
         onView(withText("Edit")).perform(click());
     }
