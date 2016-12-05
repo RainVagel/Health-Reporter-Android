@@ -50,7 +50,7 @@ public class FormulaEvaluation {
     private static final int comparePrecedence(String token1, String token2) {
         if (!isOperator(token1) || !isOperator(token2)) {
             throw new IllegalArgumentException("Invalid tokens: " + token1 + " " +
-            token2);
+                    token2);
         }
         return operators.get(token1)[0] - operators.get(token2)[0];
     }
@@ -116,7 +116,7 @@ public class FormulaEvaluation {
         }
 
         numericValue = round(numericValue, Integer.parseInt(decimals));
-        return String.valueOf(numericValue) + units;
+        return String.valueOf(numericValue);
     }
 
     private double stringToNumber(String trial1, String trial2, String trial3, String formula) {
