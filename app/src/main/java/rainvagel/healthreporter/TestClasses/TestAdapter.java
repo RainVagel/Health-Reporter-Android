@@ -64,8 +64,8 @@ public class TestAdapter extends ArrayAdapter<Test> {
     @NonNull
     @Override
     public View getView(final int position, final View convertView, final ViewGroup parent) {
-         final LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+        final LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        Log.v(TAG,"hello");
 
         if(tests.get(position) != null) {//if not divider
             final View rowView = inflater.inflate(R.layout.activity_tests_list,parent,false);
@@ -77,7 +77,8 @@ public class TestAdapter extends ArrayAdapter<Test> {
             Map<String, String> appraisalDates = dbq.getAppraisalsFromDB(context).getAppraisalIdToAppraisalDate();
 
             ArrayList<AppraisalTests> at = appraisals_Tests.get(tests.get(position).getId());
-            int lastScore = -5000;
+
+            double lastScore = -5000;
             AppraisalTests lastScoreAppraisal = null;
             int year = 1900;
             int day = -2;
@@ -88,47 +89,47 @@ public class TestAdapter extends ArrayAdapter<Test> {
                 Log.v(TAG, a.getUpdated());
                 String appraisal_id = a.getId();
                 String[] dates = appraisalDates.get(appraisal_id).split("-");
-                int a_score =  Integer.parseInt(a.getScore());
+                double a_score =  Double.parseDouble(a.getScore());
                 if(at.indexOf(a) == 0){
-                    lastScore = Integer.parseInt(a.getScore());
+                    lastScore = Double.parseDouble(a.getScore());
                     lastScoreAppraisal = a;
                 }
                 else{
-                  
+
                     int a_year = Integer.parseInt(dates[0]);
                     int a_month = Integer.parseInt(dates[1]);
                     int a_day = Integer.parseInt(dates[2]);
                     if(a_year >= year) {
-                       if(a_year > year) {
-                           lastScore = a_score;
-                           lastScoreAppraisal = a;
-                           year = a_year;
-                           day = a_day;
-                           month = a_month;
-                       }
+                        if(a_year > year) {
+                            lastScore = a_score;
+                            lastScoreAppraisal = a;
+                            year = a_year;
+                            day = a_day;
+                            month = a_month;
+                        }
                         else{
-                           if(a_month>= month){
-                               if(a_month > month) {
-                                   lastScore = a_score;
-                                   lastScoreAppraisal = a;
-                                   year = a_year;
-                                   day = a_day;
-                                   month = a_month;
-                               }
-                               else{
-                                   if(a_day >= day){
-                                       if(a_day>day){
-                                           lastScore = a_score;
-                                           lastScoreAppraisal = a;
-                                           year = a_year;
-                                           day = a_day;
-                                           month = a_month;
-                                       }
-                                       //else stay the same
-                                   }
-                               }
-                           }
-                       }
+                            if(a_month>= month){
+                                if(a_month > month) {
+                                    lastScore = a_score;
+                                    lastScoreAppraisal = a;
+                                    year = a_year;
+                                    day = a_day;
+                                    month = a_month;
+                                }
+                                else{
+                                    if(a_day >= day){
+                                        if(a_day>day){
+                                            lastScore = a_score;
+                                            lastScoreAppraisal = a;
+                                            year = a_year;
+                                            day = a_day;
+                                            month = a_month;
+                                        }
+                                        //else stay the same
+                                    }
+                                }
+                            }
+                        }
                     }
 
                 }
@@ -175,13 +176,13 @@ public class TestAdapter extends ArrayAdapter<Test> {
 
 
                     if(visible){
-                    rowView.findViewById(R.id.hsv).setVisibility(visible ? View.GONE : View.VISIBLE);
+                        rowView.findViewById(R.id.hsv).setVisibility(visible ? View.GONE : View.VISIBLE);
                         rowView.findViewById(R.id.innerLay).setVisibility(visible ? View.GONE : View.VISIBLE);
                         setButtonsVisible(!visible);}
 
                     else{
 
-                    rowView.findViewById(R.id.hsv).setVisibility(!visible ? View.VISIBLE: View.GONE);
+                        rowView.findViewById(R.id.hsv).setVisibility(!visible ? View.VISIBLE: View.GONE);
                         rowView.findViewById(R.id.innerLay).setVisibility(!visible ? View.VISIBLE: View.GONE);
                         setButtonsVisible(!visible);}
                 }

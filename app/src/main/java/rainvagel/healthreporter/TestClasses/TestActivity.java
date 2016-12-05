@@ -32,13 +32,14 @@ import rainvagel.healthreporter.R;
 public class TestActivity extends AppCompatActivity {
     private static final String TAG = "TestActivity";
     Button createButton;
-   public static String[] fromCategoriesData;
+    public static String[] fromCategoriesData;
     ArrayList<AppraisalTests> appraisalTests = new ArrayList<>();
-     ArrayList<Test> testArray = new ArrayList<>();
+    ArrayList<Test> testArray = new ArrayList<>();
     public static String appraiserID = null;
     ArrayList<String> correctTests= new ArrayList<>();
-   public static Map<String, ArrayList<AppraisalTests>> testToAppraisal = new HashMap<>();//TODO VALUE SHOULD BE AN ARRAY LIST OF APPRAISTESTS
+    public static Map<String, ArrayList<AppraisalTests>> testToAppraisal = new HashMap<>();//TODO VALUE SHOULD BE AN ARRAY LIST OF APPRAISTESTS
     public static Intent fromCategories;
+    private static ListView listView;
 
 
     @Override
@@ -65,17 +66,11 @@ public class TestActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(fromCategoriesData[2] + ", " + fromCategoriesData[3]);
         getSupportActionBar().setSubtitle(fromCategoriesData[4]);
 
-        new Thread(new Runnable() {
-            public void run(){
-
-                getTests();
-            }}).start();
-
-        ListView listView = (ListView) findViewById(R.id.listViewTests);
-
-        TestAdapter ta = new TestAdapter(this,testToAppraisal,testArray);
-
-
+        getTests();
+        Log.v(TAG+"sizeasd",String.valueOf(testToAppraisal.size() ));
+        Log.v(TAG+"sizeasd",String.valueOf(testArray.size() ));
+        listView = (ListView) findViewById(R.id.listViewTests);
+        TestAdapter ta = new TestAdapter(this,testToAppraisal, testArray);
         listView.setAdapter(ta);
 
     }
@@ -101,10 +96,7 @@ public class TestActivity extends AppCompatActivity {
                 mostRecent = dateFormat.parse("1900-01-01");
                 for (String ID : appraisalID) {
                     runnerDate = dateFormat.parse(appraisalsIdToAppraisalDate.get(ID));
-                    Log.v(TAG, "runnerDate: " + runnerDate);
-                    Log.v(TAG, "mostRecent: " + mostRecent);
                     if (mostRecent.compareTo(runnerDate) < 0) {
-                        Log.v(TAG, "got to inner if");
                         mostRecentAppraisalID = ID;
                         mostRecent = runnerDate;
                     }
@@ -131,7 +123,6 @@ public class TestActivity extends AppCompatActivity {
         correctTests.clear();
         testArray.clear();
         testToAppraisal.clear();
-        Log.v("kaivitasin","kaivitasin");
 //        String[] fromCategoriesData = getIntent().getStringExtra("IntentData").split(",");
         // Using clientID we have to query the database to get all appraisal_tests that belong to said Client
         // Then using the categoryID we filter out unneccessary tests.
@@ -166,13 +157,13 @@ public class TestActivity extends AppCompatActivity {
         for (String ID : appraisalTestsID) {
             if (appraisalIDs.contains(ID)) {
                 testIDs.add(appraisalTestsIdToTestId.get(ID));
+                Log.v(TAG,new FormulaEvaluation().evaluate(this,ID,appraisalTestsIdToTestId.get(ID)) );
                 appraisalTests.add(new AppraisalTests(ID, appraisalTestsIdToTestId.get(ID),
-                        appraisalTestsIdToTestScore.get(ID), appraisalTestsIdToNote.get(ID),
+                        new FormulaEvaluation().evaluate(this,ID,appraisalTestsIdToTestId.get(ID)) , appraisalTestsIdToNote.get(ID),//new FormulaEvaluation().evaluate(this,ID,appraisalTestsIdToTestId.get(ID))
                         appraisalTestsIdToTrial1.get(ID), appraisalTestsIdToTrial2.get(ID),
                         appraisalTestsIdToTrial3.get(ID), appraisalTestsIdToUpdated.get(ID),
                         appraisalTestsIdToUploaded.get(ID)));
-                if (ID.equals("3741c02b-84af-420c-bfa9-176c53d4db0a"))
-                    Log.v("andme",String.valueOf(testIDs.contains(appraisalTestsIdToTestId.get("3741c02b-84af-420c-bfa9-176c53d4db0a"))));
+
             }
 
         }
@@ -203,12 +194,13 @@ public class TestActivity extends AppCompatActivity {
                     correctTests.add(testIDs.get(testIDs.indexOf(ID)));
 
                     testArray.add(test);
+
+                    Log.v(TAG+"sizeasc",String.valueOf(testArray.size() ));
                 }
             }
         }
 
 
-        Log.v("andmes",String.valueOf(correctTests.contains(appraisalTestsIdToTestId.get("3741c02b-84af-420c-bfa9-176c53d4db0a"))));
 
         DBCategoriesTransporter dbCategoriesTransporter = dbQueries.getCategoriesFromDB(this);
         ArrayList<String> categoriesID = dbCategoriesTransporter.getCategoriesID();
@@ -223,26 +215,21 @@ public class TestActivity extends AppCompatActivity {
         //retrieve dividers
 
         //add all appraisal for said category in to a map with the key being appraisals testID
-        Log.v("kason",testToAppraisal.toString());
         for(String i : correctTests){
-            Log.v(TAG, "OLEN SIIN");
-            Log.v(TAG, i);
-            Log.v(TAG, String.valueOf(testArray.size()));
-            Log.v("ATSSS",String.valueOf(correctTests.size()) +" "+ String.valueOf(testIDs.size()));
+
             for (int j = 0;j<testIDs.size(); j++) {
                 if (testIDs.get(j).equals(i)) {
-
-
+                    Log.v("TAG", "HELLO");
                     if (testToAppraisal.containsKey(i)) {//if the map already has said key
                         testToAppraisal.put(i, testToAppraisal.get(i)).add(appraisalTests.get(j));
-                        Log.v("array suurus", String.valueOf(testToAppraisal.get(i).size()));
+                        Log.v(TAG, appraisalTests.get(j).getScore());
                     } else {
                         ArrayList<AppraisalTests> appraisals = new ArrayList<>();
                         appraisals.add(appraisalTests.get(j));
                         testToAppraisal.put(i, appraisals);
-                        Log.v("array suurus", String.valueOf(testToAppraisal.get(i).size()));
+                        Log.v(TAG, appraisalTests.get(j).getScore());
+
                     }
-                    Log.v("array suurus", String.valueOf(testToAppraisal.get(i).size()));
                     if (divider.contains(i)) {// if current test has a divider
                         testArray.add(correctTests.indexOf(i), null);
                     }
@@ -256,6 +243,10 @@ public class TestActivity extends AppCompatActivity {
         // REMOVE IF DATABASE HAS BEEN UPDATED
         // TODO
         testArray.add(1,null);
+
+
     }
+
+
 
 }
