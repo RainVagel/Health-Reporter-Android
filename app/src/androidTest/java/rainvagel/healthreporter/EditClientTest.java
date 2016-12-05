@@ -114,8 +114,9 @@ public class EditClientTest {
         onView(withId(R.id.radio_female)).perform(click());
         onView(withId(R.id.email_address)).perform(replaceText(EMAIL));
         closeSoftKeyboard();
-        onView(withId(R.id.birthdate_picker)).perform(click());
-        onView(withText("OK")).perform(click());
+        onView(withId(R.id.birth_year)).perform(replaceText(YEAR));
+        onView(withId(R.id.birth_month)).perform(replaceText(MONTH));
+        onView(withId(R.id.birth_day)).perform(replaceText(DAY));
         onView(withId(R.id.button_select_group)).perform(click());
         onView(withText("Vilde")).perform(click());
         onView(withId(R.id.button_add_client)).perform(click());
@@ -141,7 +142,7 @@ public class EditClientTest {
                 assertEquals(LASTNAME, cursor.getString(lastNameIdx));
                 assertEquals(EMAIL, cursor.getString(emailIdx));
                 assertEquals(GENDER, cursor.getInt(genderIdx));
-                //assertEquals(BIRTHDAY, cursor.getString(birthdayIdx));
+                assertEquals(BIRTHDAY, cursor.getString(birthdayIdx));
             }
         }
         cursor.close();
