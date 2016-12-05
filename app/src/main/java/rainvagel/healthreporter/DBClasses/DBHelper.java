@@ -190,8 +190,8 @@ public class DBHelper extends SQLiteOpenHelper {
             testValues.put(DBContract.Tests.KEY_UNITS, "Units");
             testValues.put(DBContract.Tests.KEY_DECIMALS, 2);
             testValues.put(DBContract.Tests.KEY_WEIGHT, (random.nextDouble()));
-            testValues.put(DBContract.Tests.KEY_FORMULA_F, "2");
-            testValues.put(DBContract.Tests.KEY_FORMULA_M, "3");
+            testValues.put(DBContract.Tests.KEY_FORMULA_F, "( trial1 + trial2 + trial3 ) / 3");
+            testValues.put(DBContract.Tests.KEY_FORMULA_M, "( trial1 * trial2 ) + trial3");
             testValues.put(DBContract.Tests.KEY_POSITION, 0);
             testValues.put(DBContract.Tests.KEY_UPDATED, "2014-05-01");
             testValues.put(DBContract.Tests.KEY_UPLOADED, "2014-05-01");
