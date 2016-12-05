@@ -47,21 +47,21 @@
         android:hint="Email address"
         android:inputType="textEmailAddress"/>
     <EditText
-        android:id="@+id/editText_birth_year"
+        android:id="@+id/birth_year"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Year of birth"
         android:inputType="number"
         />
     <EditText
-        android:id="@+id/editText_birth_month"
+        android:id="@+id/birth_month"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Month of birth"
         android:inputType="number"
         />
     <EditText
-        android:id="@+id/editText_birth_day"
+        android:id="@+id/birth_day"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Day of birth"

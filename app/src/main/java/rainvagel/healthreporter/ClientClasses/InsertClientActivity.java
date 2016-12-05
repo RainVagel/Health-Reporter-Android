@@ -83,7 +83,7 @@ public class InsertClientActivity extends AppCompatActivity {
                 yearString, monthString, dayString, formattedDate);
 
         Intent toCategories = new Intent(this, CategoriesActivity.class);
-        String passedData = (uuid + "," + firstNameString + " " + lastNameString + "," + groupName);
+        String passedData = (uuid + "," + firstNameString + " " + lastNameString + "," + groupName + ",null");
         toCategories.putExtra("ClientId", passedData);
         startActivity(toCategories);
     }
