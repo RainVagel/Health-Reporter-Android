@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,6 +168,9 @@ public class DBHelper extends SQLiteOpenHelper {
             db.insert(DBContract.TestCategories.TABLE_NAME, null, categoriesValues);
         }
 
+
+
+
 //        Tests
         List<String> testNames = new ArrayList<>();
         List<String> testsUUID = new ArrayList<>();
@@ -198,6 +202,34 @@ public class DBHelper extends SQLiteOpenHelper {
             db.insert(DBContract.Tests.TABLE_NAME, null, testValues);
 
         }
+
+        //divider
+        List<String> parents = new ArrayList<>();
+        for(int p = 0; p<3;p++){
+            boolean forward = true;
+            String parent = testsUUID.get(random.nextInt(testsUUID.size()-1-0-+1)+0);
+            if(parents.contains(parent)){
+                while(forward){//generate new random uuid until we get one
+                    parent = testsUUID.get(random.nextInt(testsUUID.size()-1-0-+1)+0);
+                    if(!parents.contains(parent))
+                        forward = false;
+                }
+            }
+                parents.add(parent);
+                ContentValues cv = new ContentValues();
+                cv.put(DBContract.TestCategories.KEY_ID, UUID.randomUUID().toString());
+                cv.put(DBContract.TestCategories.KEY_NAME, "null");
+                cv.put(DBContract.TestCategories.KEY_POSITION, "null");
+                cv.put(DBContract.TestCategories.KEY_PARENT_ID, parent);
+                Log.v("Parent", parent);
+                Log.v("ParentName", testNames.get(testsUUID.indexOf(parent)));
+                cv.put(DBContract.TestCategories.KEY_UPDATED, "2016-12-04");
+                cv.put(DBContract.TestCategories.KEY_UPLOADED, "2016-12-04");
+                db.insert(DBContract.TestCategories.TABLE_NAME, null, cv);
+
+        }
+
+
 
         i = 0;
 //        AppraisalTests

@@ -196,6 +196,7 @@ public class TestActivity extends AppCompatActivity {
                     testArray.add(test);
 
                     Log.v(TAG+"sizeasc",String.valueOf(testArray.size() ));
+                    Log.v(TAG+"sizeasc",String.valueOf(correctTests.size() ));
                 }
             }
         }
@@ -213,7 +214,8 @@ public class TestActivity extends AppCompatActivity {
             }
         }
         //retrieve dividers
-
+        Log.v("Dividers",String.valueOf(divider.size()));
+        int divider_count = 1;
         //add all appraisal for said category in to a map with the key being appraisals testID
         for(String i : correctTests){
 
@@ -228,21 +230,17 @@ public class TestActivity extends AppCompatActivity {
                         appraisals.add(appraisalTests.get(j));
                         testToAppraisal.put(i, appraisals);
                         Log.v(TAG, appraisalTests.get(j).getScore());
+                    }
 
-                    }
-                    if (divider.contains(i)) {// if current test has a divider
-                        testArray.add(correctTests.indexOf(i), null);
-                    }
                 }
+
+            }
+
+            if (divider.contains(i)) {// if current test has a divider
+                testArray.add(correctTests.indexOf(i)+divider_count, null);
+                divider_count +=1;
             }
         }
-
-
-
-        //FOR TESTING PURPOSES BECAUSE NO DIVIDERS IN DATABASE AT THE MOMENT!!!!!!!!!!!!!!
-        // REMOVE IF DATABASE HAS BEEN UPDATED
-        // TODO
-        testArray.add(1,null);
 
 
     }
