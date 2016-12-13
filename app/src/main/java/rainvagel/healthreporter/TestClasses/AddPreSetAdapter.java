@@ -51,7 +51,6 @@ public class AddPreSetAdapter extends ArrayAdapter<String> {
         checked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Toast.makeText(context, "TODO: NOT IMPLEMENTED", Toast.LENGTH_SHORT).show();
                 if(isChecked){
                     // pass on tests that belong to said preset
                     Log.v("PresetAdapter", String.valueOf(presetMap.get(preset_id.get(position)).size()));
